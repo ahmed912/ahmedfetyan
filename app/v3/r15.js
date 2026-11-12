@@ -1,0 +1,22 @@
+// New-task row in the manual time picker. Uses mock_final.json.
+process.env.MOCKDATA=process.env.MOCKDATA||'/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/plan/mock_final.json';
+const {openp,shot,run}=require('./h.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined?' '+x:''));if(!c)process.exitCode=1;};
+run(async b=>{const pg=await openp(b,390);const W=ms=>pg.waitForTimeout(ms);
+  await pg.click('.pop-card:has-text("Time")');await pg.clock.runFor(500);await W(700);
+  await pg.click('#v3AddTime');await pg.clock.runFor(400);await W(500);
+  const S='.ps-sheet input[type=search]';await pg.fill(S,'zzz brand new job');await W(300);
+  ok('no dead end text',(await pg.locator('.ps-sheet .hint:has-text("No task matches")').count())===0);
+  const row=pg.locator('.ps-sheet .v3-newtask');ok('add row shown',(await row.count())===1,await row.first().textContent());
+  await shot(pg,'r15_row_390');await row.click();await pg.clock.runFor(400);await W(500);
+  const made=await pg.evaluate("Object.values(window.__data.tasks).filter(t=>t.title==='zzz brand new job').map(t=>t.date+'|'+t.cat)");
+  ok('task created for today',made.length===1&&made[0].startsWith('2026-11-09'),made.join());
+  ok('task selected',(await pg.locator('.ps-sheet .v3-pick b').textContent())==='zzz brand new job');
+  const fs=pg.locator('.ps-sheet input[type=time], .ps-sheet input[aria-label=From]');
+  await pg.locator('.ps-sheet [aria-label=From]').first().fill('09:00');await pg.locator('.ps-sheet [aria-label=To]').first().fill('09:30');
+  await pg.click('.ps-sheet .btn:has-text("Add time")');await pg.clock.runFor(600);await W(500);
+  const e=await pg.evaluate("JSON.stringify(Object.values(window.__data.entries||{}).flatMap(x=>Object.values(x||{})).filter(x=>x&&x.label==='zzz brand new job').length)");
+  const toast=await pg.evaluate("(document.querySelector('#toast,.toast')||{}).textContent");
+  ok('log saved',/added/i.test(toast||'')||e!=='0',toast+' '+e);
+  const pe=pg.errs.filter(x=>!x.includes('ERR_FAILED'));ok('no page errors',pe.length===0,pe.join('|'));
+});
