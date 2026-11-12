@@ -51,7 +51,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);const pg=awai
   await pg.click('.v3-conf .btn:not(.ghost)').catch(()=>{});await pg.clock.runFor(500);await W(400);
   t=await TK();ok('Done on the card finishes its steps for today',t.sB1.done&&!t.sB2.done,JSON.stringify([t.sB1.done,t.sB2.done]));
   // Review: sprint progress counts leaves only
-  await pg.click(w<700?'.m-tab:has-text("Review")':'.topnav :text("Review")');await pg.clock.runFor(500);await W(700);
+  await pg.click(w<700?'.m-tab:has-text("Review")':'.topnav :text("Review")');await pg.clock.runFor(500);await W(700);await pg.click('#wfBody .cal-views button[data-v="timeline"]');await pg.clock.runFor(300);await W(500);
   const bars=await pg.evaluate("document.querySelector('#bars .bar')?.innerText.replace(/\\s+/g,' ')");console.log('tasks bar:',bars);
   ok('sprint tasks bar counts leaves (10), not parents',/\b10\b/.test(bars)&&!/\b13\b/.test(bars),bars);
   await pg.locator('#bars .bar').nth(0).click();await W(600);await pg.locator('.ps-sheet .seg button:has-text("All")').click();await W(400);

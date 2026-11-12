@@ -23,3 +23,6 @@
 - Source committed to repo branch claude/cloud-environment-setup-llsle2 under app/ (commit c4cd227). Repo must be made private by the user in GitHub Settings (blocked here). Offline zip sent for C:\Claude (no folder shared).
 - Skill token-efficiency created (~/.claude/skills and zip sent).
 - Next: calendar phases from plan/CAL_DESIGN.md; backlog in BACKLOG_WEDNESDAY.md.
+
+## UPDATE 12 Nov (2)
+- Published 1794487710: calendar phases 0-1 (module6, Day/3 days/Work week/Week/Month/Timeline, events synced) + LinkedIn post counter. Next: calendar phase 2 (drag/resize). Tests: run changed + cal1 only, full suite before publish.

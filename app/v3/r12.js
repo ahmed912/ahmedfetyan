@@ -49,7 +49,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const before=await loads();const snap=JSON.stringify(Object.fromEntries(Object.entries(before.T).map(([i,t])=>[i,[t.date,!!t.archived,!!t.cut,t.days,t.mins]])));
   const todayHas=()=>pg.evaluate("[...document.querySelectorAll('#cutStack .cs-card')].some(c=>/Javelin/i.test(c.innerText))");
   ok('Javelin is on Today before',await todayHas());
-  await nav('Review');await W(300);
+  await nav('Review');await W(300);await pg.click('#wfBody .cal-views button[data-v="timeline"]').catch(()=>{});await run1(300);await W(300);
   await pg.evaluate("[...document.querySelectorAll('.wf-ctrls .seg button')].find(b=>b.textContent==='Sprint 1')?.click()");await run1(300);const mb=pg.locator('.v3-more[aria-label="More for Javelin case study live"]').first();ok('Javelin row in waterfall',(await mb.count())===1);
   await mb.click();await run1(400);await pg.click('.ps-sheet .btn.danger');await run1(300);await pg.click('.v3-conf .btn:not(.ghost)');await run1(600);
   const after=await loads();
