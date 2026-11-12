@@ -321,8 +321,11 @@ const LIPLAN={
   function savePost(id,vals,quiet){const cur=LIP[id]||{};const doc={...cur,...vals,title:vals.hook||cur.title||"",at:cur.at||Date.now(),upd:Date.now()};LIP[id]=doc;try{store.set("liposts/"+id,doc);}catch(e){}if(!quiet)toast("Saved");}
   function postCard(id,date,plan,re){const cur=LIP[id]||{};const hasPlan=plan&&plan.pillar;
     const hook=el("input",{type:"text",class:"v3-in li4-hook","aria-label":"Hook line",placeholder:"Hook line: one line that names a problem your client has",value:cur.hook||cur.title||""});
-    const body=el("textarea",{class:"v3-in li4-body","aria-label":"Post body",rows:"14",maxlength:"3000",placeholder:"Write the post"});body.value=cur.body||"";
+    const body=el("textarea",{class:"v3-in li4-body","aria-label":"Post body",rows:"14",placeholder:"Write the post"});body.value=cur.body||"";
     const cnt=el("span",{class:"hint num li4-cnt","aria-live":"polite"});
+    const fill=el("i",{class:"li4-fill"}),meter=el("div",{class:"li4-meter","aria-hidden":"true"},fill,el("b",{class:"li4-mk",style:"left:7%",title:"feed cut-off"}),el("b",{class:"li4-mk",style:"left:50%",title:"sweet spot ends"}));
+    const mlab=el("div",{class:"li4-mlab hint"},el("span",{text:"210 feed cut-off"}),el("span",{text:"1500 sweet spot ends"}));
+    const meterBox=el("div",{class:"li4-mbox"},cnt,meter,mlab);
     const fmtV=cur.format||(plan&&plan.format)||"text",fo=FMTS.includes(fmtV)?FMTS:FMTS.concat([fmtV]);
     const fs=el("select",{class:"v3-in","aria-label":"Format"},...fo.map(f=>{const o=el("option",{value:f,text:f});if(f===fmtV)o.selected=true;return o;}));
     const pv=cur.pillar!==undefined?cur.pillar:(hasPlan?plan.pillar:null);
@@ -330,16 +333,16 @@ const LIPLAN={
     const sv=stKey(cur),ss=el("select",{class:"v3-in","aria-label":"Status"},...ST.map(([k,n])=>{const o=el("option",{value:k,text:n});if(k===sv)o.selected=true;return o;}));
     const notes=el("textarea",{class:"v3-in","aria-label":"Notes",rows:"2",placeholder:"Notes (optional)"});notes.value=cur.notes||"";
     const vals=()=>({date,hook:hook.value.trim(),body:body.value,format:fs.value,pillar:ps.value===""?null:Number(ps.value),status:ss.value,notes:notes.value.trim()});
-    const upd=()=>{const n=body.value.length;cnt.textContent=n+" / 3000";cnt.classList.toggle("over",n>3000);};upd();
-    let t=null;const flush=()=>{clearTimeout(t);t=null;liPend.delete(id);const v=vals();if(!LIP[id]&&!v.hook&&!v.body&&!v.notes)return;savePost(id,v,true);delete liNew[date];};
+    const upd=()=>{const n=body.value.length;cnt.textContent=n+" / 3000";const z=n>3000?"red":n>1500?"amber":n>=210?"green":"calm";meterBox.dataset.zone=z;fill.style.width=Math.min(100,n/30)+"%";cnt.classList.toggle("over",n>3000);if(typeof save!=="undefined"){save.disabled=n>3000;save.title=n>3000?"Over 3000 characters":"";}};
+    let t=null;const flush=()=>{clearTimeout(t);t=null;liPend.delete(id);if(body.value.length>3000){toast("Over 3000 characters, not saved");return;}const v=vals();if(!LIP[id]&&!v.hook&&!v.body&&!v.notes)return;savePost(id,v,true);delete liNew[date];};
     const sched=()=>{upd();clearTimeout(t);t=setTimeout(flush,700);liPend.set(id,flush);};
     [hook,body,notes].forEach(x=>x.addEventListener("input",sched));[fs,ps,ss].forEach(x=>x.addEventListener("change",()=>{flush();}));
     const copy=el("button",{type:"button",class:"btn ghost li4-copy",onclick:()=>{copyText((hook.value.trim()+"\n\n"+body.value).trim()).then(()=>toast("Post copied"));}},"Copy post");
-    const save=el("button",{type:"button",class:"btn li4-save",onclick:()=>{flush();if(!LIP[id]){toast("Nothing to save yet");return;}toast("Saved");}},"Save");
+    const save=el("button",{type:"button",class:"btn li4-save",onclick:()=>{if(body.value.length>3000){flush();return;}flush();if(!LIP[id]){toast("Nothing to save yet");return;}toast("Saved");}},"Save");upd();
     const del=LIP[id]?el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Delete this post?","Delete",()=>{liPend.delete(id);delete LIP[id];try{store.del("liposts/"+id);}catch(e){}re();})},"Delete"):null;
     if(liFocus===id){setTimeout(()=>{try{body.scrollIntoView({block:"nearest"});}catch(e){}},50);}
     return el("section",{class:"li4-ed","data-post":id},el("label",{class:"field"},el("span",{class:"label",text:"Hook"}),hook),
-      el("label",{class:"field"},el("span",{class:"label"},"Post",cnt),body),
+      el("label",{class:"field"},el("span",{class:"label",text:"Post"}),body,meterBox),
       el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Format"}),fs),el("label",{class:"field"},el("span",{class:"label",text:"Pillar"}),ps),el("label",{class:"field"},el("span",{class:"label",text:"Status"}),ss)),
       el("label",{class:"field"},el("span",{class:"label",text:"Notes"}),notes),el("div",{class:"v3-row"},save,copy,del));}
   function liDayBody(re){const d=liDate,plan=planFor(d),wd=DN[parse(d).getDay()];

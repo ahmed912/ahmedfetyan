@@ -269,3 +269,13 @@ body.cut1.m1 #popCards .pop-card .fc-t{font-size:15px!important}
 .cs-step{touch-action:pan-y}
 .v3-fill{margin-left:8px}
 .eh-seg.oth,.eh-sw.oth{background:var(--line)}
+.li4-cnt{float:none}
+.li4-mbox{display:flex;flex-direction:column;gap:6px;--zc:var(--line)}
+.li4-mbox[data-zone="green"]{--zc:#3f9d6b}.li4-mbox[data-zone="amber"]{--zc:#d49a2a}.li4-mbox[data-zone="red"]{--zc:#c0392b}
+.li4-mbox .li4-cnt{align-self:flex-end;color:inherit}
+.li4-mbox[data-zone="red"] .li4-cnt{color:#c0392b}
+.li4-meter{position:relative;height:6px;border-radius:999px;background:var(--sunk);backdrop-filter:blur(8px);overflow:hidden}
+.li4-fill{display:block;height:100%;width:0;border-radius:999px;background:var(--zc);opacity:.85;transition:width .25s ease,background .25s ease}
+.li4-mk{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--line);opacity:.9}
+.li4-mlab{display:flex;justify-content:space-between;font-size:11px;opacity:.7}
+.li4-save:disabled{opacity:.5;cursor:not-allowed}
