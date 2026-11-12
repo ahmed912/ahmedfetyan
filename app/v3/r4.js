@@ -17,7 +17,7 @@ run(async b=>{const pg=await openp(b,390);const W=ms=>pg.waitForTimeout(ms);cons
   ok('closing Time returns to the day you came from (Sunday 8 November)',/8 November/.test(await dayTxt()||''),await dayTxt());
   await pg.click('#todayBtn');await pg.clock.runFor(300);await W(300);
   // --- Review
-  await pg.click('.m-tab:has-text("Review")');await pg.clock.runFor(500);await W(700);
+  await pg.click('.m-tab:has-text("Review")');await pg.clock.runFor(500);await W(700);await pg.click('#wfBody .cal-views button[data-v="timeline"]');await pg.clock.runFor(300);await W(500);
   ok('waterfall is open (rows visible)',(await pg.locator('#wfBody .v3-wft').count())>0,await pg.locator('#wfBody .v3-wft').count());
   ok('no fold button on waterfall/insights',(await pg.locator('section[aria-labelledby="wfH"] .collapse-btn, section[aria-labelledby="ihH"] .collapse-btn').count())===0);
   console.log('insights title:',await pg.evaluate("document.getElementById('ihH').textContent"),'| body:',(await pg.evaluate("document.getElementById('ihBody').innerText")).replace(/\n/g,' | ').slice(0,200));

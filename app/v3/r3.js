@@ -19,6 +19,7 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   const ih=await pg.evaluate("document.getElementById('ihBody').innerText.slice(0,120)");console.log('insights:',ih.replace(/\n/g,' | '));
   // waterfall: open section if folded, open a task, add subtask, menu, archive
   await pg.evaluate("{const s=document.querySelector('section[aria-labelledby=\"wfH\"]');if(s&&s.classList.contains('collapsed')){const b=s.querySelector('.collapse-btn');if(b)b.click();}}");await W(500);
+  await pg.click('#wfBody .cal-views button[data-v="timeline"]');await pg.clock.runFor(300);await W(500);
   await pg.locator('#wfBody').scrollIntoViewIfNeeded();await shot(pg,'r3_wf_'+w);
   const rows=await pg.locator('.v3-wft').count();ok('waterfall rows',rows>0,rows);
   const sub0=(await T()).filter(x=>x.parent).length;

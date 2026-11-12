@@ -140,8 +140,9 @@
     const d=el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(dys),"aria-label":"Days it spans"}),m=el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:mn?String(mn):"",placeholder:"min","aria-label":"Estimated minutes"});
     return [el("p",{class:"ps-sh-sum",text:t.title}),el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),d),el("label",{class:"field"},el("span",{class:"label",text:"Minutes of work"}),m)),
       el("button",{type:"button",class:"btn",onclick:()=>{const n=Math.max(1,Math.min(14,+d.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);return;}patchTask(id,{days:n,mins:Math.max(0,Math.round(+m.value||0))});psClose(true);toast("Length updated");}},"Save")];});}
+  var wfTimeline;
   // ---- waterfall: parent tasks only, calm rows, tap a task for its pop-up ----
-  renderWaterfall=function(){const box=document.getElementById("wfBody");if(!box)return;const pg=box.closest(".page");if(pg&&pg.hidden)return;
+  wfTimeline=function(box){
     const today=iso(new Date()),cur=sprintFor(sel>today?today:sel),sp=sprints().find(p=>p.n===(wfSprint||cur.n))||cur;
     const days=[];for(let d=sp.start;d<=sp.end;d=addDays(d,1))days.push(d);
     const all=v3tk().filter(t=>!t.parent&&t.date>=sp.start&&t.date<=sp.end);

@@ -20,6 +20,7 @@ R=[('["sounds","Sounds"]','["sounds","Intentional media"]',1),('<title>🧠Miles
 ('el("option",{value:k,text:ic+" "+n})','el("option",{value:k,text:n})',2)]
 import json as _j
 R+= [tuple(x) for x in _j.load(open("seal.json"))]
+R+=[('sub("reminders");','sub("reminders");sub("events");',1),('entries:{}, reminders:{}, habits:{}','entries:{}, reminders:{}, events:{}, habits:{}',1)]
 R+=[('class:"sess-btn",type:"button",','class:"sess-btn",type:"button","data-s":String(se.start),"data-e":String(se.end),',1)]
 # 9 Nov cut: no sound or banner for old missed reminders on open; no wudu pop-up
 R+=[('.filter(r=>!r.fired&&r.at<=now);\n    const box=document.getElementById("remBanners");','.filter(r=>!r.fired&&r.at<=now&&now-r.at<10*60000);\n    const box=document.getElementById("remBanners");',1),
@@ -77,9 +78,9 @@ for a_,b_,n_ in R3:
     assert s.count(a_)==n_,(a_[:50],s.count(a_));s=s.replace(a_,b_)
 _m=re.search(r'const DEFAULT_SPRINTS = \[\n.*?\n  \];',s,re.S);assert _m
 s=s.replace(_m.group(0),'const DEFAULT_SPRINTS = [\n'+_sp_block+'\n  ];')
-mod=(open('/home/claude/app/module.js').read()+'\n'+open('/home/claude/app/syncsafe.js').read()+'\n'+open('/home/claude/app/module2.js').read()+'\n'+open('/home/claude/app/module3.js').read()+'\n'+open('/home/claude/app/module4.js').read()+'\n'+open('/home/claude/app/module5.js').read()).replace('b.from+" to "+b.to','t12(b.from)+" to "+t12(b.to)')
+mod=(open('/home/claude/app/module.js').read()+'\n'+open('/home/claude/app/syncsafe.js').read()+'\n'+open('/home/claude/app/module2.js').read()+'\n'+open('/home/claude/app/module3.js').read()+'\n'+open('/home/claude/app/module4.js').read()+'\n'+open('/home/claude/app/module5.js').read()+'\n'+open('/home/claude/app/module6.js').read()).replace('b.from+" to "+b.to','t12(b.from)+" to "+t12(b.to)')
 s=s.replace(a,a+mod+'\n').replace('b.from+" to "+b.to','t12(b.from)+" to "+t12(b.to)')
-i=s.index('</style>\n\n<nav class="topnav"');s=s[:i]+(open('/home/claude/app/style.css').read()+'\n'+open('/home/claude/app/style2.css').read())+s[i:]
+i=s.index('</style>\n\n<nav class="topnav"');s=s[:i]+(open('/home/claude/app/style.css').read()+'\n'+open('/home/claude/app/style2.css').read()+'\n'+open('/home/claude/app/style3.css').read())+s[i:]
 open('/home/claude/app/new.html','w').write(s)
 open('/home/claude/app/main.js','w').write(re.findall(r'<script>(.*?)</script>',s,re.S)[-1])
 open('/home/claude/app/test.html','w').write('<meta charset="utf-8">'+s)

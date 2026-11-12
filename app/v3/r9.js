@@ -15,7 +15,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
     ok('estimate on the same line',Math.abs(s.ey-s.cy)<Math.max(s.th,24));
     ok('estimate pushed to the right edge',s.lw-s.ew<40,s.lw-s.ew);}
   await pg2.close();
-  await pg.click(w<700?'.m-tab:has-text("Review")':'.topnav :text("Review")');await pg.clock.runFor(500);await W(700);
+  await pg.click(w<700?'.m-tab:has-text("Review")':'.topnav :text("Review")');await pg.clock.runFor(500);await W(700);await pg.click('#wfBody .cal-views button[data-v="timeline"]');await pg.clock.runFor(300);await W(500);
   const read=async()=>pg.evaluate("document.querySelector('#bars .bar')?.innerText.replace(/\\s+/g,' ')");
   console.log('current:',await read());
   await pg.locator('#spSwitch button:has-text("Sprint 1")').click();await pg.clock.runFor(300);await W(500);
