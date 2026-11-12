@@ -29,3 +29,6 @@
 
 ## ROLLBACK 12 Nov
 - User asked to undo the calendar. Deleted version 1794487710 from app_code; live is 1794485584 again. Calendar source (module6/style3, commit e5a2d4a) and post counter stay in the repo, unpublished.
+
+## PUBLISHED 12 Nov: 1794497633
+- Live = c4cd227 sources + custom-task picker fix (module2.js, r15). Calendar (module6, commit e5a2d4a) and post counter NOT live.
