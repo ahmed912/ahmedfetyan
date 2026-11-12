@@ -1,0 +1,4 @@
+const {openp,run}=require('./h.js');
+run(async b=>{const pg=await openp(b,390);
+  console.log(JSON.stringify(await pg.evaluate("(()=>{const c=[...document.querySelectorAll('#popCards .pop-card')].find(x=>/Intentional/.test(x.textContent));const t=c.querySelector('.fc-t');const cs=getComputedStyle(c),ts=getComputedStyle(t);const rc=c.getBoundingClientRect(),rt=t.getBoundingClientRect();return {card:[Math.round(rc.left),Math.round(rc.right),Math.round(rc.width)],pad:[cs.paddingLeft,cs.paddingRight],tText:[Math.round(rt.left),Math.round(rt.right),Math.round(rt.width)],ws:ts.whiteSpace,fs:ts.fontSize,ml:ts.marginLeft,mr:ts.marginRight,pr:ts.paddingRight,disp:ts.display,scrollW:t.scrollWidth,clientW:t.clientWidth,parentDisp:cs.display,ai:cs.alignItems,fd:cs.flexDirection,html:t.outerHTML.slice(0,120)}})()")));
+});
