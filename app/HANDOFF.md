@@ -26,3 +26,6 @@
 
 ## UPDATE 12 Nov (2)
 - Published 1794487710: calendar phases 0-1 (module6, Day/3 days/Work week/Week/Month/Timeline, events synced) + LinkedIn post counter. Next: calendar phase 2 (drag/resize). Tests: run changed + cal1 only, full suite before publish.
+
+## ROLLBACK 12 Nov
+- User asked to undo the calendar. Deleted version 1794487710 from app_code; live is 1794485584 again. Calendar source (module6/style3, commit e5a2d4a) and post counter stay in the repo, unpublished.
