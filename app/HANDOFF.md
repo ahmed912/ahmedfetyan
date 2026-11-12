@@ -17,3 +17,9 @@
 - gym-page.zip and app-share.zip (data-free copy for the friend). Not done: Claude artifact copy (needs a 170k token read), see BACKLOG_WEDNESDAY.md.
 ## Open questions for the user
 - Is Javelin published? Gates 2 and 3 fixed? Strip knee-rehab text from the gym zip?
+
+## UPDATE 12 Nov (after compact)
+- Published version 1794485584 (LinkedIn day pages, archive+refill, work-only bar, swipe reschedule, music queue). All tests pass (r3 test updated). Upload function upload_app_tmp2 now has int signature only; re-enable by create or replace with sha256 check, then disable again.
+- Source committed to repo branch claude/cloud-environment-setup-llsle2 under app/ (commit c4cd227). Repo must be made private by the user in GitHub Settings (blocked here). Offline zip sent for C:\Claude (no folder shared).
+- Skill token-efficiency created (~/.claude/skills and zip sent).
+- Next: calendar phases from plan/CAL_DESIGN.md; backlog in BACKLOG_WEDNESDAY.md.
