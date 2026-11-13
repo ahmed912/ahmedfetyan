@@ -33,3 +33,6 @@
 ## PUBLISHED 13 Nov: 1794596581
 - Live = c4cd227 sources + picker fix + reschedule everywhere + waterfall edit + Week view (no calendar). Source of the live build is app/live/ (data files and secrets excluded). The older app/*.js tree contains the unpublished calendar (module6).
 - All 15 tests passed. Next: time-entry visual simplification (#19), task diet (#14), sprints (#15), buckets (#16), renames (#17), planning rounds (#18).
+
+## STANDING ORDER 13 Nov (late): HOLD PUBLISHING
+- User: never publish a plan until all tasks are done. Do NOT publish new versions until every task on the list (#14 to #19 and the planning-first rounds) is finished. Keep building, testing, committing; then ONE publish after a full regression pass. Live stays 1794596581 until then. Data changes still need backup and rollback and happen at the end with the publish.
