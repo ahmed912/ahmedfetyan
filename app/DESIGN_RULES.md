@@ -1,3 +1,6 @@
+# THE THREE PILLARS (above every other rule)
+Procrastination, fear of overwhelm, flexibility. Every feature, every tool, every decision, every word exists for these. Gate for every round and every change: write one line "serves pillar: X because Y". If it serves none, or works against one, do not build it.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
