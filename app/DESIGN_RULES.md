@@ -44,6 +44,12 @@ The ethos is to push hard and work as much as possible to build something. The a
 - Pushing hard is sustained by recovery, so recovery is part of the system, not a weakness: sleep minimum, the Friday rest day and buffer days stay protected, and work hours that cost sleep are flagged as facts.
 - Raise the bar gradually and on purpose (the stretch target can be raised in settings); never lower it silently.
 
+# FOCUS, DEEP WORK AND CHUNKING (user, 13 Nov)
+- Focus work and deep work are the core of the work block: long uninterrupted blocks on one design task (the 50/10 rhythm), no notifications, one thing in sight.
+- Chunking: allocate similar things together so they get finished. Group similar tasks into the same block or day (one design project per deep block; all small admin, replies and LinkedIn comments in one shallow batch; learning in its own block), and keep a bucket's tasks together instead of scattering them.
+- Planning, refill, rollover and rescheduling must respect chunks: re-flow moves a whole chunk, not single tasks apart from their group; a new task joins the chunk of its bucket or type by default; deep blocks never get shallow tasks mixed in.
+- Show the day as a few chunks (work chunks, learning chunk, shallow batch), not as a long list of tasks. That also lowers cognitive load.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
