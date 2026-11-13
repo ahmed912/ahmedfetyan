@@ -17,3 +17,9 @@ Send each piece of work to the cheapest model that can do it. Escalate one level
 
 ## What costs the most
 Long conversation history, reading whole large files, and repeated test logs. Keep briefs short, read by function, and return summaries.
+
+## Parallel and cheap (user order, 13 Nov)
+- Run independent work at the same time: one builder per separate file area, runner for tests in parallel, architect only for plans. Search and file lookups go to Explore or runner, never the main chat.
+- Main chat only coordinates: short briefs, 3 to 5 line replies, no file dumps.
+- Test only what changed plus the journey test; full suite once before each publish.
+- Google Drive is the shared store for handoff, plans and zips (see HANDOFF.md for the folder). Read plans from there or the scratchpad, not into chat.
