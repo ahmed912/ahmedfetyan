@@ -9,3 +9,4 @@ Every task and feature is judged by how Ahmed will actually use it. Applies to a
 5. **No surprises.** Every change has Undo or a rollback. Data changes get a backup first.
 6. **Seamless.** Same gestures and words in every place. Calm glass style, no new icons, no em dashes.
 7. **Test the journey.** Each round has a Playwright check that follows the projected journey at 390 and 1300.
+8. **Gestures over buttons.** Use swipe and long-press to replace buttons and cut clutter. Keep one gesture vocabulary everywhere (same as today: swipe right = done, swipe left = reschedule; long-press = quick menu with edit, move, rename, archive, delete; drag = move between days or buckets). Every gesture also has a visible fallback (a tap opens the same menu) and a one-time subtle hint, never a permanent extra button. Undo after every gesture.
