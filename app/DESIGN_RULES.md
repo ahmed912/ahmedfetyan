@@ -18,3 +18,8 @@ Every task and feature is judged by how Ahmed will actually use it. Applies to a
    - Protect focus: avoid context switches, pop-ups and motion; calm colour, high contrast text, no flashing; no more than one notification at a time.
    - Show clear progress and a visible "done" state (closure reduces mental load); ask for few inputs and let him capture first, organise later.
    - Every new feature includes a short "cognitive load check" line in its round: items on screen, decisions asked, taps to finish.
+10. **User pillars: procrastination, fear of overwhelm, flexibility seeker.** Every round must serve these three.
+   - Procrastination: make starting tiny. Every task offers a "just 5 minutes" start (timer or first step), the next action is always one tap away, capture takes one line, and nothing demands a decision before he can begin.
+   - Fear of overwhelm: never show the whole mountain. Default views show today's one to three things and a calm count; backlog and the rest stay collapsed; big tasks open into a small first step; no red overdue walls, no guilt language, no streak punishment.
+   - Flexibility: nothing is locked. Move, shrink, split, postpone or drop any task or bucket in one gesture with Undo; buffer days and soft dates (a date is a plan, not a verdict); "not today" is a normal, free action; plans re-flow easily when the day changes.
+   - Wording is gentle and neutral ("moved to Saturday", not "missed").
