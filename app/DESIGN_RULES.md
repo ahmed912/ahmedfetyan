@@ -25,6 +25,14 @@ Ahmed runs himself as a company.
 - Executive tone: short, factual, decision-oriented. Targets, actuals, variances.
 - When time is short: work hours are protected first; other stuff keeps minimums (rest, health), not zero.
 
+# STAKES ARE REAL (user, 13 Nov)
+Missed work means late revenue, and late revenue puts family obligations at risk. Work hours are the top priority of the whole app, above every other feature and every comfort.
+- When anything conflicts with work hours, work wins. No feature, round or screen may take time, attention or focus away from design work.
+- The daily work block is protected: nothing else is offered or scheduled inside it, and War mode stays the way into it.
+- Be real: show work hours done vs target and client deadlines as plain facts, early (not at the last day), so a shortfall is seen while it can still be fixed.
+- Plans must be holdable: a realistic 8 to 10 h day with buffer, not a heroic one that breaks by Wednesday. Consistency beats intensity.
+- Other stuff keeps only its protected minimums; it never eats work hours.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
