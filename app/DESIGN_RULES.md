@@ -17,6 +17,13 @@ Calm is not light. Discipline needs honesty and standards. The pillars reduce fr
 - Repeated postponing (3+) requires a decision: do it now, shrink it, split it or drop it. Postponing forever is not an option.
 - Firm tone, short and direct. No cheerleading, no soft fluff.
 
+# FRAMING: SELF AS A COMPANY
+Ahmed runs himself as a company: work and other stuff are departments. Design and wording follow that model.
+- Departments = areas (work: portfolio, client, brand and LinkedIn, learning; other stuff: health and gym, money, home and family, admin). Each has a clear weekly target, its own buckets (projects) and a plan vs actual.
+- Weekly planning is the management meeting (plan, review, decide). Gates are company milestones. Buckets are projects with owners-of-one (him), dates and deliverables.
+- Executive tone: short, factual, decision-oriented. Show targets, actuals and variances; ask for decisions, not feelings.
+- Work departments get priority when capacity is short; other stuff is protected by minimums (rest, health), not squeezed to zero.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
