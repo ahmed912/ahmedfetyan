@@ -4,10 +4,10 @@ process.env.MOCKDATA=process.env.MOCKDATA||'/tmp/claude-0/-home-user-ahmedfetyan
 const fs=require('fs');const REAL=fs.readFileSync(process.env.MOCKDATA,'utf8');
 run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   for(const when of ['2026-11-19T11:00:00','2026-11-25T11:00:00']){
-  const pg=await openp(b,w,{when,real:REAL});const W=ms=>pg.waitForTimeout(ms);await W(300);
+  const pg=await openp(b,w,{when,real:REAL});const W=ms=>pg.waitForTimeout(ms);await W(300);await pg.evaluate(()=>__ch.openAll());await W(200);
   const run1=async ms=>{await pg.clock.runFor(ms);await W(150);};
   const T=()=>pg.evaluate("JSON.parse(JSON.stringify(window.__data.tasks))");
-  const swipe=async(sel,dx)=>{const bb=await pg.locator(sel).boundingBox();const y=bb.y+bb.height/2,x0=bb.x+bb.width*(dx<0?0.8:0.5);await pg.mouse.move(x0,y);await pg.mouse.down();for(let i=1;i<=8;i++)await pg.mouse.move(x0+dx*i/8,y+1);await pg.mouse.up();await run1(400);};
+  const swipe=async(sel,dx)=>{await pg.locator(sel).first().evaluate(e=>e.scrollIntoView({block:'center'}));await run1(300);const bb=await pg.locator(sel).first().boundingBox();const y=bb.y+bb.height/2,x0=bb.x+bb.width*(dx<0?0.8:0.5);await pg.mouse.move(x0,y);await pg.mouse.down();for(let i=1;i<=8;i++)await pg.mouse.move(x0+dx*i/8,y+1);await pg.mouse.up();await run1(400);};
   const stepSel='#cutStack .cs-card.cs-top .cs-step:not(.done)';
   const n0=await pg.locator(stepSel).count();ok(when+' card has steps',n0>0,n0);
   const id=await pg.locator(stepSel).first().getAttribute('data-step');const t0=(await T())[id];

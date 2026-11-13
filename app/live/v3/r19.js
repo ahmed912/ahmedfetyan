@@ -13,7 +13,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
     await db.doc('tasks/brief1').set({title:'Write the brief',date:'2026-11-14',cat:'portfolio',mins:60,order:-9,done:false});
     await db.doc('tasks/big1').set({title:'Big project',cat:'portfolio',done:false,bucket:true,bState:'active',bNoSprint:false});
     for(let i=0;i<20;i++)await db.doc('tasks/bl'+i).set({title:'Leaf '+i,parent:'big1',cat:'portfolio',done:false,order:i});});
-  await R(800);
+  await R(800);await pg.evaluate(()=>__ch.openAll());await R(300);
   // 1 Today shows the card; with no steps there is no counter line
   const card=pg.locator('.cs-card[data-id="brief1"]');
   ok('Today card is there',await card.count()===1);

@@ -14,7 +14,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const loads=async()=>{const T=await tasks();const par=new Set(Object.values(T).filter(t=>t.parent&&!t.cut).map(t=>t.parent));const o={};Object.entries(T).forEach(([i,t])=>{if(t.cut||par.has(i)||!['portfolio','client'].includes(t.cat)||!t.date)return;o[t.date]=(o[t.date]||0)+(t.mins||0);});return {o,T,par};};
   // ---- C: work bar counts only portfolio/client
   const bar=await pg.evaluate("document.querySelector('.dbar-focus .num')?.innerText.replace(/\\s+/g,' ')");
-  ok('day bar says Work 3 of 8 pomodoros (150 min work, 100 other ignored)',/Work 3 of 8 pomodoros/.test(bar),bar);
+  ok('day bar says Work 3 of 8 h (150 min work, 100 other ignored)',/Work 3 of 8 h/.test(bar),bar);
   ok('Fill my day button is on the day bar',(await pg.locator('.dbar-focus .v3-fill').count())===1);
   const order=await pg.evaluate("[...document.querySelectorAll('#cutStack .cs-card .cat-chip')].map(c=>c.dataset.cat)");console.log('card order',order.join(','));
   const rk=c=>c==='portfolio'||c==='client'?0:c==='learning'?1:c==='linkedin'?2:3;ok('cards: work, learning, linkedin, rest',order.every((c,i)=>i===0||rk(order[i-1])<=rk(c)),order.join(','));
@@ -42,7 +42,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('tap on a post opens the same editor, filled',(await pg.inputValue('.li4-hook'))==='Why most decks lose investors on slide 3');
   await pg.click('.ps-sh-x');await run1(700);await pg.keyboard.press('Escape');await run1(400);
   // Today linkedin card title opens editor
-  await pg.click('.cs-more').catch(()=>{});await run1(500);const lt=pg.locator('.cs-card:has(.cat-chip[data-cat=linkedin]) .cs-t.li-open').first();
+  await pg.click('.cs-more').catch(()=>{});await pg.evaluate(()=>__ch.openAll());await run1(500);const lt=pg.locator('.cs-card:has(.cat-chip[data-cat=linkedin]) .cs-t.li-open').first();
   if(await lt.count()){await lt.click();await run1(500);ok('linkedin title on Today opens that day editor',(await pg.locator('.li4-ed').count())>=1&&(await pg.locator('.li4-dt').innerText()).includes('14'));await pg.keyboard.press('Escape');await run1(400);}else ok('linkedin card on Today with link',false);
   await pg.evaluate("document.getElementById('taskView')&&window.closeTaskView&&closeTaskView()").catch(()=>{});await pg.keyboard.press('Escape');await run1(300);
   // ---- B: archive Javelin from the waterfall

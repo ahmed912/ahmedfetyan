@@ -18,11 +18,9 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   await pg.clock.runFor(450);await W(700);console.log(w,'time sheet reopened after Add time',await pg.evaluate("!!document.querySelector('.ps-sheet #entList')"));await shot(pg,'r1_time2_'+w);
   await pg.click('.v3-rev');await W(600);await shot(pg,'r1_rev_'+w);await pg.keyboard.press('Escape');await pg.clock.runFor(450);await W(500);await pg.keyboard.press('Escape');await pg.clock.runFor(450);await W(400);
   // task view
-  await pg.click('.cs-more');await W(600);await shot(pg,'r1_tv_'+w);
-  const second=await pg.locator('.cs-all .cs-card').nth(2).getAttribute('aria-label');await pg.locator('.cs-all .cs-card').nth(2).click({position:{x:30,y:20}});await W(600);
-  console.log(w,'front?',second,'| top now:',await pg.evaluate("document.querySelector('#cutStack .cs-t')?.textContent"));
+  await pg.evaluate(()=>__ch.openAll());await W(400);await shot(pg,'r1_tv_'+w);
   // start -> war setup
-  await pg.click('#cutStack .cl-go');await W(600);await shot(pg,'r1_wsetup_'+w);
+  await pg.locator('#cutStack .ch-go').first().click();await W(600);await shot(pg,'r1_wsetup_'+w);
   await pg.click('.wr-go');await W(800);await shot(pg,'r1_war_'+w);
   await pg.clock.runFor(51*60000);await W(300);await shot(pg,'r1_warbrk_'+w);
   console.log(w,'phase after 51m',await pg.evaluate("JSON.stringify((()=>{const w=window.__sbWar.get();return {ph:w.phase,p:!!w.pausedAt}})())"));

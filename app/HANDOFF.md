@@ -42,3 +42,5 @@
 - [unpublished] Round 5 buckets (module6.js, r18), Projects opens on bucket grid. Source in app/live/.
 
 - [unpublished] Round 2 (checklists, 1-of-3 cards, 3+n more, Start 5 min, Undo task diet, old project cards removed), module7.js, r19. Source in app/live/.
+
+- [unpublished] Round 2B chunk cards on Today (module7.js, slot field, r20). Hold-to-drag reorder on Today removed; reorder to return via quick menu in round 3.

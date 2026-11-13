@@ -9,7 +9,7 @@ run(async b=>{const pg=await openp(b,390);const W=ms=>pg.waitForTimeout(ms);cons
   await pg.click('.pop-card:has-text("Time")');await pg.clock.runFor(500);await W(700);
   const hero=await pg.evaluate("document.querySelector('#entHero .eh-big')?.innerText.replace(/\\s+/g,' ')+' | '+document.querySelector('#entHero .eh-pct')?.innerText.replace(/\\s+/g,' ')");
   console.log('day bar:',bar,'| Time:',hero);
-  ok('Today bar and Time use the same total',hero.includes((bar||'').split(' pomodoros')[0]),'');
+  ok('Today bar and Time use the same total',hero.includes((bar||'').split(' h')[0]),'');
   ok('Time yardstick is 8 pomodoros',/of 8 pomodoros/.test(hero),hero);
   await pg.click('.v3-dnav .v3-ar >> nth=0');await pg.clock.runFor(300);await W(400);
   await esc();

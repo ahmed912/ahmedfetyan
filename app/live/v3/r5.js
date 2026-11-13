@@ -10,7 +10,7 @@ run(async b=>{for(const w of [390,1300]){const pg=await openp(b,w);const W=ms=>p
   const bar=await pg.evaluate("document.querySelector('.dbar-focus .num')?.textContent");
   await pg.click('.pop-card:has-text("Time")');await pg.clock.runFor(500);await W(700);
   const hero=await pg.evaluate("document.querySelector('#entHero .eh-pct')?.innerText.replace(/\\s+/g,' ')");
-  console.log('bar:',bar,'| Time:',hero);ok('Today and Time show the same target',/of 7\.8 pomodoros/.test(bar||'')&&/of 7\.8 pomodoros/.test(hero||''));
+  console.log('bar:',bar,'| Time:',hero);ok('Today and Time show the same target',/of 7\.8 h/.test(bar||'')&&/of 7\.8 pomodoros/.test(hero||''));
   await pg.click('#entHero .eh-pct .v3-edtarget');await pg.clock.runFor(400);await W(500);ok('target editable from Time too',await pg.evaluate("document.querySelector('.ps-sheet .ps-sh-head h2')?.textContent==='Day target'"));await esc();await esc();
   await pg.click('#todayBtn').catch(()=>{});await pg.clock.runFor(300);
   // pop-card text has room on the right
