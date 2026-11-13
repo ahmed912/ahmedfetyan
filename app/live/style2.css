@@ -286,7 +286,7 @@ body section[aria-labelledby="entH"] #entList{border:0}
 .page[data-page="projects"]{max-width:1320px}
 .page[data-page="projects"]>.panel{display:none}
 .bucket-sec{margin-bottom:16px;width:100%;flex:0 0 auto;box-sizing:border-box;min-width:0}
-.bk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.bk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;align-items:start}
 .bk-card{--bk:var(--accent);background:var(--surface);color:var(--ink);border-radius:18px;padding:14px 16px 12px;box-shadow:var(--sh,0 1px 2px rgba(0,0,0,.06));border-top:4px solid var(--bk);display:flex;flex-direction:column;gap:8px;min-width:0}
 .bk-card.none{--bk:var(--line)}
 .bk-card.paused{opacity:.72}
