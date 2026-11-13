@@ -1,6 +1,13 @@
 # THE THREE PILLARS (above every other rule)
 Procrastination, fear of overwhelm, flexibility. Every feature, every tool, every decision, every word exists for these. Gate for every round and every change: write one line "serves pillar: X because Y". If it serves none, or works against one, do not build it.
 
+# MOTTO
+**A low-dopamine, easily distracted mind that wants discipline.** The app builds discipline for exactly this mind, and the three pillars are how.
+- Do not rely on motivation, novelty or dopamine spikes: no loud rewards, confetti, noisy streaks or punishing counters. Rewards are quiet and honest (a round done, a clear "done" state, calm progress).
+- Reduce friction to start and remove distraction: one thing in sight, tiny first step, cues and routines (War is the ritual), few choices, silent defaults.
+- Discipline = repeatable small actions, not intensity: protect consistency, make recovery after a bad day free (flexibility), never shame.
+- Procrastination = tiny start and clear cue; overwhelm = hide the mountain; flexibility = nothing locked so a missed day never breaks the system.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
