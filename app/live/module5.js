@@ -1,7 +1,8 @@
 /* ===== 12 Nov replan: leaf counting, parent cards, pomodoros, estimates ===== */
 let _pidC=null;
 function parentIds(){if(!_pidC){const s=new Set();for(const t of Object.values(state.tasks||{}))if(t&&t.parent&&!t.cut&&!t.archived)s.add(t.parent);_pidC=s;Promise.resolve().then(()=>{_pidC=null;});}return _pidC;}
-function isLeaf(t){return !!t&&!parentIds().has(t.id);}
+function isLeaf(t){return !!t&&!t.bucket&&!parentIds().has(t.id);}
+function isBk(id){const t=state.tasks&&state.tasks[id];return !!(t&&t.bucket);}
 function isParentId(id){return parentIds().has(id);}
 function leafTasks(){return Object.entries(state.tasks||{}).map(([id,t])=>({id,...t})).filter(isLeaf);}
 function kidsOf(id){return Object.entries(state.tasks||{}).map(([i,t])=>({id:i,...t})).filter(t=>t.parent===id&&!t.cut&&!t.archived).sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.order||0)-(b.order||0));}
@@ -31,14 +32,14 @@ function slotRank(cat){return cat==="portfolio"||cat==="client"?0:cat==="learnin
 function isWorkEntry(x){if(!x||x.kind==="event"||x.kind==="break")return false;let c=x.cat;if(!c&&typeof x.ref==="string"&&x.ref.startsWith("tasks:")){const t=state.tasks[x.ref.slice(6)];c=t&&t.cat;}return c==="portfolio"||c==="client";}
 function v3workMin(d){const it=entriesOn(d).filter(x=>!isEstimate(x)).concat(liveItems(d)).filter(isWorkEntry);return Math.max(0,unionMin(it));}
 function cardsOn(d){const groups=new Map();
-  tasksOn(d).forEach(l=>{const p=l.parent&&state.tasks[l.parent]&&!state.tasks[l.parent].cut&&!state.tasks[l.parent].archived?l.parent:null,key=p||l.id;
+  tasksOn(d).forEach(l=>{const p=l.parent&&state.tasks[l.parent]&&!state.tasks[l.parent].bucket&&!state.tasks[l.parent].cut&&!state.tasks[l.parent].archived?l.parent:null,key=p||l.id;
     if(!groups.has(key))groups.set(key,{key,p,steps:[]});groups.get(key).steps.push(l);});
   return [...groups.values()].map(g=>{if(!g.p)return {...g.steps[0],rank:slotRank(g.steps[0].cat)};
     const P=state.tasks[g.p],steps=g.steps.sort((a,b)=>(a.order||0)-(b.order||0));
     return {...P,id:g.p,steps,_card:true,date:d,cat:P.cat||steps[0].cat,mins:steps.reduce((a,s)=>a+estMin(s),0),done:steps.every(s=>s.done),order:Math.min(...steps.map(s=>s.order||0)),rank:slotRank(P.cat||steps[0].cat)};});}
 sortedTasks=function(){return cardsOn(sel).sort((a,b)=>{const pa=a.pos!=null,pb=b.pos!=null;if(pa&&pb)return a.pos-b.pos;if(pa!==pb)return pa?-1:1;return (a.rank-b.rank)||((a.order||0)-(b.order||0));});};
 // a parent card done or moved means: the steps of the shown day
-{const _sd=setDone,_mv=moveTaskTo,sync=pid=>{const P=state.tasks[pid];if(!P)return;const ks=kidsOf(pid),all=ks.length&&ks.every(k=>k.done);if(!!P.done!==!!all){state.tasks[pid]={...P,done:!!all,doneAt:all?sel:null};try{setTask(pid,{done:!!all,doneAt:all?sel:null});}catch(e){}}};
+{const _sd=setDone,_mv=moveTaskTo,sync=pid=>{const P=state.tasks[pid];if(!P||P.bucket)return;const ks=kidsOf(pid),all=ks.length&&ks.every(k=>k.done);if(!!P.done!==!!all){state.tasks[pid]={...P,done:!!all,doneAt:all?sel:null};try{setTask(pid,{done:!!all,doneAt:all?sel:null});}catch(e){}}};
   setDone=function(id,on){const t=state.tasks[id];if(!t)return;if(isParentId(id)){on=!!on;kidsOf(id).filter(k=>k.date===sel&&!!k.done!==on).forEach(k=>_sd(k.id,on));sync(id);render();return;}
     _sd(id,on);if(t.parent)sync(t.parent);};
   moveTaskTo=function(id,d){const t=state.tasks[id];if(!t)return;if(isParentId(id)){const ks=kidsOf(id).filter(k=>k.date===sel&&!k.done);if(!ks.length){toast("Nothing to move");return;}ks.forEach(k=>_mv(k.id,d));return;}_mv(id,d);};}

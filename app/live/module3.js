@@ -5,7 +5,7 @@
   WF_ST.cut="Archived";WF_HOW.cut="you archived it";
   const v3chip=t=>t.cat?el("span",{class:"cat-chip","data-cat":t.cat,text:CAT_NAME[t.cat]||t.cat}):null;
   const v3tk=()=>Object.entries(state.tasks||{}).map(([id,t])=>({id,...t}));
-  const v3real=t=>!t.parent&&!t.cut&&!t.archived&&t.date;
+  const v3real=t=>(!t.parent||isBk(t.parent))&&!t.cut&&!t.archived&&t.date;
   const v3leaf=t=>!t.cut&&!t.archived&&t.date&&isLeaf(t);
   // sprint switcher: any sprint's performance, closed sprints include the tasks the replan archived
   window.spView=null;window.spViewOf=cur=>sprints().find(p=>p.n===window.spView)||cur;
@@ -28,7 +28,7 @@
   function v3recArch(rec,id,on,by){const t=state.tasks[id];if(!t)return;rec.arch.push({id,archived:!!t.archived,cut:!!t.cut,by:t.archivedBy||null});
     const patch=on?{archived:true,cut:true,archivedBy:by||null}:{archived:false,cut:false,archivedBy:null};state.tasks[id]={...t,...patch};setTask(id,patch);if(t.parent)rec.parents[t.parent]=rec.parents[t.parent]||null;}
   // keep each touched parent's date, span and minutes in step with its live steps
-  function v3syncParents(rec){Object.keys(rec.parents).forEach(pid=>{const P=state.tasks[pid];if(!P||P.archived)return;
+  function v3syncParents(rec){Object.keys(rec.parents).forEach(pid=>{const P=state.tasks[pid];if(!P||P.archived||P.bucket)return;
     const ks=Object.entries(state.tasks).map(([i,x])=>({id:i,...x})).filter(x=>x.parent===pid&&!x.archived&&!x.cut&&x.date);if(!ks.length)return;
     const dates=ks.map(x=>x.date).sort(),first=dates[0],last=dates[dates.length-1],days=Math.max(1,Math.round((new Date(last+"T12:00")-new Date(first+"T12:00"))/864e5)+1),mins=ks.reduce((a,x)=>a+estMin(x),0);
     if(!rec.parents[pid])rec.parents[pid]={date:P.date,days:P.days,mins:P.mins};
@@ -103,8 +103,9 @@
         el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),(i=>{i.onchange=()=>{const n=Math.max(1,Math.min(14,+i.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);i.value=String(t.days||1);return;}patchTask(id,{days:n});};return i;})(el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(t.days||1),"aria-label":"Days it spans"}))),
         el("label",{class:"field"},el("span",{class:"label",text:"Minutes"}),(i=>{i.onchange=()=>patchTask(id,{mins:Math.max(0,Math.round(+i.value||0))});return i;})(el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:t.mins?String(t.mins):"","aria-label":"Estimated minutes",placeholder:"min"})))),
       el("div",{class:"field"},el("span",{class:"label",text:"Category"}),v3catChips(t.cat,c=>{patchTask(id,{cat:c});setTimeout(re,200);})),
-      t.parent&&state.tasks[t.parent]?el("div",{class:"v3-row"},el("span",{class:"hint",text:"Part of: "+state.tasks[t.parent].title}),el("button",{type:"button",class:"mini",onclick:()=>{psClose(true);v3taskSheet(t.parent);}},"Open"),el("button",{type:"button",class:"mini",onclick:()=>{patchTask(id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach")):
+      t.parent&&state.tasks[t.parent]&&!state.tasks[t.parent].bucket?el("div",{class:"v3-row"},el("span",{class:"hint",text:"Part of: "+state.tasks[t.parent].title}),el("button",{type:"button",class:"mini",onclick:()=>{psClose(true);v3taskSheet(t.parent);}},"Open"),el("button",{type:"button",class:"mini",onclick:()=>{patchTask(id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach")):
         el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3parentPick([id]);}},"Make it a subtask of..."),
+      (!t.parent||isBk(t.parent))?bkPicker(id,re):null,
       el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down"),
         el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive"))):null;
     const estM=subs.length?subs.reduce((q,k)=>q+estMin(k),0):estMin(t);
@@ -126,7 +127,7 @@
   // ---- the ⋯ menu on every waterfall task: reschedule, change length, move, archive ----
   function v3taskMenu(id){const t=state.tasks[id];if(!t)return;psOpen("More",re=>{const sp=v3sprintOf(t);
     return [el("p",{class:"ps-sh-sum",text:t.title}),
-      el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3resched(id);}},"Reschedule"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3taskSheet(id);}},"Edit"),
+      el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3resched(id);}},"Reschedule"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3taskSheet(id);}},"Edit"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkMoveSheet(id);}},"Move to bucket"),
             el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down")),
       t.archived?el("button",{type:"button",class:"btn",onclick:()=>{v3archive(id,false);psClose(true);}},"Restore"):el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive")];});}
   function v3resched(id){psOpen("Reschedule",re=>{const t=state.tasks[id],sp=v3sprintOf(t),today=iso(new Date());let nd=t.date;
@@ -144,14 +145,14 @@
   renderWaterfall=function(){const box=document.getElementById("wfBody");if(!box)return;const pg=box.closest(".page");if(pg&&pg.hidden)return;
     const today=iso(new Date()),cur=sprintFor(sel>today?today:sel);let sp=sprints().find(p=>p.n===(wfSprint||cur.n))||cur;
     const week=wfView==="week",days=[];if(week){const w0=wfWk||wfSat(today);for(let i=0;i<7;i++)days.push(addDays(w0,i));sp=v3spOf(days[0])||sp;}else for(let d=sp.start;d<=sp.end;d=addDays(d,1))days.push(d);
-    const all=v3tk().filter(t=>!t.parent&&t.date>=days[0]&&t.date<=days[days.length-1]);
+    const all=v3tk().filter(t=>(!t.parent||isBk(t.parent))&&t.date>=days[0]&&t.date<=days[days.length-1]);
     const counts={};all.forEach(t=>{const s=taskStatus(t,today);counts[s]=(counts[s]||0)+1;});
-    const legacy=t=>t.archived&&(t.replacedBy||t.parkReason),ts=all.filter(t=>wfCut||!t.archived||legacy(t)).sort(wfGroup==="cat"?(a,b)=>(CAT_NAME[a.cat]||"").localeCompare(CAT_NAME[b.cat]||"")||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):(a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
+    const legacy=t=>t.archived&&(t.replacedBy||t.parkReason),ts=all.filter(t=>wfCut||!t.archived||legacy(t)).sort(wfGroup==="cat"?(a,b)=>(CAT_NAME[a.cat]||"").localeCompare(CAT_NAME[b.cat]||"")||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):wfGroup==="bucket"?(a,b)=>bkName(a.id).localeCompare(bkName(b.id))||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):(a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
     const ctrls=el("div",{class:"wf-ctrls"},
       el("div",{class:"seg",role:"group","aria-label":"Sprint"},...sprints().map(p=>el("button",{type:"button","aria-pressed":String(p.n===sp.n),text:"Sprint "+p.n,title:p.name,onclick:()=>{wfSprint=p.n;wfView="sprint";render();}}))),
       el("div",{class:"seg",role:"group","aria-label":"View"},el("button",{type:"button",class:"wf-v-sprint","aria-pressed":String(!week),text:"Sprint",onclick:()=>{wfView="sprint";render();}}),el("button",{type:"button",class:"wf-v-week","aria-pressed":String(week),text:"Week",onclick:()=>{wfView="week";if(!wfWk)wfWk=wfSat(today);render();}})),
       week?el("div",{class:"seg wf-wk",role:"group","aria-label":"Week"},el("button",{type:"button",class:"wf-prev","aria-label":"Previous week",text:"Prev",onclick:()=>{wfWk=addDays(days[0],-7);render();}}),el("span",{class:"hint wf-wk-l",text:fmt(days[0],{day:"numeric",month:"short"})+" to "+fmt(days[6],{day:"numeric",month:"short"})}),el("button",{type:"button",class:"wf-next","aria-label":"Next week",text:"Next",onclick:()=>{wfWk=addDays(days[0],7);render();}}),el("button",{type:"button",class:"wf-this",text:"This week",onclick:()=>{wfWk=wfSat(today);render();}})):null,
-      el("div",{class:"seg",role:"group","aria-label":"Group tasks"},el("button",{type:"button","aria-pressed":String(wfGroup==="day"),text:"By day",onclick:()=>{wfGroup="day";render();}}),el("button",{type:"button","aria-pressed":String(wfGroup==="cat"),text:"By category",onclick:()=>{wfGroup="cat";render();}})),
+      el("div",{class:"seg",role:"group","aria-label":"Group tasks"},el("button",{type:"button","aria-pressed":String(wfGroup==="day"),text:"By day",onclick:()=>{wfGroup="day";render();}}),el("button",{type:"button","aria-pressed":String(wfGroup==="cat"),text:"By category",onclick:()=>{wfGroup="cat";render();}}),el("button",{type:"button","aria-pressed":String(wfGroup==="bucket"),text:"By bucket",onclick:()=>{wfGroup="bucket";render();}})),
       el("button",{type:"button",class:"mini","aria-pressed":String(wfCut),text:wfCut?"Hide archived":"Show archived",onclick:()=>{wfCut=!wfCut;render();}}),
       el("button",{type:"button",class:"mini",onclick:()=>v3groupSheet()},"Group tasks"));
     const live=all.filter(t=>!t.archived||legacy(t)),done=live.filter(t=>t.done).length;
@@ -160,7 +161,7 @@
     grid.append(el("div",{class:"wf-h wf-lbl",style:"grid-row:1;grid-column:1",text:"Task"}),...days.map((d,i)=>el("div",{class:"wf-h"+(d===today?" today":"")+(isFriday(d)?" fri":""),style:"grid-row:1;grid-column:"+(i+2),title:fmt(d)},el("span",{text:fmt(d,{weekday:"short"}).slice(0,2)}),el("b",{class:"num",text:String(parse(d).getDate())}))));
     if(!ts.length){r++;grid.append(el("div",{class:"wf-empty",style:"grid-row:"+r,text:"No tasks in this sprint yet."}));}
     let last=null;
-    ts.forEach(t=>{const st=legacy(t)&&t.done?"done":taskStatus(t,today),g=wfGroup==="cat"?(CAT_NAME[t.cat]||"Other"):fmt(t.date,{weekday:"long",day:"numeric",month:"short"});
+    ts.forEach(t=>{const st=legacy(t)&&t.done?"done":taskStatus(t,today),g=wfGroup==="cat"?(CAT_NAME[t.cat]||"Other"):wfGroup==="bucket"?bkName(t.id):fmt(t.date,{weekday:"long",day:"numeric",month:"short"});
       if(g!==last){r++;grid.append(el("div",{class:"wf-grp",style:"grid-row:"+r,text:g}));last=g;}r++;
       const a=days.indexOf(t.date);let b=a;
       if(st==="done"&&t.doneAt&&t.doneAt>t.date)b=Math.max(a,days.indexOf(t.doneAt>sp.end?sp.end:t.doneAt));

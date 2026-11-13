@@ -1151,12 +1151,13 @@
   // ===== 9 Nov: THE CUT. Keep only what helps execute today, train, and not get surprised by money. Data is untouched. =====
   (function cut1(){
     document.body.classList.add("cut1");
-    const KEEP=["today","gym","finance","progress","settings","sounds"];
+    const KEEP=["today","projects","gym","finance","progress","settings","sounds"];
     ICO.gym=XI.mgym;ICO.money=XI.mmoney;
     ICO.cset='<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>';
     XI.cset=ICO.cset;
     HUBS.splice(0,HUBS.length,
       {id:"today",name:"Today",ico:"today",pages:[["today","Today"]]},
+      {id:"projects",name:"Projects",ico:"more",pages:[["projects","Projects"]]},
       {id:"gym",name:"Gym",ico:"gym",pages:[["gym","Gym"]]},
       {id:"money",name:"Money",ico:"money",pages:[["finance","Money"]]},
       {id:"review",name:"Review",ico:"review",pages:[["progress","Review"]]},
@@ -1301,7 +1302,7 @@
     return leafTasks().filter(t=>warOpenT(t)&&t.date<=end&&
       (tg.k==="parent"?t.parent===tg.v:tg.k==="cat"?t.cat===tg.v:String(t.title||"").toLowerCase().includes(String(tg.v).toLowerCase()))).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.order||0)-(b.order||0));}
   function warTargets(){const out=[];
-    const kids={};leafTasks().filter(t=>warOpenT(t)&&t.parent).forEach(t=>{(kids[t.parent]=kids[t.parent]||[]).push(t);});
+    const kids={};leafTasks().filter(t=>warOpenT(t)&&t.parent&&!isBk(t.parent)).forEach(t=>{(kids[t.parent]=kids[t.parent]||[]).push(t);});
     const end=warHorizon();Object.keys(kids).forEach(pid=>{const P=state.tasks[pid];if(!P||P.cut||P.archived)return;const L=kids[pid].filter(t=>t.date<=end);if(!L.length)return;
       out.push({k:"parent",v:pid,label:P.title||"Task",n:L.length,sub:L.length+" step"+(L.length>1?"s":"")+", "+(aboutH(L.reduce((a,x)=>a+estMin(x),0))||"no estimate"),first:L.reduce((a,x)=>x.date<a?x.date:a,"9999"),ord:P.order||0});});
     out.sort((a,b)=>a.first.localeCompare(b.first)||a.ord-b.ord);
