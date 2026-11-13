@@ -6,5 +6,6 @@
       "Bash(*python3 upload.py*)",
       "mcp__Netlify__netlify-deploy-services-updater"
     ]
-  }
+  },
+  "autoContinueAtUsageLimit": true
 }
