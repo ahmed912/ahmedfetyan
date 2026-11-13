@@ -56,6 +56,7 @@
   {const oa=store.add;store.add=async function(col,body){const r=await oa.apply(this,arguments);if(!undoing&&r&&r.id&&__shadow[col]){const now=Date.now();if(!ugrp||now-ugrp.t>250){ugrp={t:now,items:{}};UNDO.push(ugrp);}ugrp.items[col+"/"+r.id]=null;ugrp.t=now;showUndo();}return r;};}
   async function doUndo(){const g=UNDO.pop();ugrp=null;hideUndo();if(!g){toast("Nothing to undo");return;}undoing=true;
     try{for(const [path,prev] of Object.entries(g.items)){const i=path.indexOf("/"),col=path.slice(0,i),id=path.slice(i+1);
+      try{window.__sbSafeApi&&window.__sbSafeApi.clearRecent(path);}catch(e){}
       if(col==="logs"){clearTimeout(pending[id]);dirty.delete(id);}
       if(prev===null){if(state[col]){const c={...state[col]};delete c[id];state[col]=c;}await store.del(path);}
       else{if(state[col])state[col]={...state[col],[id]:prev};await store.set(path,prev);}}}

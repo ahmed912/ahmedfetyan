@@ -69,7 +69,7 @@ function bkRow(t,first){const li=el("li",{class:"bk-row"+(t.done?" done":""),"da
   const tt=el("button",{type:"button",class:"bk-t",text:t.title,onclick:()=>v3taskSheet(t.id)});
   const dc=el("button",{type:"button",class:"bk-d"+(t.date?"":" none"),"aria-label":(t.date?"Reschedule from "+bkShort(t.date):"Pick a date")+": "+t.title,text:t.date?bkShort(t.date):"No date",onclick:()=>v3rs(t.id,"task")});
   li.append(cb,tt,dc);
-  if(first&&!t.done)li.classList.add("has-go"),li.append(el("button",{type:"button",class:"mini bk-go","aria-label":"Start now: "+t.title,onclick:()=>v3start(t.id)},"Start for 5 minutes"));
+  if(first&&!t.done)li.classList.add("has-go"),li.append(el("button",{type:"button",class:"mini bk-go","aria-label":"Start now: "+t.title,onclick:()=>v3five(t.id)},"Start for 5 minutes"));
   li.addEventListener("dragstart",e=>{bkDrag=t.id;try{e.dataTransfer.setData("text/plain",t.id);e.dataTransfer.effectAllowed="move";}catch(_){}li.classList.add("drag");document.body.classList.add("bk-dragging");});
   li.addEventListener("dragend",()=>{bkDrag=null;li.classList.remove("drag");document.body.classList.remove("bk-dragging");document.querySelectorAll(".bk-over").forEach(x=>x.classList.remove("bk-over"));});
   if(!t.done){swipeable(li,()=>{setDone(t.id,true);render();},()=>v3rs(t.id,"task"),null,{r:"Mark as done",rb:"Done",direct:true});rsLong(li,()=>v3taskMenu(t.id));}
@@ -96,13 +96,12 @@ function bkCard(b){const none=!b,id=b?b.id:"none",kids=(none?bkLoose():bkKids(b.
   return card;}
 function renderBuckets(){const pg=document.querySelector('.page[data-page="projects"]');if(!pg||pg.hidden)return;
   let sec=document.getElementById("bucketSec");if(!sec){sec=el("section",{id:"bucketSec",class:"bucket-sec","aria-label":"Buckets"});pg.prepend(sec);}
-  pg.classList.toggle("bk-old",bkOld);
   const act=bkList().filter(b=>!b.archived).sort((a,b)=>(a.bState==="paused")-(b.bState==="paused")||(a.bStart?0:1)-(b.bStart?0:1)||String(a.bStart||"").localeCompare(String(b.bStart||""))||String(a.title).localeCompare(String(b.title))),arch=bkList().filter(b=>b.archived).length;
   const nb=el("button",{type:"button",class:"bk-new",onclick:()=>bkForm(null)},el("span",{class:"bk-plus","aria-hidden":"true",text:"+"}),el("span",{text:"New bucket"}));
   const loose=bkLoose().length;
-  rc(sec,el("div",{class:"bk-grid"},nb,...act.map(bkCard),loose?bkCard(null):null),
-    el("div",{class:"bk-foot"},arch?el("button",{type:"button",class:"hint bk-link",onclick:bkArchSheet},"Archived buckets ("+arch+")"):null,
-      el("button",{type:"button",class:"hint bk-link bk-oldbtn",onclick:()=>{bkOld=!bkOld;renderBuckets();}},bkOld?"Hide old project cards":"Show old project cards")));
+  const openAll=act.flatMap(b=>bkKids(b.id)).filter(k=>!k.done).concat(bkLoose().filter(k=>!k.done));
+  rc(sec,el("p",{class:"hint ck-count",text:act.length+" project"+(act.length===1?"":"s")+", "+openAll.length+" open task"+(openAll.length===1?"":"s")}),el("div",{class:"bk-grid"},nb,...act.map(bkCard),loose?bkCard(null):null),
+    el("div",{class:"bk-foot"},arch?el("button",{type:"button",class:"hint bk-link",onclick:bkArchSheet},"Archived buckets ("+arch+")"):null));
   try{if(!localStorage.getItem("sb-bk-hint")){localStorage.setItem("sb-bk-hint","1");toast("Tip: swipe a task right for done, left to reschedule. Hold for more, drag to another bucket.");}}catch(e){}}
 {const _rb=render;render=function(){_rb();try{renderBuckets();}catch(e){console.warn(e);}};}
 {const _sb=setPage;setPage=function(p,...a){const r=_sb(p,...a);try{renderBuckets();}catch(e){}return r;};}

@@ -6,7 +6,7 @@
     queueSave=function(s,ms){dirty.add(s);clearTimeout(pending[s]);pending[s]=setTimeout(()=>saveLog(s),Math.min(ms,60));};
   (function(){
     if(!window.claude||!window.__sb||window.__sbSafe)return;window.__sbSafe=true;
-    const SAFE=new Set(["logs","entries","projects","learning","inquiries","sprints","habits","sleep","salah","listen","notes","design","guard","reminders","fin","finlog","buy","acct"]);
+    const SAFE=new Set(["logs","entries","projects","learning","inquiries","sprints","habits","sleep","salah","listen","notes","design","guard","reminders","fin","finlog","buy","acct","diet","plans"]);
     const clone=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x));
     const isO=x=>x!==null&&typeof x==="object"&&!Array.isArray(x);
     const eq=(a,b)=>{if(a==null&&b==null)return true;if(a===b)return true;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((v,i)=>eq(v,b[i]));
@@ -66,5 +66,5 @@
       if(t&&lastMax&&t!==lastMax&&snapCount===lastCount)window.dispatchEvent(new Event("online"));lastMax=t||lastMax;lastCount=snapCount;}catch(e){}},5000);
     // coming back to the app: fetch the latest from the server
     let hiddenAt=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hiddenAt=Date.now();else if(hiddenAt&&Date.now()-hiddenAt>15000){hiddenAt=0;try{window.dispatchEvent(new Event("online"));}catch(e){}}});
-    window.__sbSafeApi={applyOps,diffObj,eq};
+    window.__sbSafeApi={applyOps,diffObj,eq,clearRecent:p=>{delete recent[p];}};
   })();
