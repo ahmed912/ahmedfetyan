@@ -1,0 +1,11 @@
+const {openp,shot,run}=require('./h.js');
+run(async b=>{const pg=await openp(b,1300,{h:900});const W=ms=>pg.waitForTimeout(ms);
+  const nav=async t=>{await pg.locator('.navlinks button, .topnav button').filter({hasText:t}).first().click();await pg.clock.runFor(500);await W(500);};
+  const dump=async(name,sel)=>console.log(name,await pg.evaluate(`(()=>{const p=document.querySelector('${sel}');if(!p)return 'none';const cs=getComputedStyle(p);const d=(e,dep)=>[...e.children].filter(c=>c.getBoundingClientRect().width>0).slice(0,12).map(c=>c.tagName.toLowerCase()+(c.id?'#'+c.id:'')+'.'+String(c.className).split(' ').slice(0,3).join('.')+'['+Math.round(c.getBoundingClientRect().width)+']').join(' | ');return 'display='+cs.display+' w='+Math.round(p.getBoundingClientRect().width)+' :: '+d(p)})()`));
+  await dump('today page','#workView .page[data-page=today]');await dump('today .grid','#workView .page[data-page=today] .grid');
+  await nav('Review');await dump('review page','.page[data-page=progress]');
+  await nav('Money');await dump('money page','.page[data-page=finance]');await dump('money body','.page[data-page=finance] > *');
+  await nav('Gym');await dump('gym page','.page[data-page=gym]');
+  console.log('gym list container:',await pg.evaluate("(()=>{const p=document.querySelector('.page[data-page=gym]');const cards=[...p.querySelectorAll('.g-card')];return cards.length+' cards; parent='+(cards[0]?cards[0].parentElement.tagName+'.'+cards[0].parentElement.className+' #'+cards[0].parentElement.id:'none')})()"));
+  console.log('wrap width:',await pg.evaluate("(()=>{const w=document.querySelector('.wrap');return w?Math.round(w.getBoundingClientRect().width)+' max='+getComputedStyle(w).maxWidth:'none'})()"));
+});

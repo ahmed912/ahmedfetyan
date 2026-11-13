@@ -30,5 +30,6 @@
 ## STANDING ORDER 13 Nov (user asleep)
 - Publish every finished round when tests pass, no asking. Data changes (task diet, renames, sprint re-cut to 14 days = 10 + 4 buffer) are approved too, BUT: take a Supabase backup of the docs first, keep a one-tap rollback, and keep everything editable in the app. Order: reschedule/waterfall edit (builder a2218142c36c5863b), then PLAN_LOGIC.md rounds (plan/PLAN_LOGIC.md), task diet first.
 
-## Google Drive store
-- Folder "Claude" in the user Drive, id 1pvL66ss-lAwgBduD9KwOkzsE8op7ebcd (HANDOFF.md, DESIGN_RULES.md, live build 1794497633). Update after each publish.
+## PUBLISHED 13 Nov: 1794596581
+- Live = c4cd227 sources + picker fix + reschedule everywhere + waterfall edit + Week view (no calendar). Source of the live build is app/live/ (data files and secrets excluded). The older app/*.js tree contains the unpublished calendar (module6).
+- All 15 tests passed. Next: time-entry visual simplification (#19), task diet (#14), sprints (#15), buckets (#16), renames (#17), planning rounds (#18).

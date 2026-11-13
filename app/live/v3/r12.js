@@ -1,0 +1,77 @@
+const {openp,shot,run}=require('./h');const fs=require('fs');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined?' '+x:''));if(!c)process.exitCode=1;};
+const MOCK=process.env.MOCKDATA||'/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/plan/mock_final.json';
+process.env.MOCKDATA=MOCK;
+const D=JSON.parse(fs.readFileSync(MOCK,'utf8'));
+const t0=new Date('2026-11-14T07:00:00').getTime(),mk=(id,cat,min,off)=>({id,kind:'manual',ref:'other',cat,label:id,minutes:min,start:t0+off*60000,end:t0+(off+min)*60000,paused:0,sessions:[{start:t0+off*60000,end:t0+(off+min)*60000,minutes:min,paused:0}]});
+D.entries=D.entries||{};D.entries['2026-11-14']={date:'2026-11-14',items:[mk('e1','portfolio',100,0),mk('e2','client',50,100),mk('e3','learning',50,150),mk('e4','outreach',50,200),mk('e5','linkedin',50,250)]};
+const REAL=JSON.stringify(D);
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const pg=await openp(b,w,{when:'2026-11-14T11:00:00',real:REAL});const W=ms=>pg.waitForTimeout(ms);await W(400);
+  const run1=async ms=>{await pg.clock.runFor(ms);await W(150);};
+  const nav=async n=>{await pg.click(w<700?`.m-tab:has-text("${n}")`:`.topnav :text("${n}")`).catch(()=>{});await run1(500);};
+  const tasks=()=>pg.evaluate("JSON.parse(JSON.stringify(window.__data.tasks))");
+  const loads=async()=>{const T=await tasks();const par=new Set(Object.values(T).filter(t=>t.parent&&!t.cut).map(t=>t.parent));const o={};Object.entries(T).forEach(([i,t])=>{if(t.cut||par.has(i)||!['portfolio','client'].includes(t.cat)||!t.date)return;o[t.date]=(o[t.date]||0)+(t.mins||0);});return {o,T,par};};
+  // ---- C: work bar counts only portfolio/client
+  const bar=await pg.evaluate("document.querySelector('.dbar-focus .num')?.innerText.replace(/\\s+/g,' ')");
+  ok('day bar says Work 3 of 8 pomodoros (150 min work, 100 other ignored)',/Work 3 of 8 pomodoros/.test(bar),bar);
+  ok('Fill my day button is on the day bar',(await pg.locator('.dbar-focus .v3-fill').count())===1);
+  const order=await pg.evaluate("[...document.querySelectorAll('#cutStack .cs-card .cat-chip')].map(c=>c.dataset.cat)");console.log('card order',order.join(','));
+  const rk=c=>c==='portfolio'||c==='client'?0:c==='learning'?1:c==='linkedin'?2:3;ok('cards: work, learning, linkedin, rest',order.every((c,i)=>i===0||rk(order[i-1])<=rk(c)),order.join(','));
+  // ---- A: LinkedIn
+  await pg.click('#liCard');await run1(500);
+  ok('calendar days are buttons',(await pg.locator('.li4-day[data-date]').count())===7);
+  await pg.click('.li4-next');await run1(200);const d2=await pg.locator('.li4-day[data-date]').first().getAttribute('data-date');ok('next week shows 21 Nov first',d2==='2026-11-21',d2);
+  await pg.click('.li4-prev');await run1(200);
+  await pg.click('.li4-day[data-date="2026-11-15"]');await run1(500);await shot(pg,'r12_day_'+w);
+  ok('day page shows the plan slot and hook formula',(await pg.locator('.li4-slot').innerText()).includes('Hook formula')&&(await pg.locator('.li4-slot').innerText()).includes('Project lesson'));
+  await pg.fill('.li4-hook','Why most decks lose investors on slide 3');await pg.fill('.li4-body','Line one.\n\nLine two of the post.');
+  ok('character counter',(await pg.locator('.li4-cnt').innerText()).includes('/ 3000'),await pg.locator('.li4-cnt').innerText());
+  await pg.selectOption('.li4-ed select[aria-label=Status]','draft');await run1(1500);
+  let lp=await pg.evaluate("Object.values(window.__data.liposts||{})");ok('written post persisted in liposts (autosave)',lp.length===1&&lp[0].date==='2026-11-15'&&lp[0].body.includes('Line two')&&lp[0].hook.includes('slide 3'),JSON.stringify(lp).slice(0,160));
+  await pg.click('.li4-copy');await run1(300);
+  await pg.click('.li4-add2');await run1(200);ok('add another post gives a second editor',(await pg.locator('.li4-ed').count())===2);
+  await pg.locator('.li4-ed').nth(1).locator('.li4-hook').fill('Second post');await pg.locator('.li4-ed').nth(1).locator('.li4-save').click();await run1(500);
+  lp=await pg.evaluate("Object.values(window.__data.liposts||{})");ok('second post saved',lp.length===2);
+  await pg.click('.li4-dnext');await run1(300);ok('next day arrow',(await pg.locator('.li4-dt').innerText()).includes('16'));
+  await pg.click('.li4-dprev');await run1(300);
+  await pg.click('.ps-sh-x');await run1(700);
+  await pg.click('.li4-tabs button:has-text("Posts")');await run1(300);
+  ok('Posts tab lists the written post',(await pg.locator('.li4-post:has-text("slide 3")').count())===1);
+  await pg.click('.li4-post:has-text("slide 3")');await run1(500);
+  ok('tap on a post opens the same editor, filled',(await pg.inputValue('.li4-hook'))==='Why most decks lose investors on slide 3');
+  await pg.click('.ps-sh-x');await run1(700);await pg.keyboard.press('Escape');await run1(400);
+  // Today linkedin card title opens editor
+  await pg.click('.cs-more').catch(()=>{});await run1(500);const lt=pg.locator('.cs-card:has(.cat-chip[data-cat=linkedin]) .cs-t.li-open').first();
+  if(await lt.count()){await lt.click();await run1(500);ok('linkedin title on Today opens that day editor',(await pg.locator('.li4-ed').count())>=1&&(await pg.locator('.li4-dt').innerText()).includes('14'));await pg.keyboard.press('Escape');await run1(400);}else ok('linkedin card on Today with link',false);
+  await pg.evaluate("document.getElementById('taskView')&&window.closeTaskView&&closeTaskView()").catch(()=>{});await pg.keyboard.press('Escape');await run1(300);
+  // ---- B: archive Javelin from the waterfall
+  const before=await loads();const snap=JSON.stringify(Object.fromEntries(Object.entries(before.T).map(([i,t])=>[i,[t.date,!!t.archived,!!t.cut,t.days,t.mins]])));
+  const todayHas=()=>pg.evaluate("[...document.querySelectorAll('#cutStack .cs-card')].some(c=>/Javelin/i.test(c.innerText))");
+  ok('Javelin is on Today before',await todayHas());
+  await nav('Review');await W(300);
+  await pg.evaluate("[...document.querySelectorAll('.wf-ctrls .seg button')].find(b=>b.textContent==='Sprint 1')?.click()");await run1(300);const mb=pg.locator('.v3-more[aria-label="More for Javelin case study live"]').first();ok('Javelin row in waterfall',(await mb.count())===1);
+  await mb.click();await run1(400);await pg.click('.ps-sheet .btn.danger');await run1(300);await pg.click('.v3-conf .btn:not(.ghost)');await run1(600);
+  const after=await loads();
+  const jk=Object.entries(after.T).filter(([i,t])=>i==='v4-p-javelin'||t.parent==='v4-p-javelin');
+  ok('Javelin parent and all steps archived and cut',jk.length>5&&jk.every(([,t])=>t.archived&&t.cut),jk.length);
+  ok('toast Undo bar is shown',await pg.locator('#v3ut:not([hidden])').count()===1,await pg.locator('#v3ut').innerText());
+  await nav('Today');ok('Javelin gone from Today',!(await todayHas()));
+  // every working day 14..25 refilled
+  const days=[];for(let d=new Date('2026-11-14T12:00');d<=new Date('2026-11-25T12:00');d.setDate(d.getDate()+1))if(d.getDay()!==5)days.push(d.toISOString().slice(0,10));
+  const open=Object.entries(after.T).filter(([i,t])=>!t.cut&&!after.par.has(i)&&['portfolio','client'].includes(t.cat)&&!t.done&&t.date);
+  let bad=[];days.forEach(d=>{const l=after.o[d]||0;if(l>=400)return;const later=open.filter(([,t])=>t.date>d&&(t.mins||0)+l<=425);if(later.length)bad.push(d+':'+l);});
+  console.log('loads',JSON.stringify(days.map(d=>after.o[d]||0)));
+  ok('each working day to 25 Nov reaches 400 portfolio/client minutes while open work exists',bad.length===0,bad.join(' '));
+  ok('no day overshoots by more than 25 min',days.every(d=>(after.o[d]||0)<=425||(before.o[d]||0)>425));
+  const movedPast=Object.entries(after.T).filter(([i,t])=>t.date>'2026-11-25'&&before.T[i]&&before.T[i].date<=t.date&&before.T[i].date!==t.date);ok('nothing moved past the sprint end',movedPast.length===0);
+  const filled=days.filter(d=>(after.o[d]||0)>=375).length;ok('days actually refilled',filled>=4,filled);
+  await shot(pg,'r12_after_'+w);
+  await pg.click('#v3ut .ub-b');await run1(600);
+  const back=await tasks();const snap2=JSON.stringify(Object.fromEntries(Object.entries(back).map(([i,t])=>[i,[t.date,!!t.archived,!!t.cut,t.days,t.mins]])));
+  ok('Undo restores archive flags and dates',snap===snap2);
+  ok('Javelin back on Today',await todayHas());
+  // Fill my day on an unfilled day
+  await pg.click('#cutStack .cs-card:has-text("Javelin") .btn.ghost:has-text("Tomorrow")').catch(()=>{});
+  const er=pg.errs.filter(e=>!/Failed to load resource/.test(e));ok('no page errors',er.length===0,er.join('|').slice(0,300));
+  await pg.context().close();}});
