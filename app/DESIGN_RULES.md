@@ -33,6 +33,13 @@ Missed work means late revenue, and late revenue puts family obligations at risk
 - Plans must be holdable: a realistic 8 to 10 h day with buffer, not a heroic one that breaks by Wednesday. Consistency beats intensity.
 - Other stuff keeps only its protected minimums; it never eats work hours.
 
+# BEAT YOURSELF (user, 13 Nov)
+The ethos is to push hard and work as much as possible to build something. The app serves that, as training does: high standards, structured stretch, protected recovery.
+- Two levels: a baseline (the daily work target, 8 h) that is the standard, and a stretch (up to 10 h or more) that is always one tap away and tracked. Exceeding the target is recorded and celebrated quietly as a personal best, never required, never allowed to hide a missed baseline.
+- The opponent is yesterday's self: show best day, best week and the trend of work hours against his own past, as plain numbers.
+- Pushing hard is sustained by recovery, so recovery is part of the system, not a weakness: sleep minimum, the Friday rest day and buffer days stay protected, and work hours that cost sleep are flagged as facts.
+- Raise the bar gradually and on purpose (the stretch target can be raised in settings); never lower it silently.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
