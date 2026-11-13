@@ -8,6 +8,15 @@ Procrastination, fear of overwhelm, flexibility. Every feature, every tool, ever
 - Discipline = repeatable small actions, not intensity: protect consistency, make recovery after a bad day free (flexibility), never shame.
 - Procrastination = tiny start and clear cue; overwhelm = hide the mountain; flexibility = nothing locked so a missed day never breaks the system.
 
+# FIRM, NOT SOFT (user: "never be light with me")
+Calm is not light. Discipline needs honesty and standards. The pillars reduce friction and overwhelm, they never lower the bar.
+- Keep the intention of the work visible: the work target (portfolio and client work, 8 pomodoros a day), Gate dates, and the weekly goals stay on screen as facts. Never hide them to feel better.
+- Tell the truth in neutral words: plan vs actual, how many tasks carried over, how many days a work block was missed. Facts, no shame, no flattery.
+- Missing is recorded, not erased: rollover keeps a visible history, and the weekly review shows the pattern.
+- Work that serves the intention (portfolio, client, learning) is protected first when time is short; other stuff yields first.
+- Repeated postponing (3+) requires a decision: do it now, shrink it, split it or drop it. Postponing forever is not an option.
+- Firm tone, short and direct. No cheerleading, no soft fluff.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
