@@ -180,6 +180,7 @@
     const kids=[...ul.children];let i=0;
     items.forEach(x=>{const li=kids[i];if(!li)return;if(x.kind==="event"||x.live){i++;return;}i+=(sessFor===x.id?2:1);if(!li.classList.contains("ent"))return;li.dataset.eid=x.id;
       const acts=li.querySelector(".ent-acts");if(acts&&!acts.querySelector(".v3-edit"))acts.prepend(el("button",{type:"button",class:"mini v3-edit",onclick:()=>entryEdit(sel,x.id)},"Edit"));
+      {const sb=[...li.querySelectorAll(".sess-btn[data-s]")];if(sb.length>1){const f=sb[0];f.textContent=hhmm(sb[0].dataset.s)+" to "+hhmm(sb[sb.length-1].dataset.e);sb.slice(1).forEach(b=>b.remove());}}
       li.classList.add("v3-ent");li.addEventListener("click",e=>{if(e.target.closest("button,input"))return;entryEdit(sel,x.id);});});
     const add=document.getElementById("entAdd");if(add){add.hidden=true;let b=document.getElementById("v3AddTime");if(!b){b=el("button",{type:"button",id:"v3AddTime",class:"btn ghost",onclick:manualEntry},"Add time by hand");add.after(b);}}
     const hero=document.getElementById("entHero");if(hero)hero.classList.add("v3-line");}catch(e){console.warn(e);}};}

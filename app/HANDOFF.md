@@ -36,3 +36,5 @@
 
 ## STANDING ORDER 13 Nov (late): HOLD PUBLISHING
 - User: never publish a plan until all tasks are done. Do NOT publish new versions until every task on the list (#14 to #19 and the planning-first rounds) is finished. Keep building, testing, committing; then ONE publish after a full regression pass. Live stays 1794596581 until then. Data changes still need backup and rollback and happen at the end with the publish.
+
+- [unpublished] Time entries simplified (name, duration, time only), r17. Source in app/live/.

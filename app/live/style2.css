@@ -271,3 +271,14 @@ body.cut1.m1 #popCards .pop-card .fc-t{font-size:15px!important}
 .eh-seg.oth,.eh-sw.oth{background:var(--line)}
 .wf-grid.wf-week{grid-template-columns:minmax(140px,38vw) repeat(7,minmax(72px,1fr))!important;min-width:calc(140px + 7 * 72px)!important}
 .wf-wk{display:flex;align-items:center;gap:6px}.wf-wk-l{white-space:nowrap}
+
+/* Time entries: one calm neutral row. Name, duration, time. No colour, bars, dots, dividers or extra text */
+body.cut1 section[aria-labelledby="entH"] li.ent.v3-ent{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:"n d" "t t";gap:2px 12px!important;align-items:baseline;padding:12px 4px!important;border:0!important;background:none!important;box-shadow:none!important}
+body section[aria-labelledby="entH"] li.ent.v3-ent>.ent-dot,body section[aria-labelledby="entH"] li.ent.v3-ent>.ent-acts,body section[aria-labelledby="entH"] li.ent.v3-ent .ent-what .hint{display:none!important}
+body section[aria-labelledby="entH"] li.ent.v3-ent>.ent-what{grid-area:n;display:block}
+body section[aria-labelledby="entH"] li.ent.v3-ent .ent-label{color:var(--ink);font-size:16px;overflow-wrap:anywhere}
+body section[aria-labelledby="entH"] li.ent.v3-ent>.ent-dur{grid-area:d;grid-column:auto;color:var(--ink);font-size:15px;white-space:nowrap}
+body.cut1 section[aria-labelledby="entH"] li.ent.v3-ent>.ent-when{grid-area:t!important;grid-column:auto!important;order:0!important;display:block;min-width:0;font-size:13px;color:var(--muted)}
+body section[aria-labelledby="entH"] li.ent.v3-ent .sess-btn{display:inline;width:auto;height:auto;min-width:0;font-size:13px!important;color:var(--muted);background:none!important;text-decoration:none;border:0;padding:0}
+body section[aria-labelledby="entH"] li.ent.v3-ent .sess-btn::before,body section[aria-labelledby="entH"] li.ent.v3-ent .sess-btn::after{display:none!important}
+body section[aria-labelledby="entH"] #entList{border:0}

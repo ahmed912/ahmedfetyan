@@ -1394,7 +1394,7 @@
   const tbPos=t=>{const d=new Date(+t),mm=d.getHours()*60+d.getMinutes();return Math.max(0,Math.min(100,(mm-TB0)/(TB1-TB0)*100));};
   function timeVisual(){const sec=document.querySelector('section[aria-labelledby="entH"]');if(!sec)return;
     sec.querySelectorAll(".sess-btn[data-s]").forEach(b=>{if(b.dataset.vis)return;b.dataset.vis="1";const l=tbPos(b.dataset.s),r=tbPos(b.dataset.e);
-      b.style.setProperty("--l",l+"%");b.style.setProperty("--w",Math.max(1.2,r-l)+"%");b.classList.add("tb-sess");});
+      b.style.setProperty("--l",l+"%");b.style.setProperty("--w",Math.max(1.2,r-l)+"%");});
     let top=sec.querySelector(".tb-day");const ss=[...sec.querySelectorAll(".sess-btn[data-s]")].map(b=>[+b.dataset.s,+b.dataset.e]);
     if(!top){top=el("div",{class:"tb-day","aria-hidden":"true"});const list=sec.querySelector("ul,ol");if(list)list.before(top);else sec.append(top);}
     const now=Date.now(),isToday=sel===iso(new Date());
