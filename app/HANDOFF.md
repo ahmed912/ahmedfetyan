@@ -27,8 +27,5 @@
 ## UPDATE 12 Nov (2)
 - Published 1794487710: calendar phases 0-1 (module6, Day/3 days/Work week/Week/Month/Timeline, events synced) + LinkedIn post counter. Next: calendar phase 2 (drag/resize). Tests: run changed + cal1 only, full suite before publish.
 
-## ROLLBACK 12 Nov
-- User asked to undo the calendar. Deleted version 1794487710 from app_code; live is 1794485584 again. Calendar source (module6/style3, commit e5a2d4a) and post counter stay in the repo, unpublished.
-
-## PUBLISHED 12 Nov: 1794497633
-- Live = c4cd227 sources + custom-task picker fix (module2.js, r15). Calendar (module6, commit e5a2d4a) and post counter NOT live.
+## STANDING ORDER 13 Nov (user asleep)
+- Publish every finished round when tests pass, no asking. Data changes (task diet, renames, sprint re-cut to 14 days = 10 + 4 buffer) are approved too, BUT: take a Supabase backup of the docs first, keep a one-tap rollback, and keep everything editable in the app. Order: reschedule/waterfall edit (builder a2218142c36c5863b), then PLAN_LOGIC.md rounds (plan/PLAN_LOGIC.md), task diet first.
