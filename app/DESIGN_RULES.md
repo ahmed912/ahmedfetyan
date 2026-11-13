@@ -17,10 +17,14 @@ Calm is not light. Discipline needs honesty and standards. The pillars reduce fr
 - Repeated postponing (3+) requires a decision: do it now, shrink it, split it or drop it. Postponing forever is not an option.
 - Firm tone, short and direct. No cheerleading, no soft fluff.
 
+# THE SEASON (user, 13 Nov)
+This is a hard, deliberate season of 3 to 4 years, especially this year: heavy work plus daily learning, accepted as suffering that is not permanent. The app holds the line during the season and protects recovery so it can be sustained.
+
 # FRAMING: SELF AS A COMPANY (user definition, 13 Nov)
 Ahmed runs himself as a company.
-- **Work = design** (client design work and portfolio design). It is a daily employee-style commitment: 8 to 10 hours a day, every working day. The daily work target is a setting (8 to 10 h), shown as a plain fact. Only design work counts toward it.
-- **Other stuff = everything that is not work**: branding, marketing (LinkedIn), R&D and learning, health, money, admin, home. It is vital and generates revenue and growth, but it is outside the work clock: it never counts toward the work hours and never replaces them.
+- **Work = design**: client design work AND portfolio projects (his personal design projects, e.g. the HASM showcase, which is a portfolio project and never a brand item). It is a daily employee-style commitment: 8 to 10 hours a day, every working day. The daily work target is a setting (8 to 10 h), shown as a plain fact. Only design work counts toward it.
+- **Learning is a daily protected block**, not optional and not counted as work hours. A work-only day is not a complete day: every day has the work block plus a learning block (default minimum in settings). It is hard, and it is a season, not permanent: the next 3 to 4 years, especially this year, to build something.
+- **Other stuff = everything else that is not work**: branding, marketing (LinkedIn), R&D, health, money, admin, home. It is vital and generates revenue and growth, but it is outside the work clock: it never counts toward the work hours and never replaces them.
 - Departments = these two groups, each with buckets (projects), weekly targets and a plan vs actual. Weekly planning is the management meeting; Gates are company milestones.
 - Executive tone: short, factual, decision-oriented. Targets, actuals, variances.
 - When time is short: work hours are protected first; other stuff keeps minimums (rest, health), not zero.
