@@ -205,7 +205,7 @@ function rlCfg(){const r=(state.settings&&state.settings.roll)||{};return {auto:
 const rlDay=d=>fmt(d,{weekday:"short"}),rlDl=d=>fmt(d,{weekday:"short",day:"numeric",month:"short"});
 const rlPost=t=>Number(t&&t.post)||0;
 const rlTodayIso=()=>iso(new Date());
-function rlBuffer(d){const sp=v3spOf(d),b=sp&&sp.buffer;return Array.isArray(b)?b.includes(d):!!(b&&typeof b==="object"&&b[d]);}
+function rlBuffer(d){const sp=v3spOf(d);return !!sp&&spBufferSet(sp).has(d);}
 const rlOff=d=>isFriday(d)||rlBuffer(d);
 function rlNeedsDecide(t){return !!t&&!t.done&&rlPost(t)>=rlCfg().decideAt;}
 // a task may carry forward unless its project is paused, done or archived
@@ -324,22 +324,22 @@ function rlDrop(id){const t=state.tasks[id];if(!t)return;const old=rlWrite({[id]
 function rlWaiting(){return leafTasks().filter(t=>rlLive(t)&&t.waiting);}
 function rlSpread(){const today=rlTodayIso(),all=rlWaiting(),dec=all.filter(rlNeedsDecide),ok=all.filter(t=>!rlNeedsDecide(t));
   if(!ok.length){toast(dec.length?"Decide first: "+dec.length+" waiting "+(dec.length===1?"task is":"tasks are")+" postponed too often":"Nothing is waiting");return;}
-  const sim={},res=rlPlace(rlGroups(ok),rlDays(addDays(today,1),60),sim,{}),patches={},by={};
+  const sim={},res=rlPlaceSp(rlGroups(ok),addDays(today,1),60,sim,{}),patches={},by={};
   res.placed.forEach(p=>{const t=state.tasks[p.id];patches[p.id]=rlPlacePatch(p,t);(by[p.g.key]=by[p.g.key]||{g:p.g,days:[]}).days.push(p.date);});
   if(!Object.keys(patches).length){toast("No free block in the next 60 days");return;}
   const old=rlWrite(patches);render();
   const parts=Object.values(by).map(x=>x.g.name+" to "+rlDay(x.days.slice().sort()[0]));
-  v3undoToast("Spread: "+rlList(parts,3)+(res.wait.length?". "+res.wait.length+" still waiting":"")+(dec.length?". "+dec.length+" to decide":""),()=>rlRestore(old));}
+  v3undoToast("Spread: "+rlList(parts,3)+(res.wait.length?". "+res.wait.length+" still waiting":"")+(res.placed.some(p=>p.overflow)?". "+res.placed.filter(p=>p.overflow).length+" to buffer days":"")+(dec.length?". "+dec.length+" to decide":""),()=>rlRestore(old));}
 // move a whole chunk to a day; a full or resting day lands on the next block that fits
 function rlMoveChunk(tasks,d,typed){const today=rlTodayIso(),open=tasks.filter(t=>rlLive(t)),ok=open.filter(t=>!rlNeedsDecide(t)),dec=open.length-ok.length;
   if(!ok.length){toast(open.length?"Decide first: postponed too often":"Nothing to move");return;}
-  const go=()=>{const skip=new Set(ok.map(t=>t.id)),sim={},res=rlPlace(rlGroups(ok),rlDays(d,40),sim,{skip,force:typed?d:null}),patches={};
+  const go=()=>{const skip=new Set(ok.map(t=>t.id)),sim={},res=rlPlaceSp(rlGroups(ok),d,40,sim,{skip,force:typed?d:null}),patches={};
     res.placed.forEach(p=>{const t=state.tasks[p.id],later=p.date>rlBase(t);patches[p.id]=rlPlacePatch(p,t,{post:later?rlPost(t)+1:rlPost(t),decide:later&&rlPost(t)+1>=rlCfg().decideAt?true:null});});
     if(!Object.keys(patches).length){toast("No free block from "+rlDl(d));return;}
     const old=rlWrite(patches);psClose(true);render();
     const first=res.placed.map(p=>p.date).sort()[0],g=rlGroups(ok)[0],nm=rlGroups(ok).length>1?rlTasks(Object.keys(patches).length):g.name+" chunk";
     v3undoToast("Moved "+nm+" to "+rlDl(first)+(first!==d?" ("+rlDay(d)+" is full or resting)":"")+(res.wait.length?". "+res.wait.length+" did not fit":"")+(dec?". "+dec+" to decide":""),()=>rlRestore(old));};
-  if(typed&&rlOff(d)){v3confirm((isFriday(d)?"Friday is your rest day.":"That is a buffer day.")+" Move to "+rlDl(d)+" anyway?","Move",go);return;}
+  if(typed&&isFriday(d)){v3confirm("Friday is your rest day. Move to "+rlDl(d)+" anyway?","Move",go);return;}
   go();}
 function rlFits(tasks,d){const ok=tasks.filter(t=>rlLive(t)&&!rlNeedsDecide(t)),skip=new Set(ok.map(t=>t.id)),r=rlPlace(rlGroups(ok),[d],{},{skip});return r.placed.length===ok.length;}
 function rlMoveSheet(tasks,title){const open=tasks.filter(t=>!t.done);if(!open.length){toast("Nothing to move");return;}
@@ -351,7 +351,7 @@ function rlMoveSheet(tasks,title){const open=tasks.filter(t=>!t.done);if(!open.l
 function rlMissText(t){const r=(t.rolled||[]).slice(-4);return r.length?"Missed "+r.map(rlDay).join(", ")+((t.rolled||[]).length>4?" and "+((t.rolled||[]).length-4)+" more":""):"";}
 function rlWaitSheet(){psOpen("Waiting",re=>{const all=rlWaiting();if(!all.length)return [el("p",{class:"ps-sh-sum",text:"Nothing is waiting."})];
   const groups=rlGroups(all);
-  return [el("p",{class:"hint",text:"Whole chunks wait here when today is full. Spread puts each on the next free day. Friday and buffer days are skipped."}),
+  return [el("p",{class:"hint",text:"Whole chunks wait here when today is full. Spread puts each on the next free day. Friday is skipped; buffer days only take what does not fit the planned days."}),
     el("button",{type:"button",class:"btn rl-spread",onclick:()=>{psClose(true);rlSpread();}},"Spread"),
     ...groups.map(g=>el("section",{class:"rl-grp"},el("div",{class:"rl-gh"},el("b",{text:g.name+" · "+rlTasks(g.tasks.length)}),el("span",{class:"hint",text:dur(g.mins)}),el("button",{type:"button",class:"mini rl-gmove",onclick:()=>{psClose(true);setTimeout(()=>rlMoveSheet(g.tasks,g.name),50);}},"Move")),
       el("ul",{class:"cut-list ce-list"},...g.tasks.map(t=>{const cb=el("input",{type:"checkbox","aria-label":"Done: "+t.title});cb.onchange=()=>{setDone(t.id,cb.checked);setTimeout(re,300);};

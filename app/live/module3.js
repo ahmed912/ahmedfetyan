@@ -39,7 +39,7 @@
   // fill: for each working day, pull the next open portfolio/client steps forward until the day reaches the target
   function v3fill(days,rec){const tgt=v3dayMin(),out={days:[],mins:0,parents:[],steps:0};
     const work=()=>leafTasks().filter(t=>v3isWork(t)&&!t.cut&&!t.archived&&t.date);
-    days.forEach(d=>{if(isFriday(d))return;let load=work().filter(t=>t.date===d).reduce((a,t)=>a+estMin(t),0);if(load>=tgt)return;
+    days.forEach(d=>{if(isFriday(d)||rlBuffer(d))return;let load=work().filter(t=>t.date===d).reduce((a,t)=>a+estMin(t),0);if(load>=tgt)return;
       const cand=work().filter(t=>!t.done&&t.date>d).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.order||0)-(b.order||0));let got=0;
       for(const c of cand){if(load>=tgt)break;const m=estMin(c);if(!(m>0)||load+m>tgt+25)continue;
         const pt=c.parent&&state.tasks[c.parent]?state.tasks[c.parent].title:c.title;if(!out.parents.includes(pt))out.parents.push(pt);
@@ -48,7 +48,7 @@
     return out;}
   function v3fillText(r){const dl=r.days.length===1?v3dl(r.days[0]):r.days.length+" days",ys=r.parents.length<=2?r.parents.join(" and "):r.steps+" steps";return "Filled "+dl+" with "+ys+" ("+r.mins+" min)";}
   function v3daysFrom(d){const sp=sprintFor(d),out=[];for(let x=d;x<=sp.end;x=addDays(x,1))out.push(x);return out;}
-  function v3fillDay(){const d=sel,today=iso(new Date());if(isFriday(d)){toast("Friday is a rest day");return;}if(d<today){toast("Pick today or a later day");return;}
+  function v3fillDay(){const d=sel,today=iso(new Date());if(isFriday(d)){toast("Friday is a rest day");return;}if(rlBuffer(d)){toast("Buffer day: no planned load. Overflow and moved work land here.");return;}if(d<today){toast("Pick today or a later day");return;}
     const rec=v3rec(),r=v3fill([d],rec);v3syncParents(rec);render();
     if(!r.days.length){toast("Nothing to fill. The day is full or no open work is left.");return;}v3undoToast(v3fillText(r),()=>v3recUndo(rec));}
   function v3archive(id,on){const t=state.tasks[id];if(!t)return;
@@ -158,7 +158,7 @@
     const live=all.filter(t=>!t.archived||legacy(t)),done=live.filter(t=>t.done).length;
     const sum=el("div",{class:"wf-sum"},el("span",{class:"wf-pct num",text:(live.length?Math.round(done/live.length*100):0)+"%"}),el("span",{class:"hint",text:done+" of "+live.length+" tasks done · "+sp.name}));
     const grid=el("div",{class:"wf-grid"+(week?" wf-week":""),style:"--n:"+days.length});let r=1;
-    grid.append(el("div",{class:"wf-h wf-lbl",style:"grid-row:1;grid-column:1",text:"Task"}),...days.map((d,i)=>el("div",{class:"wf-h"+(d===today?" today":"")+(isFriday(d)?" fri":""),style:"grid-row:1;grid-column:"+(i+2),title:fmt(d)},el("span",{text:fmt(d,{weekday:"short"}).slice(0,2)}),el("b",{class:"num",text:String(parse(d).getDate())}))));
+    grid.append(el("div",{class:"wf-h wf-lbl",style:"grid-row:1;grid-column:1",text:"Task"}),...days.map((d,i)=>el("div",{class:"wf-h"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:1;grid-column:"+(i+2),title:fmt(d)+(rlBuffer(d)?" · buffer day":"")},el("span",{text:fmt(d,{weekday:"short"}).slice(0,2)}),el("b",{class:"num",text:String(parse(d).getDate())}))));
     if(!ts.length){r++;grid.append(el("div",{class:"wf-empty",style:"grid-row:"+r,text:"No tasks in this sprint yet."}));}
     let last=null;
     ts.forEach(t=>{const st=legacy(t)&&t.done?"done":taskStatus(t,today),g=wfGroup==="cat"?(CAT_NAME[t.cat]||"Other"):wfGroup==="bucket"?bkName(t.id):fmt(t.date,{weekday:"long",day:"numeric",month:"short"});
@@ -171,7 +171,7 @@
       grid.append(el("div",{"data-id":t.id,class:"wf-lbl v3-wfrow st-"+st,style:"grid-row:"+r+";grid-column:1"},
         el("button",{type:"button",class:"wf-task v3-wft","aria-label":t.title+", "+WF_ST[st]+", "+v3dl(t.date)+". Open task.",onclick:()=>v3taskSheet(t.id)},el("span",{class:"wf-t",text:t.title}),v3chip(t),subs.length?el("span",{class:"hint num",text:sd+"/"+subs.length}):null),
         el("button",{type:"button",class:"mini v3-more","aria-label":"More for "+t.title,onclick:()=>v3taskMenu(t.id)},"\u22EF")));
-      days.forEach((d,i)=>grid.append(el("div",{"data-d":d,"data-id":t.id,class:"wf-cell"+(d===today?" today":"")+(isFriday(d)?" fri":""),style:"grid-row:"+r+";grid-column:"+(i+2)})));
+      days.forEach((d,i)=>grid.append(el("div",{"data-d":d,"data-id":t.id,class:"wf-cell"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:"+r+";grid-column:"+(i+2)})));
       grid.append(el("div",{"data-id":t.id,class:"wf-bar st-"+st,style:"grid-row:"+r+";grid-column:"+(a+2)+" / "+(b+3),"aria-hidden":"true",title:WF_ST[st]+(t.moved?" · moved "+t.moved+" time"+(t.moved>1?"s":""):"")+((t.spent||0)>0?" · "+dur(t.spent)+" tracked":"")}));});
     rc(box,ctrls,sum,el("div",{class:"wf-scroll"},grid));};
   // ---- sprint progress: every bar opens its own pop-up ----
@@ -200,7 +200,7 @@
   function v3wireReview(){const keys=["tasks","posts","comments","applications","hours"];document.querySelectorAll("#bars .bar").forEach((b,i)=>{const k=keys[i];if(!k||b.dataset.v3)return;b.dataset.v3=k;b.setAttribute("role","button");b.tabIndex=0;b.style.cursor="pointer";
       b.addEventListener("click",e=>{if(e.target.closest("input,.ie,button"))return;v3sprintSheet(k);});b.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.target.closest("input"))v3sprintSheet(k);});});
     const ph=document.querySelector("#sprintH");if(ph&&!document.getElementById("v3Done")){const hd=ph.closest(".panel-head");if(hd)hd.append(el("button",{type:"button",id:"v3Done",class:"mini",onclick:()=>{v3stTab="done";v3sprintSheet("tasks");}},"Tasks done"));}
-    document.querySelectorAll("#timeline .spr").forEach((c,i)=>{if(c.dataset.v3)return;c.dataset.v3="1";c.setAttribute("role","button");c.tabIndex=0;c.style.cursor="pointer";const p=sprints()[i];if(!p)return;
+    document.querySelectorAll("#timeline .spr").forEach((c,i)=>{if(c.dataset.v3)return;c.dataset.v3="1";c.setAttribute("role","button");c.tabIndex=0;c.style.cursor="pointer";const p=sprints()[i];if(!p)return;c.append(el("span",{class:"d sp-bufl",text:spBufLine(p)}));
       c.addEventListener("click",e=>{e.stopImmediatePropagation();e.preventDefault();v3boardSheet(p.n);},true);c.addEventListener("keydown",e=>{if(e.key==="Enter")v3boardSheet(p.n);});});
     const ih=document.querySelector("#ihH");if(ih&&ih.nextElementSibling)ih.nextElementSibling.textContent="Daily insights, newest first";}
   {const _rw=render;render=function(){_rw();try{v3wireReview();}catch(e){console.warn(e);}};}
@@ -209,7 +209,7 @@
     const goals=[["LinkedIn posts",sp.posts],["Comments",sp.comments],["Applications",sp.applications]].filter(g=>g[1]);
     const nmI=el("input",{type:"text",class:"v3-in","aria-label":"Sprint name",value:sp.name||""});nmI.onchange=()=>{const v=nmI.value.trim();if(v&&v!==sp.name)patchSprint(sp.n,{name:v});};
     const goI=el("textarea",{class:"v3-in","aria-label":"Sprint goal",rows:"2",placeholder:"What this sprint ships"});goI.value=sp.goal||"";goI.onchange=()=>patchSprint(sp.n,{goal:goI.value.trim()});
-    return [el("p",{class:"hint",text:fmt(sp.start,{day:"numeric",month:"short"})+" to "+fmt(sp.end,{day:"numeric",month:"short"})+" · "+all.filter(t=>t.done).length+" of "+all.length+" tasks done"}),
+    return [el("p",{class:"hint",text:fmt(sp.start,{day:"numeric",month:"short"})+" to "+fmt(sp.end,{day:"numeric",month:"short"})+" · "+all.filter(t=>t.done).length+" of "+all.length+" tasks done"}),spDaysCard(sp,re),
       el("section",{class:"v3-ncard"},el("label",{class:"field"},el("span",{class:"label",text:"Name"}),nmI),el("label",{class:"field"},el("span",{class:"label",text:"Goal"}),goI),goals.length?el("div",{class:"v3-row"},...goals.map(([l,v])=>el("span",{class:"hint num",text:l+": "+v+" by the end"}))):null),
       ...Object.keys(by).sort((a,b)=>(CAT_NAME[a]||"zz").localeCompare(CAT_NAME[b]||"zz")).map(c=>{const L=by[c].sort((a,b)=>a.date.localeCompare(b.date));
         return el("section",{class:"v3-ncard"},el("div",{class:"lh-wh"},el("span",{class:"cat-chip","data-cat":c,text:CAT_NAME[c]||"Other"}),el("span"),el("b",{class:"num",text:L.filter(t=>t.done).length+"/"+L.length})),

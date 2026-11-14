@@ -49,3 +49,5 @@
 - Live = round 2B build: reschedule everywhere, waterfall edit and Week view, calm Time entries, buckets, checklists, Start 5 min, chunk cards on Today. md5 verified, upload function locked, secret deleted.
 - NOT live yet (built, verified, in app/live): Round 3 missed-day rollover. Building: Round 5 sprints with buffer. Data apply scripts in app/apply/ NOT run on live data yet (run after the version containing their app support is live, backup first).
 - Next: rename UI, inbox/backlog, planning fields, optional sprints, capacity, weekly planning, plan vs actual, recurring. Calendar stays out.
+
+- [unpublished, verified] Round 5 sprints with buffer (module8.js, r22). Data recut not run.

@@ -361,3 +361,10 @@ body.m1 .m-nav{grid-template-columns:repeat(5,1fr)}
 .rl-hist{margin:6px 0 0}
 .rl-orow .mini{margin-left:6px}
 .rl-orow.on .q-t{font-weight:600}
+/* Round 5: buffer days */
+.sp-days{display:flex;flex-wrap:wrap;gap:6px}
+.sp-day{opacity:1}
+.sp-day.sp-buf{border-style:dashed;opacity:.8}
+.sp-note{margin:4px 0 0}
+.wf-h.buf,.wf-cell.buf{background-image:repeating-linear-gradient(135deg,transparent 0 6px,rgba(127,127,127,.12) 6px 7px)}
+.sp-bufl{display:block}
