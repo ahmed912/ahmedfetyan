@@ -57,3 +57,7 @@
 - [unpublished, verified] Rounds 10 (optional sprints, module10), 11 (capacity, module11), 12 (weekly planning, module12). r26 to r28, 23 tests pass. Next: 13 plan vs actual, 14 recurring, final regression, publish, data apply.
 
 - [unpublished, verified] Rounds 13 (plan vs actual, module13, r29) and 14 (recurring, module14, r30). All planned rounds built. Next: clean build + full regression, publish, data apply.
+
+## PUBLISHED 14 Nov: 1794631361
+- Live = all rounds 2 to 14 (commit e5e1744): rollover, sprints with buffer, rename, inbox and backlog, planning fields, optional sprints, capacity, weekly planning, plan vs actual, recurring. md5 verified, upload function locked, secret deleted.
+- Data apply scripts (app/apply/) NOT yet run on live data. Design polish (fluid buckets, hairlines, Select mode, visual taste) was building in pickerfix when the container restarted; re-create it. Rules in app/DESIGN_RULES.md.
