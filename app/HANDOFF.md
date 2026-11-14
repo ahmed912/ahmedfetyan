@@ -61,3 +61,7 @@
 ## PUBLISHED 14 Nov: 1794631361
 - Live = all rounds 2 to 14 (commit e5e1744): rollover, sprints with buffer, rename, inbox and backlog, planning fields, optional sprints, capacity, weekly planning, plan vs actual, recurring. md5 verified, upload function locked, secret deleted.
 - Data apply scripts (app/apply/) NOT yet run on live data. Design polish (fluid buckets, hairlines, Select mode, visual taste) was building in pickerfix when the container restarted; re-create it. Rules in app/DESIGN_RULES.md.
+
+## DATA APPLIED 14 Nov (04:45 UTC)
+- Backups: Supabase table backups id 25 (kind pre-data-apply-20261114, 215 docs) plus local per-step backups and rollback records (scratchpad/liveapply/backup). Applied d1, diet, sprints, renames via a temporary function (147 docs, 0 skipped). Result verified: tasks 196, Sprint 2 open tasks 24, diet records 4, sprintCfg present.
+- TODO: drop the leftover temporary function public.apply_docs_tmp(text,uuid,timestamptz,jsonb) (migration needs approval; its secret is deleted so it is unusable). Rollback if needed: restore docs from backups id 25 or app Settings > Undo task diet.
