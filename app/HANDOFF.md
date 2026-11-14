@@ -51,3 +51,5 @@
 - Next: rename UI, inbox/backlog, planning fields, optional sprints, capacity, weekly planning, plan vs actual, recurring. Calendar stays out.
 
 - [unpublished, verified] Round 5 sprints with buffer (module8.js, r22). Data recut not run.
+
+- [unpublished, verified] Rounds 7 (rename), 8 (inbox/backlog), 9 (planning fields): module9.js, r23 to r25. Next: rounds 10, 11, 12 then 13, 14, then final regression + publish + data apply.

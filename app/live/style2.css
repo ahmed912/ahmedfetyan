@@ -368,3 +368,17 @@ body.m1 .m-nav{grid-template-columns:repeat(5,1fr)}
 .sp-note{margin:4px 0 0}
 .wf-h.buf,.wf-cell.buf{background-image:repeating-linear-gradient(135deg,transparent 0 6px,rgba(127,127,127,.12) 6px 7px)}
 .sp-bufl{display:block}
+
+/* Round 7: inline rename */
+.rn-in{font:inherit;color:inherit;width:100%;min-width:0;box-sizing:border-box;padding:6px 10px;border-radius:10px;border:1px solid var(--ring,rgba(120,120,140,.5));background:var(--glass,rgba(255,255,255,.55));outline:none}
+.rn-in:focus{box-shadow:0 0 0 2px var(--ring,rgba(80,100,200,.35))}
+
+/* Round 8: inbox and backlog */
+.pl-sec{margin-bottom:14px}
+.pl-head{align-items:baseline}
+.pl-row .pl-b{grid-column:1/-1;margin:-4px 0 0 30px;font-size:.78rem}
+.pl-bl-head{display:block;margin:10px 0 6px;background:none;border:0;padding:6px 0;text-align:left;cursor:pointer;color:inherit}
+.pl-empty{margin:6px 0}
+
+/* Round 9: planning facts */
+.pl-fact{margin:2px 0 0;font-size:.78rem}

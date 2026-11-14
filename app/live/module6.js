@@ -4,8 +4,8 @@ const bkShort=d=>d?fmt(d,{day:"numeric",month:"short"}):"";
 const bkList=()=>Object.entries(state.tasks||{}).filter(([i,t])=>t&&t.bucket).map(([id,t])=>({id,...t}));
 function bkOfId(id){let cur=state.tasks&&state.tasks[id],g=0;while(cur&&g++<6){if(cur.bucket)return null;const p=cur.parent;if(!p)return null;if(isBk(p))return p;cur=state.tasks[p];}return null;}
 function bkName(id){const b=bkOfId(id);return b&&state.tasks[b]?state.tasks[b].title||"Bucket":"Unbucketed";}
-function bkKids(bid){return Object.entries(state.tasks||{}).filter(([i,t])=>t&&t.parent===bid&&!t.bucket&&!t.cut&&!t.archived&&t.title).map(([id,t])=>({id,...t}));}
-function bkLoose(){return Object.entries(state.tasks||{}).filter(([i,t])=>t&&!t.bucket&&!t.parent&&!t.cut&&!t.archived&&t.title).map(([id,t])=>({id,...t}));}
+function bkKids(bid){return Object.entries(state.tasks||{}).filter(([i,t])=>t&&t.parent===bid&&!t.bucket&&!t.cut&&!t.inbox&&!t.archived&&t.title).map(([id,t])=>({id,...t}));}
+function bkLoose(){return Object.entries(state.tasks||{}).filter(([i,t])=>t&&!t.bucket&&!t.parent&&!t.cut&&!t.inbox&&!t.archived&&t.title).map(([id,t])=>({id,...t}));}
 const bkSort=(a,b)=>(a.date?0:1)-(b.date?0:1)||String(a.date||"").localeCompare(String(b.date||""))||(a.order||0)-(b.order||0);
 function bkSprintLabel(b){if(b.bNoSprint)return "Outside sprints";const s=b.bStart||b.bEnd,e=b.bEnd||b.bStart;if(!s)return "";const hit=sprints().filter(p=>p.start<=e&&p.end>=s).map(p=>"S"+p.n);return hit.length?hit.join(", "):"Outside sprints";}
 function bkDescendants(bid){const out=[];const all=Object.entries(state.tasks||{});const seen=new Set([bid]);let grew=true;while(grew){grew=false;for(const [i,t] of all){if(t&&t.parent&&seen.has(t.parent)&&!seen.has(i)){seen.add(i);out.push(i);grew=true;}}}return out;}
@@ -47,6 +47,7 @@ function bkForm(bid){const b=bid?state.tasks[bid]:null;const f={title:b?b.title:
       b?null:el("button",{type:"button",class:"btn",onclick:()=>{const v=nm.value.trim();if(!v){toast("Give it a name");nm.focus();return;}f.title=v;f.bStart=s.value;f.bEnd=e.value;f.bNoSprint=ns.checked;psClose(true);bkAdd(f);}},"Save")];},{focus:true});}
 function bkMenu(bid){const b=state.tasks[bid];if(!b)return;psOpen("Bucket",()=>{const paused=b.bState==="paused";
   return [el("p",{class:"ps-sh-sum",text:b.title}),
+    el("button",{type:"button",class:"btn ghost rn-menu",onclick:()=>{psClose(true);setTimeout(()=>rnStart(bid),60);}},"Rename"),
     el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkForm(bid);}},"Edit"),
     el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkSet(bid,{bState:paused?"active":"paused"});bkNote((paused?"Resumed ":"Paused ")+b.title);render();}},paused?"Resume":"Pause"),
     el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkArchive(bid,true);}},"Archive"),

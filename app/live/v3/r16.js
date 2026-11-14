@@ -14,7 +14,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // 1 Today parent card: shifts steps too, moved count, undo
     let T0=await T();const open0=Object.entries(T0).filter(([i,t])=>t.parent&&t.date==='2026-11-13'&&!t.done&&!t.archived);
   await hold(pg.locator('#cutStack .cs-card.cs-top .cs-head').first());
-  ok('hold on a card opens the quick menu (6 items plus Move to bucket and Reorder)',(await pg.locator('.ps-sheet .btn:has-text("Reschedule")').count())===1&&(await pg.locator('.ps-sheet .btn:has-text("Edit")').count())===1&&(await pg.locator('.ps-sheet .btn').count())<=8,await pg.locator('.ps-sheet .btn').count());
+  ok('hold on a card opens the quick menu (6 items plus Rename, Move to bucket and Reorder)',(await pg.locator('.ps-sheet .btn:has-text("Reschedule")').count())===1&&(await pg.locator('.ps-sheet .btn:has-text("Edit")').count())===1&&(await pg.locator('.ps-sheet .btn').count())<=9,await pg.locator('.ps-sheet .btn').count());
   await pg.click('.ps-sheet .btn:has-text("Reschedule")');await R(400);
   ok('sheet has 3 quick picks and a date input',(await pg.locator('.ps-sheet .rs-pick').count())===3&&(await pg.locator('.ps-sheet input[type=date]').count())===1);
   await shot(pg,'r16_card_'+w);
