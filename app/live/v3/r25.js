@@ -58,8 +58,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.locator('.ps-sheet .pl-pri').nth(1).click();await R(500);
   t=(await T()).m1;ok('stored on the dated task',t.due==='2026-12-03'&&t.pri===2,JSON.stringify([t.due,t.pri]));
   await pg.keyboard.press('Escape');await R(500);
-  const bf=await pg.locator('.bk-card[data-bk="bkM"] .bk-row[data-id="m1"] .pl-fact').innerText();
-  ok('bucket row shows the fact',/Due 3 Dec \(in 5 days\) · High/.test(bf),bf);
+  const bf=await pg.locator('.bk-card[data-bk="bkM"] .bk-row[data-id="m1"] .ur-tags').innerText();
+  ok('bucket row (shared row) shows High; the due lives on the Today card',/High/.test(bf),bf);
   await pg.evaluate(()=>{});
   // Today on Monday shows the same fact on the card
   const pg2=await openp(b,w,{when:'2026-11-30T09:00:00',real:await pg.evaluate("JSON.stringify(window.__data)")});await pg2.clock.runFor(800);
