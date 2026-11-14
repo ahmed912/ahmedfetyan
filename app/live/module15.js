@@ -21,7 +21,7 @@ function selBarDraw(){document.body.classList.add("sel-on");let b=document.getEl
     B("Archive","sel-archive",()=>{const ids=[...selIds];ids.forEach(i=>v3archive(i,true));selDone("Archived "+ids.length,()=>ids.forEach(i=>v3archive(i,false)));},!has),
     B("Select all","sel-all",()=>{selRows().forEach(li=>{selIds.add(li.dataset.id);li.classList.add("sel-picked");const c=li.querySelector(".sel-cb");if(c)c.checked=true;});selBarDraw();}),
     B("Cancel","sel-cancel",selEnd));}
-{const _br=bkRow;bkRow=function(t,f){return selRow(_br(t,f),t.id);};}
+{const _br=bkRow;bkRow=function(t,f,o){return selRow(_br(t,f,o),t.id);};}
 {const _pr=plRow;plRow=function(t){return selRow(_pr(t),t.id);};}
 {const _sp=setPage;setPage=function(p,...a){if(selOn)selEnd();return _sp(p,...a);};}
 // the one entry: "Select" in the Plan header (and in the parent sheet next to Subtasks)

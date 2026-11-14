@@ -96,15 +96,17 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate(()=>__r2.setPage('progress'));await R(500);
   ok('Progress shows Carried over',/Carried over/.test(await pg.locator('#rlRev').innerText()));
   await pg.evaluate(()=>__r2.setPage('today'));await R(400);
-  // 7 Reorder in the hold menu
+  // 7 (14 Nov) Reorder is hold then drag on the card list. No Reorder entry in the hold menu.
   await hold('#cutStack .ch-card[data-ch="b1"] .cs-card');
-  ok('hold menu has Reorder',await pg.locator('.ps-sheet .rl-reorder').count()===1,await pg.locator('.ps-sheet').innerText().catch(()=>''));
-  await pg.locator('.ps-sheet .rl-reorder').click();await R(400);
+  ok('hold menu opens and has no Reorder, Move up or Move down',(await pg.locator('.ps-sheet .btn:has-text("Reschedule")').count())===1&&await pg.locator('.ps-sheet .rl-reorder').count()===0&&!/move up|move down|reorder/i.test(await pg.locator('.ps-sheet').innerText().catch(()=>'')));
+  await pg.evaluate(()=>__r2.psClose());await R(300);
   const order=()=>pg.evaluate(()=>[...document.querySelectorAll('#cutStack .ch-card[data-ch="b1"] .cs-card')].map(x=>x.dataset.id));
+  await pg.evaluate(()=>document.querySelectorAll('.cs-card').forEach(c=>c.dispatchEvent(new PointerEvent('pointercancel'))));await R(500);
   const o1=await order();
-  await pg.locator('.ps-sheet .rl-orow',{hasText:'Audit'}).locator('button',{hasText:'Down'}).click();await R(600);
-  await pg.evaluate(()=>__r2.psClose());await R(300);await pg.evaluate(()=>document.querySelectorAll('.cs-card').forEach(c=>c.dispatchEvent(new PointerEvent('pointercancel'))));await R(800);const o2=await order();
-  ok('Reorder moves an item down in its chunk',o1.length===2&&o2[0]===o1[1]&&o2[1]===o1[0],o1.join()+' -> '+o2.join());
+  {const rows=pg.locator('#cutStack .ch-card[data-ch="b1"] .cs-card');const a=await rows.nth(0).boundingBox(),c=await rows.nth(1).boundingBox();await pg.mouse.move(a.x+24,a.y+14);await pg.mouse.down();await pg.clock.runFor(600);await pg.mouse.move(a.x+24,c.y+c.height-4,{steps:6});await pg.mouse.up();await R(800);}
+  await pg.evaluate(()=>document.querySelectorAll('.cs-card').forEach(c=>c.dispatchEvent(new PointerEvent('pointercancel'))));await R(800);
+  const o2=await order();
+  ok('hold then drag moves an item down in its chunk',o1.length===2&&o2[0]===o1[1]&&o2[1]===o1[0],o1.join()+' -> '+o2.join());
   await shot(pg,'r21_'+w,true);
   await pg.close();
   // 8 decide after 3: the 3rd postponement

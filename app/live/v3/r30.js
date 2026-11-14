@@ -8,7 +8,8 @@ const base=()=>{const d=JSON.parse(fs.readFileSync(process.env.MOCKDATA,'utf8'))
   d.sprints={s2:{n:2,name:'Brand foundation',start:'2026-11-14',end:'2026-12-27',goal:'x'}};return d;};
 const seed=async pg=>pg.evaluate(async()=>{const db=await window.claude.use('db');
   await db.doc('tasks/bk1').set({title:'Mugassam',bucket:true,bState:'active',order:1,done:false});
-  await db.doc('tasks/a1').set({title:'Mug weekly pass',cat:'portfolio',parent:'bk1',mins:60,date:'2026-11-18',slot:2,mode:'deep',order:1,done:false,check:{c1:{t:'Export',done:true,o:0},c2:{t:'Send',done:false,o:1}}});
+  await db.doc('tasks/a1').set({title:'Mug weekly pass',cat:'portfolio',parent:'bk1',mins:60,date:'2026-11-18',slot:2,mode:'deep',order:1,done:false});
+  await db.doc('tasks/a1c1').set({title:'Export',parent:'a1',sub:true,done:true,order:0,date:'2026-11-18',sprint:2});await db.doc('tasks/a1c2').set({title:'Send',parent:'a1',sub:true,done:false,order:1,date:'2026-11-18',sprint:2});
   await db.doc('tasks/a2').set({title:'Client notes',cat:'client',parent:'bk1',mins:60,date:'2026-11-18',slot:1,mode:'deep',order:2,done:false});
   await db.doc('tasks/a3').set({title:'Design review',cat:'portfolio',parent:'bk1',mins:60,date:'2026-11-19',slot:1,mode:'deep',order:3,done:false});});
 run(async b=>{for(const w of [390,1300]){console.log('== width',w);
@@ -36,7 +37,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate(async()=>{const db=await window.claude.use('db');await db.doc('tasks/a1').update({done:true,doneAt:'2026-11-18'});});await R(800);
   const nid='rc-a1-2026-11-25',n1=await T(nid);
   ok('next copy created for next Wednesday',!!n1&&n1.date==='2026-11-25',JSON.stringify(n1));
-  ok('copy keeps block, mode, bucket, rule and a fresh checklist',n1&&n1.slot===2&&n1.mode==='deep'&&n1.parent==='bk1'&&n1.rec.type==='weekly'&&n1.recOf==='a1'&&n1.check&&Object.values(n1.check).every(x=>!x.done)&&Object.keys(n1.check).length===2,JSON.stringify(n1));
+  ok('copy keeps block, mode, bucket and rule (subtasks are checked below)',n1&&n1.slot===2&&n1.mode==='deep'&&n1.parent==='bk1'&&n1.rec.type==='weekly'&&n1.recOf==='a1'&&true,JSON.stringify(n1));
+  {const ks=await pg.evaluate(id=>Object.values(window.__data.tasks).filter(x=>x.parent===id&&x.sub),nid);ok('copy gets 2 fresh (not done) subtasks without estimate',ks.length===2&&ks.every(k=>!k.done&&k.mins==null),JSON.stringify(ks));}
   ok('only one live copy (the old one is done)',(await T('a1')).recNext===nid);
   // undo the done: the copy goes away
   await pg.evaluate(async()=>{const db=await window.claude.use('db');await db.doc('tasks/a1').update({done:false,doneAt:null});});await R(800);

@@ -27,7 +27,7 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   if(!(await pg.locator('.ps-sheet input[aria-label="New subtask"]').count())){await pg.locator('.ps-sheet button:has-text("Details")').click();await pg.clock.runFor(300);await W(300);}
   await pg.fill('.ps-sheet input[aria-label="New subtask"]','draft');await pg.press('.ps-sheet input[aria-label="New subtask"]','Enter');await pg.clock.runFor(300);await W(500);
   await pg.fill('.ps-sheet input[aria-label="New subtask"]','refine');await pg.press('.ps-sheet input[aria-label="New subtask"]','Enter');await pg.clock.runFor(300);await W(500);
-  const t2=await T();const subs=t2.filter(x=>x.parent);ok('2 subtasks created without date',subs.length-sub0===2&&subs.filter(s=>s.t==='draft'||s.t==='refine').every(s=>!s.d),subs.length);
+  const t2=await T();const subs=t2.filter(x=>x.parent);const mine=await pg.evaluate(()=>Object.values(window.__data.tasks).filter(x=>x.sub&&(x.title==='draft'||x.title==='refine')));ok('2 subtasks created as subtasks without an estimate',subs.length-sub0===2&&mine.length===2&&mine.every(s=>s.mins==null),subs.length);
   await shot(pg,'r3_subs_'+w);
   ok('subtasks not in waterfall rows',(await pg.locator('.v3-wft').count())===rows,await pg.locator('.v3-wft').count());
   await pg.click('.ps-sheet .btn:has-text("Details")');await W(300);await shot(pg,'r3_det_'+w);await esc();
@@ -37,7 +37,7 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   ok('still on Review page',await pg.evaluate("!document.querySelector('.page[data-page=\"progress\"]').hidden"));await shot(pg,'r3_start_'+w);await esc();
   // menu: reschedule beyond sprint end is blocked, length, archive
   await pg.locator('.v3-more').first().click();await W(500);await shot(pg,'r3_menu_'+w);
-  await pg.click('.ps-sheet .btn:has-text("Edit")');await W(500);await pg.click('.ps-sheet .btn:has-text("Details")');await W(300);await pg.fill('.ps-sheet input[aria-label="Days it spans"]','2');await pg.press('.ps-sheet input[aria-label="Days it spans"]','Tab');await pg.fill('.ps-sheet input[aria-label="Estimated minutes"]','45');await pg.press('.ps-sheet input[aria-label="Estimated minutes"]','Tab');await W(300);await esc();await W(300);await pg.clock.runFor(300);await W(500);
+  await pg.click('.ps-sheet .btn:has-text("Edit")');await W(500);if(!(await pg.locator('.ps-sheet input[aria-label="Days it spans"]').count())){await pg.click('.ps-sheet .btn:has-text("Details")');await W(300);}await pg.fill('.ps-sheet input[aria-label="Days it spans"]','2');await pg.press('.ps-sheet input[aria-label="Days it spans"]','Tab');await pg.fill('.ps-sheet input[aria-label="Estimated minutes"]','45');await pg.press('.ps-sheet input[aria-label="Estimated minutes"]','Tab');await W(300);await esc();await W(300);await pg.clock.runFor(300);await W(500);
   const t3=await T();ok('length saved',t3.some(x=>x.days===2&&x.mins===45),'');
   await pg.locator('.v3-more').first().click();await W(400);await pg.click('.ps-sheet .btn:has-text("Reschedule")');await W(400);
   await pg.fill('.ps-sheet input[type=date]','2026-12-31');await pg.clock.runFor(400);await W(300);if(await pg.locator('.rs-steps-no').count()){await pg.click('.rs-steps-no');await pg.clock.runFor(300);await W(300);}

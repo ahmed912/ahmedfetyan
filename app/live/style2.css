@@ -469,3 +469,24 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .ck-add{border:0!important;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent)!important;border-radius:0!important;background:transparent!important;padding:12px 0!important;box-shadow:none!important}
 .v3-sub.q-row,.v3-sub{background:transparent;border-radius:0;padding:8px 0;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent)}
 .v3-sub .q-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+
+/* 14 Nov: ONE row everywhere (bucket cards, Inbox, subtask lists, parent sheet): [check 20px] [title] [day chip], one tiny tag line, hairlines, no boxes */
+.ur-row,.ck-row.ur-row,.bk-row.ur-row{display:grid!important;grid-template-columns:20px minmax(0,1fr) auto;grid-template-areas:"c t d" ". g g";column-gap:12px;row-gap:2px;align-items:center;align-content:center;min-height:52px;padding:8px 0!important;margin:0;border-radius:0!important;background:transparent!important;box-sizing:border-box}
+.ur-row+.ur-row{border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent)}
+.ur-row>input[type=checkbox]{grid-area:c;width:20px;height:20px;margin:0;justify-self:start}
+.ur-row>.ur-t,.ur-row>.ck-t{grid-area:t;min-width:0;display:block;font-size:15px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.ps-sheet .ur-row>.ur-t,.ps-sheet .ur-row>.ck-t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ur-row>.ur-d,.ur-row>.ck-d,.ur-row>.ck-more-btn{grid-area:d;justify-self:end;white-space:nowrap;flex:none;min-width:0;width:auto;max-width:none}
+.ur-row>.ur-d{font-size:12px;padding:2px 8px;overflow:visible;text-overflow:clip}
+.ur-row>.ck-more-btn{border:0;background:transparent;color:var(--muted);min-height:28px;padding:0 6px}
+.ur-row>.ur-tags{grid-area:g;grid-column:2/4;display:flex;align-items:center;gap:8px;min-height:16px;font-size:11.5px;line-height:1.2;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin:0}
+.ur-row>.ck-acts{grid-column:1/-1;display:flex;gap:8px}.ur-row>.ck-acts[hidden]{display:none}
+.ur-row>.ck-edit{grid-area:t;width:100%;box-sizing:border-box}
+.ur-row .ur-go{all:unset;cursor:pointer;margin-left:auto;font-size:11.5px;color:var(--accent,var(--ink));text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.ur-row.done .ur-t{color:var(--muted);text-decoration:line-through}
+.bk-row.has-go{grid-template-areas:"c t d" ". g g"}
+.bk-sub{font-size:12px}.bk-prog{margin:0 0 4px}.bk-bar{height:3px!important}
+.ur-row>.ur-d{min-height:0!important;height:22px;line-height:18px;box-sizing:border-box}
+.ur-row>.ur-tags{height:16px;min-height:16px;box-sizing:border-box}.ur-row .ur-go{line-height:16px;height:16px;padding:0}
+.v3-est-btn{all:unset;box-sizing:border-box;cursor:pointer;color:var(--muted);font-size:13px;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;padding:4px 0;display:inline-block}
+.v3-est-in{max-width:160px}

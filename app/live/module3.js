@@ -19,9 +19,9 @@
   // ---- archive with automatic refill, reschedule helpers, undo bar ----
   const v3isWork=t=>t.cat==="portfolio"||t.cat==="client";
   const v3skipFri=d=>{while(isFriday(d))d=addDays(d,1);return d;};
-  function v3undoToast(msg,fn){let b=document.getElementById("v3ut");if(!b){b=el("div",{id:"v3ut",class:"undo-bar",role:"status","aria-live":"polite",hidden:""},el("span",{class:"ub-t"}),el("button",{type:"button",class:"ub-b"},"Undo"));document.body.append(b);}
+  function v3undoToast(msg,fn,ms){let b=document.getElementById("v3ut");if(!b){b=el("div",{id:"v3ut",class:"undo-bar",role:"status","aria-live":"polite",hidden:""},el("span",{class:"ub-t"}),el("button",{type:"button",class:"ub-b"},"Undo"));document.body.append(b);}
     b.querySelector(".ub-t").textContent=msg;const bt=b.querySelector(".ub-b");bt.onclick=()=>{b.hidden=true;try{fn();}catch(e){console.warn(e);}};b.hidden=false;
-    try{hideUndo();}catch(e){}clearTimeout(v3undoToast._t);v3undoToast._t=setTimeout(()=>{b.hidden=true;},9000);}
+    try{hideUndo();}catch(e){}clearTimeout(v3undoToast._t);v3undoToast._t=setTimeout(()=>{b.hidden=true;},ms||9000);}
   const v3rec=()=>({moves:[],arch:[],parents:{}});
   function v3recMove(rec,id,d){const t=state.tasks[id];if(!t||t.date===d)return;if(!rec.moves.some(m=>m.id===id))rec.moves.push({id,date:t.date,sprint:t.sprint});
     const sp=sprintFor(d).n;state.tasks[id]={...t,date:d,sprint:sp};setTask(id,{date:d,sprint:sp});if(t.parent)rec.parents[t.parent]=rec.parents[t.parent]||null;}
@@ -29,7 +29,7 @@
     const patch=on?{archived:true,cut:true,archivedBy:by||null}:{archived:false,cut:false,archivedBy:null};state.tasks[id]={...t,...patch};setTask(id,patch);if(t.parent)rec.parents[t.parent]=rec.parents[t.parent]||null;}
   // keep each touched parent's date, span and minutes in step with its live steps
   function v3syncParents(rec){Object.keys(rec.parents).forEach(pid=>{const P=state.tasks[pid];if(!P||P.archived||P.bucket)return;
-    const ks=Object.entries(state.tasks).map(([i,x])=>({id:i,...x})).filter(x=>x.parent===pid&&!x.archived&&!x.cut&&x.date);if(!ks.length)return;
+    const ks=Object.entries(state.tasks).map(([i,x])=>({id:i,...x})).filter(x=>x.parent===pid&&!x.sub&&!x.archived&&!x.cut&&x.date);if(!ks.length)return;
     const dates=ks.map(x=>x.date).sort(),first=dates[0],last=dates[dates.length-1],days=Math.max(1,Math.round((new Date(last+"T12:00")-new Date(first+"T12:00"))/864e5)+1),mins=ks.reduce((a,x)=>a+estMin(x),0);
     if(!rec.parents[pid])rec.parents[pid]={date:P.date,days:P.days,mins:P.mins};
     const patch={date:first,days,mins};state.tasks[pid]={...P,...patch};setTask(pid,patch);});}
@@ -86,32 +86,31 @@
   function v3move(id,dir){const t=state.tasks[id];if(!t)return;const L=v3tk().filter(x=>v3real(x)&&x.date===t.date).sort((a,b)=>(v3pos(a)-v3pos(b)));const i=L.findIndex(x=>x.id===id),j=i+dir;
     if(i<0||j<0||j>=L.length){toast(dir<0?"Already first":"Already last");return;}[L[i],L[j]]=[L[j],L[i]];L.forEach((x,k)=>{if(x.pos!==k)patchTask(x.id,{pos:k});});toast("Moved");}
   // ---- task pop-up: name and description, subtasks, start now. Details behind one button ----
+  // the task's own estimate, edited inline in the sheet header: tap the time, type 2.5 h or 90 min
+  function v3parseEst(v){v=String(v||"").trim().toLowerCase().replace(",",".");if(!v)return 0;const m=v.match(/^(\d+(?:\.\d+)?)\s*(h|hr|hrs|hour|hours|m|min|mins|minutes)?$/);if(!m)return null;let n=Number(m[1]);const u=m[2]||"";if(u[0]==="h")n*=60;else if(!u&&n<=12&&String(m[1]).indexOf(".")>=0)n*=60;return Math.round(n);}
+  function v3estEdit(id,re){const t=state.tasks[id];if(!t||t.bucket)return null;const m=estMin(t);
+    const b=el("button",{type:"button",class:"hint v3-estl v3-est-btn","aria-label":"Estimate for this task. Tap to change",text:aboutH(m)||"Add time"});
+    b.onclick=()=>{const inp=el("input",{type:"text",class:"v3-in v3-est-in","aria-label":"Estimate, for example 2.5 h or 90 min",placeholder:"2.5 h or 90 min",value:m?(m%60===0?(m/60)+" h":m+" min"):""});let ok=0;
+      const save=()=>{if(ok)return;ok=1;const v=v3parseEst(inp.value);if(v===null){toast("Type a time like 2.5 h or 90 min");re();return;}if(v!==(Number(t.mins)||0)){const old=Number(t.mins)||0;patchTask(id,{mins:v});v3undoToast("Time set to "+(aboutH(v)||"none"),()=>patchTask(id,{mins:old}));}setTimeout(re,250);};
+      inp.onblur=save;inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.blur();}});b.replaceWith(inp);inp.focus();inp.select();};
+    return b;}
   let v3tEdit=false;
-  function v3taskSheet(id){v3tEdit=false;psOpen("Task",re=>{const t=state.tasks[id];if(!t)return [el("p",{class:"ps-sh-sum",text:"This task is gone."})];
-    const subs=v3tk().filter(x=>x.parent===id&&!x.archived).sort((a,b)=>(a.order||0)-(b.order||0));
+  function v3taskSheet(id,edit){v3tEdit=!!edit;psOpen("Task",re=>{const t=state.tasks[id];if(!t)return [el("p",{class:"ps-sh-sum",text:"This task is gone."})];
     const nm=el("textarea",{class:"v3-in v3-big","aria-label":"Task name",rows:"2"});nm.value=t.title||"";nm.onchange=()=>{const v=nm.value.trim();if(v&&v!==t.title)patchTask(id,{title:v});};
     const ds=el("textarea",{class:"v3-in","aria-label":"Description",rows:"3",placeholder:"Description"});ds.value=t.desc||"";ds.onchange=()=>patchTask(id,{desc:ds.value.trim()});
-    const list=el("ul",{class:"q-list"},...subs.map(s=>{const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.title});cb.checked=!!s.done;cb.onchange=()=>{patchTask(s.id,{done:cb.checked,doneAt:cb.checked?iso(new Date()):null});setTimeout(re,250);};
-      return ((li,s)=>{if(s.date&&!s.done)v3stepSwipe(li,s);return typeof selRow==="function"?selRow(li,s.id):li;})(el("li",{class:"q-row v3-sub"+(s.date?" v3-sub-d":""),"data-id":s.id},cb,el("span",{class:"q-t"+(s.done?" v3-done":""),text:s.title}),el("span",{class:"hint cs-est",text:aboutH(estMin(s))}),s.date?el("span",{class:"hint",text:v3dl(s.date)}):null,null),s);}));
-    v3dragList(list,".v3-sub",ids=>{ids.forEach((sid,k)=>patchTask(sid,{order:k}));setTimeout(re,300);});
-    const sIn=el("input",{type:"text",class:"v3-in",placeholder:"Add a subtask","aria-label":"New subtask"});
-    const addSub=async()=>{const v=sIn.value.trim();if(!v)return;sIn.value="";await v3newTask({title:v,cat:t.cat||null,parent:id,done:false,order:Date.now()});setTimeout(re,250);};
-    sIn.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addSub();}});
     const sp=v3sprintOf(t);
     const det=v3tEdit?el("section",{class:"v3-ncard"},
       el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Day"}),v3dateField("Task day",t.date,p=>{rsGo(id,p,"task");})),
         el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),(i=>{i.onchange=()=>{const n=Math.max(1,Math.min(14,+i.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);i.value=String(t.days||1);return;}patchTask(id,{days:n});};return i;})(el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(t.days||1),"aria-label":"Days it spans"}))),
         el("label",{class:"field"},el("span",{class:"label",text:"Minutes"}),(i=>{i.onchange=()=>patchTask(id,{mins:Math.max(0,Math.round(+i.value||0))});return i;})(el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:t.mins?String(t.mins):"","aria-label":"Estimated minutes",placeholder:"min"})))),
-      ...(subs.length?[]:[el("div",{class:"field"},el("span",{class:"label",text:"Subtasks"}),sIn)]),
       el("div",{class:"field"},el("span",{class:"label",text:"Category"}),v3catChips(t.cat,c=>{patchTask(id,{cat:c});setTimeout(re,200);})),
       ...(typeof plExtra==="function"&&!t.bucket?plExtra(id,re):[]),
       t.parent&&state.tasks[t.parent]&&!state.tasks[t.parent].bucket?el("div",{class:"v3-row"},el("span",{class:"hint",text:"Part of: "+state.tasks[t.parent].title}),el("button",{type:"button",class:"mini",onclick:()=>{psClose(true);v3taskSheet(t.parent);}},"Open"),el("button",{type:"button",class:"mini",onclick:()=>{patchTask(id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach")):
         el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3parentPick([id]);}},"Make it a subtask of..."),
       (!t.parent||isBk(t.parent))?bkPicker(id,re):null,
-      el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down"),
-        el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive"))):null;
-    const estM=subs.length?subs.reduce((q,k)=>q+estMin(k),0):estMin(t);
-    return [nm,v3chip(t),(typeof chModeRow==="function"&&!t.bucket?chModeRow({...t,id},re):null),aboutH(estM)?el("span",{class:"hint v3-estl",text:aboutH(estM)}):null,ds,(!subs.length||ckList({...t,id}).length?ckSection({...t,id},re):null),subs.length?el("div",{class:"v3-row sel-head"},el("span",{class:"label",text:"Subtasks"+(subs.length?" ("+subs.filter(s=>s.done).length+" of "+subs.length+")":"")}),subs.length>0&&!selOn?el("button",{type:"button",class:"hint bk-link sel-go",onclick:()=>selStart(null,re)},"Select"):null):null,subs.length?list:null,subs.length?sIn:null,
+      el("div",{class:"v3-row"},
+        el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive"),el("button",{type:"button",class:"btn ghost danger del-menu",onclick:()=>v3delete(id)},"Delete"))):null;
+    return [nm,v3chip(t),(typeof chModeRow==="function"&&!t.bucket?chModeRow({...t,id},re):null),v3estEdit(id,re),ds,ckSection({...t,id},re),
       el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:()=>{psClose(true);v3start(id);}},"Start now"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3five(id);}},"Start for 5 minutes"),el("button",{type:"button",class:"btn ghost rs-sheet-btn",onclick:()=>v3rs(id,"task")},"Reschedule"),el("button",{type:"button",class:"btn ghost","aria-expanded":String(v3tEdit),onclick:()=>{v3tEdit=!v3tEdit;re();}},v3tEdit?"Hide details":"Details")),det];});}
   // ---- nesting: no data is changed until you choose. Any task can become a subtask of another, and come back out ----
   const v3wfSprint=()=>{const today=iso(new Date()),cur=sprintFor(sel>today?today:sel);return sprints().find(p=>p.n===(wfSprint||cur.n))||cur;};
@@ -129,9 +128,8 @@
   // ---- the ⋯ menu on every waterfall task: reschedule, change length, move, archive ----
   function v3taskMenu(id){const t=state.tasks[id];if(!t)return;psOpen("More",re=>{const sp=v3sprintOf(t);
     return [el("p",{class:"ps-sh-sum",text:t.title}),
-      el("button",{type:"button",class:"btn ghost rn-menu",onclick:()=>{psClose(true);setTimeout(()=>rnStart(id),60);}},"Rename"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3resched(id);}},"Reschedule"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3taskSheet(id);}},"Edit"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3five(id);}},"Start for 5 minutes"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkMoveSheet(id);}},"Move to bucket"),
-            el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down")),
-      t.archived?el("button",{type:"button",class:"btn",onclick:()=>{v3archive(id,false);psClose(true);}},"Restore"):el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive")];});}
+      el("button",{type:"button",class:"btn ghost rn-menu",onclick:()=>{psClose(true);setTimeout(()=>rnStart(id),60);}},"Rename"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3resched(id);}},"Reschedule"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3taskSheet(id,true);}},"Edit"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3five(id);}},"Start for 5 minutes"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkMoveSheet(id);}},"Move to bucket"),
+      t.archived?el("button",{type:"button",class:"btn",onclick:()=>{v3archive(id,false);psClose(true);}},"Restore"):(el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive")),el("button",{type:"button",class:"btn ghost danger del-menu",onclick:()=>v3delete(id)},"Delete")];});}
   function v3resched(id){psOpen("Reschedule",re=>{const t=state.tasks[id],sp=v3sprintOf(t),today=iso(new Date());let nd=t.date;
     const days=[];for(let d=today>sp.start?today:sp.start;d<=sp.end&&days.length<7;d=addDays(d,1))days.push(d);
     const chips=el("div",{class:"v3-cats"},...days.map(d=>el("button",{type:"button",class:"cat-chip"+(nd===d?" on":""),onclick:()=>{nd=d;di.value=fmt(d,{day:"numeric",month:"short",year:"numeric"});chips.querySelectorAll(".cat-chip").forEach((c,i)=>c.classList.toggle("on",days[i]===d));}},d===today?"Today":fmt(d,{weekday:"short",day:"numeric"}))));

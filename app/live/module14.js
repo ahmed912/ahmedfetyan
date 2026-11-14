@@ -17,11 +17,11 @@ function recId(t,nd){return "rc-"+(t.recOf||t.id)+"-"+nd;}
 function recCopy(t,nd){const c={title:t.title,cat:t.cat||null,mins:t.mins||null,date:nd,done:false,rec:t.rec,recOf:t.recOf||t.id,order:t.order||0};
   ["parent","slot","block","mode","pri","desc","due"].forEach(k=>{if(t[k]!==undefined&&t[k]!==null&&k!=="due")c[k]=t[k];});
   const sp=rlSpN(nd);c.sprint=sp!=null?sp:null;
-  if(t.check){c.check={};ckList(t).forEach(x=>{c.check[x.id]={t:x.t,done:false,o:x.o};});}
   return c;}
 async function recSpawn(id){const t=state.tasks[id];if(!t||!t.rec||t.recNext)return null;const nd=recNextDate({...t,id},recBase(t));if(!nd)return null;
   const nid=recId({...t,id},nd),body=recCopy({...t,id},nd);
   if(!state.tasks[nid]){state.tasks[nid]=body;try{await store.set("tasks/"+nid,body);}catch(e){console.warn(e);}}
+  try{for(const x of ckList({...t,id}).filter(x=>!x.legacy)){const sb={title:x.t,cat:t.cat||null,parent:nid,sub:true,done:false,order:x.o,date:nd,sprint:body.sprint};const r=await store.add("tasks",sb);state.tasks[r.id]=sb;}}catch(e){console.warn(e);}
   state.tasks[id]={...state.tasks[id],recNext:nid};try{await setTask(id,{recNext:nid});}catch(e){}return nid;}
 async function recUnspawn(id){const t=state.tasks[id];if(!t||!t.recNext)return;const n=state.tasks[t.recNext];
   if(n&&!n.done&&n.rec){delete state.tasks[t.recNext];try{await store.del("tasks/"+t.recNext);}catch(e){}}

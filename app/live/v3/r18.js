@@ -27,13 +27,13 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const id=await bkId('Website');const d=id&&(await T())[id];
   ok('bucket doc fields',!!d&&d.bucket===true&&d.bStart==='2026-11-14'&&d.bEnd==='2026-12-02'&&d.bColor==='#2563EB'&&d.bState==='active'&&d.bNoSprint===false&&!d.date,JSON.stringify(d));
   const card=pg.locator('[data-bk="'+id+'"]');
-  ok('card shows No tasks yet, dates and sprint labels',(await card.innerText()).includes('No tasks yet')&&(await card.innerText()).includes('14 Nov to 2 Dec')&&/S2, S3/.test(await card.innerText()),(await card.innerText()).replace(/\n/g,'|'));
+  ok('card shows one quiet line: dates and No tasks yet (sprint labels dropped 14 Nov: one calm line)',(await card.innerText()).includes('No tasks yet')&&(await card.innerText()).includes('14 Nov to 2 Dec')&&true,(await card.innerText()).replace(/\n/g,'|'));
   ok('add field focused',await pg.evaluate(i=>document.activeElement&&document.activeElement.closest('[data-bk="'+i+'"]')&&document.activeElement.tagName==='INPUT',id));
   // 3 add a task
   await pg.keyboard.type('Wireframes');await pg.keyboard.press('Enter');await R(700);
   let tk=Object.entries(await T()).find(([i,t])=>t.title==='Wireframes');
   ok('added task has parent, no date, cat',!!tk&&tk[1].parent===id&&!tk[1].date&&!!tk[1].cat,JSON.stringify(tk&&tk[1]));
-  ok('progress line 0 of 1',(await card.innerText()).includes('0 of 1 done'));
+  ok('progress in the quiet line: 0 of 1',(await card.innerText()).includes('0 of 1'));
   // 4 move a loose task in (drag on desktop, hold + menu on phone), then undo
   const looseRow=pg.locator('.bk-card.none .bk-row').first();const lid=await looseRow.getAttribute('data-id');const before=(await T())[lid].parent;
   if(w>=700){await looseRow.dragTo(card);await R(600);}
@@ -55,7 +55,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('date chip opens Reschedule',(await pg.locator('.ps-sheet:has-text("Reschedule")').count())===1);
   await pg.click('.ps-sheet .rs-pick >> nth=0');await R(900);await pg.keyboard.press('Escape');await R(400);
   ok('rescheduled',!!(await T())[rid].date);
-  ok('one-tap start on the top task only',(await card.locator('.bk-go').count())<=1&&(await pg.locator('.bk-card.none .bk-go').count())===1);
+  ok('Start for 5 minutes only on the top task of the active bucket (never per row)',(await pg.locator('#bucketSec .bk-go').count())<=1&&(await pg.locator('.bk-card.none .bk-go').count())===0);
   ok('neutral wording, no red',!/overdue|late|behind/i.test(await pg.locator('#bucketSec').innerText()));
   // 6 menu: edit/rename, pause, archive, restore
   await pg.click('[data-bk="'+id+'"] .bk-more');await R(400);await pg.click('.ps-sheet .btn:has-text("Edit")');await R(400);

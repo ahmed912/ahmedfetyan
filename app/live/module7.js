@@ -1,35 +1,42 @@
 // ===== Round 2: checklists inside tasks, collapsed views, Start 5 min, Undo task diet =====
 // checklist item: {t,done,o} stored as task.check = {<itemId>:{...}} (an object keyed by id so two devices never overwrite each other)
-function ckList(t){const c=t&&t.check;if(!c)return [];const a=Array.isArray(c)?c.map((v,i)=>[v&&v.id||("i"+i),v]):Object.entries(c);
-  return a.filter(([k,v])=>v&&v.t!=null).map(([k,v],i)=>({id:k,t:String(v.t),done:!!v.done,o:v.o!=null?v.o:i})).sort((x,y)=>x.o-y.o);}
+// subtasks: ONE concept. A subtask is a task doc {parent:<task id>, sub:true, title, done, order, cat, date, sprint}. It has no time of its own
+// (the task carries the estimate), it never counts as a task (isLeaf is false for it) and it only shows as "n of m" on its parent.
+// legacy: an old task.check list is shown until it is converted (ckEnsure converts it on open; apply_unify.py converts all of them)
+function ckLegacy(t){const c=t&&t.check;if(!c)return [];const a=Array.isArray(c)?c.map((v,i)=>[v&&v.id||("i"+i),v]):Object.entries(c);
+  return a.filter(([k,v])=>v&&v.t!=null).map(([k,v],i)=>({id:k,t:String(v.t),done:!!v.done,o:v.o!=null?v.o:i,legacy:true})).sort((x,y)=>x.o-y.o);}
+function ckList(t){const id=t&&t.id;const L=id?subsOf(id).map((s,i)=>({id:s.id,t:String(s.title||""),done:!!s.done,o:s.order!=null?s.order:i})):[];return L.concat(ckLegacy(t));}
 function ckCount(t){const L=ckList(t);return {n:L.length,d:L.filter(x=>x.done).length,next:L.find(x=>!x.done)||null};}
-function ckAsObj(t){const o={};ckList(t).forEach(x=>{o[x.id]={t:x.t,done:x.done,o:x.o};});return o;}
-function ckSave(tid,next,ops){const t=state.tasks[tid];if(!t)return;state.tasks[tid]={...t,check:next};
-  const patch=window.__sbSafe?{$d:ops}:{check:next};
-  try{Promise.resolve(store.update("tasks/"+tid,patch)).catch(fail);}catch(e){fail(e);}render();}
-const ckId=()=>"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function ckAdd(tid,text){text=String(text||"").trim();if(!text)return;const t=state.tasks[tid];if(!t)return;const L=ckList(t),cur=ckAsObj(t),id=ckId(),o=L.length?L[L.length-1].o+1:0;
-  cur[id]={t:text,done:false,o};ckSave(tid,cur,[{p:["check",id],set:{t:text,done:false,o}}]);}
-function ckEdit(tid,id,text){text=String(text||"").trim();const cur=ckAsObj(state.tasks[tid]);if(!cur[id])return;if(!text||text===cur[id].t)return;cur[id]={...cur[id],t:text};ckSave(tid,cur,[{p:["check",id,"t"],set:text}]);}
-function ckTick(tid,id,on){const cur=ckAsObj(state.tasks[tid]);if(!cur[id])return;cur[id]={...cur[id],done:!!on};ckSave(tid,cur,[{p:["check",id,"done"],set:!!on}]);}
-function ckDel(tid,id){const cur=ckAsObj(state.tasks[tid]);if(!cur[id])return;delete cur[id];ckSave(tid,cur,[{p:["check",id],del:1}]);}
-function ckMove(tid,id,dir){const L=ckList(state.tasks[tid]),i=L.findIndex(x=>x.id===id),j=i+dir;if(i<0||j<0||j>=L.length)return;const cur=ckAsObj(state.tasks[tid]);
-  const a=L[i],b=L[j];cur[a.id]={...cur[a.id],o:b.o};cur[b.id]={...cur[b.id],o:a.o};ckSave(tid,cur,[{p:["check",a.id,"o"],set:b.o},{p:["check",b.id,"o"],set:a.o}]);}
-function ckRow(tid,s,i,L,re){const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.t});cb.checked=s.done;cb.onchange=()=>{ckTick(tid,s.id,cb.checked);setTimeout(re,250);};
-  const inp=el("textarea",{rows:"1",class:"v3-in ck-t"+(s.done?" v3-done":""),"aria-label":"Step"});inp.value=s.t;const fit=()=>{inp.style.height="auto";inp.style.height=Math.min(inp.scrollHeight,48)+"px";};setTimeout(fit,0);inp.addEventListener("input",fit);inp.onchange=()=>{ckEdit(tid,s.id,inp.value);setTimeout(re,250);};
-  inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.blur();}});
-  const acts=el("div",{class:"ck-acts",hidden:""},el("button",{type:"button",class:"mini",disabled:i===0?"":null,onclick:()=>{ckMove(tid,s.id,-1);setTimeout(re,250);}},"Move up"),
-    el("button",{type:"button",class:"mini",disabled:i===L.length-1?"":null,onclick:()=>{ckMove(tid,s.id,1);setTimeout(re,250);}},"Move down"),
-    el("button",{type:"button",class:"mini danger",onclick:()=>{ckDel(tid,s.id);setTimeout(re,250);}},"Delete"));
-  const more=el("button",{type:"button",class:"mini","aria-label":"Menu for "+s.t,"aria-expanded":"false",onclick:()=>{acts.hidden=!acts.hidden;more.setAttribute("aria-expanded",String(!acts.hidden));}},"...");
-  const li=el("li",{class:"q-row ck-row","data-ck":s.id},cb,inp,more,acts);rsLong(li,()=>{acts.hidden=false;more.setAttribute("aria-expanded","true");});return li;}
-function ckSection(t,re){const L=ckList(t),n=L.length,d=L.filter(x=>x.done).length,id=t.id;
-  const add=el("input",{type:"text",class:"v3-in ck-add","aria-label":"Add a step",placeholder:"Add a step"});
-  add.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const v=add.value;add.value="";ckAdd(id,v);setTimeout(()=>{re();setTimeout(()=>{const x=document.querySelector(".ps-sheet .ck-add");if(x)x.focus();},60);},250);}});
-  return el("section",{class:"ck-sec","aria-label":"Steps"},el("span",{class:"label",text:"Steps"+(n?" ("+d+" of "+n+")":"")}),
-    n?el("ul",{class:"q-list ck-list"},...L.map((s,i)=>ckRow(id,s,i,L,re))):el("p",{class:"hint ck-empty",text:"No steps yet"}),add);}
+let ckBusy={};
+async function ckEnsure(tid){const t=state.tasks[tid];if(!t||ckBusy[tid])return false;const L=ckLegacy(t);if(!L.length)return false;ckBusy[tid]=1;
+  try{for(const x of L){await v3newTask({title:x.t,cat:t.cat||null,parent:tid,sub:true,done:x.done,order:x.o,date:t.date||null,sprint:t.sprint==null?null:t.sprint});}
+    state.tasks[tid]={...state.tasks[tid],check:null};try{await store.update("tasks/"+tid,window.__sbSafe?{$d:[{p:["check"],del:1}]}:{check:null});}catch(e){fail(e);}}finally{delete ckBusy[tid];}
+  return true;}
+async function ckAdd(tid,text){text=String(text||"").trim();if(!text)return;const t=state.tasks[tid];if(!t)return;await ckEnsure(tid);const L=subsOf(tid),o=L.length?(L[L.length-1].order||0)+1:0;
+  return v3newTask({title:text,cat:t.cat||null,parent:tid,sub:true,done:false,order:o,date:t.date||null,sprint:t.sprint==null?null:t.sprint});}
+function ckEdit(id,text){text=String(text||"").trim();const s=state.tasks[id];if(!s||!text||text===s.title)return;const old=s.title;patchTask(id,{title:text});v3undoToast("Subtask renamed",()=>patchTask(id,{title:old}));}
+function ckTick(id,on){patchTask(id,{done:!!on,doneAt:on?iso(new Date()):null});}
+function ckDel(id){v3delete(id,true);}
+function ckReorder(ids){const old=ids.map(i=>[i,(state.tasks[i]||{}).order]);ids.forEach((i,k)=>{if((state.tasks[i]||{}).order!==k)patchTask(i,{order:k});});v3undoToast("Subtasks reordered",()=>old.forEach(([i,o])=>patchTask(i,{order:o})));}
+function ckRow(tid,s,re){const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.t});cb.checked=s.done;cb.onchange=()=>{ckTick(s.id,cb.checked);setTimeout(re,250);};
+  const ttl=el("span",{class:"ck-t ur-t"+(s.done?" v3-done":""),text:s.t});
+  const acts=el("div",{class:"ck-acts",hidden:""},el("button",{type:"button",class:"mini",onclick:()=>{acts.hidden=true;const inp=el("textarea",{rows:"1",class:"v3-in ck-edit","aria-label":"Subtask name"});inp.value=s.t;ttl.replaceWith(inp);inp.focus();let ok=0;const done=()=>{if(ok)return;ok=1;ckEdit(s.id,inp.value);setTimeout(re,250);};inp.onblur=done;inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.blur();}});}},"Rename"),
+    el("button",{type:"button",class:"mini danger",onclick:()=>{ckDel(s.id);setTimeout(re,250);}},"Delete"));
+  const more=el("button",{type:"button",class:"mini ck-more-btn","aria-label":"Menu for "+s.t,"aria-expanded":"false",onclick:()=>{acts.hidden=!acts.hidden;more.setAttribute("aria-expanded",String(!acts.hidden));}},"...");
+  return el("li",{class:"q-row ck-row ur-row","data-id":s.id,"data-ck":s.id},cb,ttl,more,acts);}
+// a dated task that sits under this task (an older nesting) shows in the same list: tick, title, quiet day, no time
+function ckKidRow(s,re){const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.title});cb.checked=!!s.done;cb.onchange=()=>{patchTask(s.id,{done:cb.checked,doneAt:cb.checked?iso(new Date()):null});setTimeout(re,250);};
+  const li=el("li",{class:"q-row ck-row ur-row ck-kid","data-id":s.id,"data-step":s.id},cb,el("span",{class:"ck-t"+(s.done?" v3-done":""),text:s.title}),s.date?el("span",{class:"hint ck-d",text:v3dl(s.date)}):null);
+  if(s.date&&!s.done)v3stepSwipe(li,s);return li;}
+function ckSection(t,re){const id=t.id;if(ckLegacy(state.tasks[id]||t).length){ckEnsure(id).then(ok=>{if(ok)setTimeout(re,200);});}
+  const L=ckList({...t,id}).filter(x=>!x.legacy),kids=kidsOf(id),n=L.length+kids.length,d=L.filter(x=>x.done).length+kids.filter(x=>x.done).length;
+  const add=el("input",{type:"text",class:"v3-in ck-add","aria-label":"New subtask",placeholder:"Add a subtask"});
+  add.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const v=add.value;add.value="";ckAdd(id,v).then(()=>{re();setTimeout(()=>{const x=document.querySelector(".ps-sheet .ck-add");if(x)x.focus();},60);});}});
+  const ul=el("ul",{class:"q-list ck-list"},...L.map(s=>ckRow(id,s,re)),...kids.map(k=>ckKidRow(k,re)));
+  if(L.length>1)v3dragList(ul,".ck-row:not(.ck-kid)",ids=>{ckReorder(ids);setTimeout(re,250);});
+  return el("section",{class:"ck-sec","aria-label":"Subtasks"},el("span",{class:"label",text:"Subtasks"+(n?" ("+d+" of "+n+")":"")}),n?ul:null,add);}
 // Today card: "1 of 3 · next: ..." under the title
-{const _vc=v3card;v3card=function(t,top,ctx){const c=_vc(t,top,ctx);try{const src=state.tasks[t.id]||t,k=ckCount(src);
+{const _vc=v3card;v3card=function(t,top,ctx){const c=_vc(t,top,ctx);try{const src=state.tasks[t.id]||t,k=ckCount({...src,id:t.id});
     if(k.n&&!c.querySelector(".ck-line")){const head=c.querySelector(".cs-head");const line=el("p",{class:"hint ck-line",text:k.d+" of "+k.n+(k.next?" · next: "+k.next.t:"")});if(head)head.after(line);else c.prepend(line);}
     // parent cards: 3 open steps, the rest behind "n more"
     const ul=c.querySelector(".cs-steps");if(ul){const lis=[...ul.children].filter(x=>!x.classList.contains("done"));
@@ -47,7 +54,6 @@ function ckProjectRows(list,re){const g=new Map();list.forEach(t=>{const b=bkOfI
   return out;}
 function ckCountLine(list){const p=new Set(list.map(t=>bkOfId(t.id)||"none")).size;return el("p",{class:"hint ck-count",text:p+" project"+(p===1?"":"s")+", "+list.length+" task"+(list.length===1?"":"s")});}
 // the little "1 of 3" on bucket rows
-{const _br=bkRow;bkRow=function(t,first){const li=_br(t,first);try{const k=ckCount(t);if(k.n){const b=li.querySelector(".bk-t");if(b)b.after(el("span",{class:"hint ck-mini",text:k.d+" of "+k.n}));}}catch(e){}return li;};}
 // ---- Start for 5 minutes: the existing focus timer, a 5 minute round on this task ----
 function v3five(id){const t=state.tasks[id];if(!t)return;if(warGet()){v3start(id);return;}
   const r=pRun();if(r&&r.what==="tasks:"+id&&r.startedAt){openPomoFull();return;}
@@ -155,6 +161,7 @@ function chRender(){const ul=document.getElementById("cutStack");if(!ul)return;c
     let body=null;
     if(open){const cards=chCards(c.tasks,d).filter(x=>!x.done),ex=!!chExp[c.key],show=ex?cards:cards.slice(0,3);chBuild=true;
       try{const list=el("div",{class:"ch-list"},...show.map(x=>v3card(x,false,"stack")));
+        if(show.length>1)v3dragList(list,".cs-card",ids=>{const held=list.querySelector(".cs-card[data-dragged]");if(ids.join()===show.map(x=>x.id).join()){if(held)setTimeout(()=>v3taskMenu(held.dataset.id),0);return;}const rest=cards.filter(x=>!show.includes(x)).map(x=>x.id),all=ids.concat(rest),old=all.map(i=>[i,(state.tasks[i]||{}).pos]);v3reorder(all);render();v3undoToast("Order changed",()=>{old.forEach(([i,p])=>patchTask(i,{pos:p==null?null:p}));render();});});
         const first=cards[0],stepId=first&&(first.steps?(first.steps.find(s=>!s.done)||first.steps[0]).id:first.id);
         body=el("div",{class:"ch-body"},list,cards.length>3?el("button",{type:"button",class:"mini ck-more",onclick:()=>{chExp[c.key]=!ex;renderCutList();}},ex?"Show less":(cards.length-3)+" more"):null,
           el("div",{class:"cl-acts ch-acts"},el("button",{type:"button",class:"btn cl-go ch-go",onclick:()=>chStart(cards)},"Start"),el("button",{type:"button",class:"btn ghost ch-five",onclick:()=>v3five(stepId)},"Just 5 minutes")),el("button",{type:"button",class:"mini ck-more rl-mv",onclick:()=>rlMoveSheet(c.tasks,rlChunkName(c))},"Move chunk"));
@@ -390,17 +397,6 @@ function rlReview(){const pg=document.querySelector('.page[data-page="progress"]
   if(!s){s=el("section",{class:"panel",id:"rlRev","aria-label":"Carried over"});pg.append(s);}
   rc(s,el("div",{class:"panel-head"},el("h2",{text:"Carried over"}),el("span",{class:"hint",text:"Plan against actual, last "+L.length+" days"})),el("ul",{class:"ps-sh-list rl-hist"},...L.map(r=>el("li",{class:"ps-sh-hrow"},el("span",{text:rlLine(r)})))));}
 {const _r10=render;render=function(){_r10();try{rlRow();rlReview();}catch(e){}};}
-// the Today quick menu: Reorder
-function rlReorder(id){const t0=state.tasks[id];if(!t0)return;const cid=t0.parent&&state.tasks[t0.parent]&&!state.tasks[t0.parent].bucket?t0.parent:id,
-  open=()=>{const d=t0.date,ch=chunksOn(d).find(c=>c.tasks.some(x=>x.id===id));return ch?chCards(ch.tasks,d).filter(x=>!x.done):[];};
-  psOpen("Reorder",re=>{const cards=open();if(cards.length<2)return [el("p",{class:"ps-sh-sum",text:"Only one item here."})];
-    const ids=cards.map(c=>c.id),mv=(i,dir)=>{const a=ids.slice(),j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];v3reorder(a);render();setTimeout(re,250);};
-    const list=el("ul",{class:"q-list rl-order"},...cards.map((c,i)=>el("li",{class:"q-row rl-orow"+(c.id===cid?" on":""),"data-id":c.id},el("span",{class:"q-t",text:c.title}),
-      el("button",{type:"button",class:"mini","aria-label":"Move up: "+c.title,disabled:i?null:"",onclick:()=>mv(i,-1)},"Up"),el("button",{type:"button",class:"mini","aria-label":"Move down: "+c.title,disabled:i<cards.length-1?null:"",onclick:()=>mv(i,1)},"Down"))));
-    v3dragList(list,".rl-orow",o=>{v3reorder(o);render();setTimeout(re,250);});
-    return [el("p",{class:"hint",text:"Press and hold a row, then drag. Or use Up and Down. The top item is the one Start opens."}),list];});}
-{const _tm=v3taskMenu;v3taskMenu=function(id){_tm(id);try{const t=state.tasks[id];if(!t||t.done||!t.date||t.date!==sel||document.querySelector('.page[data-page="today"]')&&document.querySelector('.page[data-page="today"]').hidden)return;
-    const sh=document.querySelector(".ps-sheet");if(!sh||sh.querySelector(".rl-reorder"))return;const b=el("button",{type:"button",class:"btn ghost rl-reorder",onclick:()=>{psClose(true);setTimeout(()=>rlReorder(id),60);}},"Reorder"),
-      anchor=[...sh.querySelectorAll("button")].find(x=>/^Move to bucket$/.test(x.textContent));if(anchor)anchor.after(b);else sh.append(b);}catch(e){console.warn(e);}};}
-window.__rl={run:rlRun,undo:rlUndo,spread:rlSpread,waiting:rlWaiting,place:rlPlace,groups:rlGroups,moveChunk:rlMoveChunk,moveSheet:rlMoveSheet,decide:rlDecideSheet,reorder:rlReorder,cfg:rlCfg,post:rlPost};
+// Reorder is a gesture: hold a card on the Today list, then drag (see chRender). No Up/Down buttons anywhere.
+window.__rl={run:rlRun,undo:rlUndo,spread:rlSpread,waiting:rlWaiting,place:rlPlace,groups:rlGroups,moveChunk:rlMoveChunk,moveSheet:rlMoveSheet,decide:rlDecideSheet,cfg:rlCfg,post:rlPost};
 function rlChunkName(c){if(c.kind==="learn")return "Learning";if(c.kind==="shallow")return "Shallow batch";return [...new Set(c.tasks.map(t=>chBkName(chBk(t))))].join(" and ")||"Design";}

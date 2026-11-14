@@ -33,8 +33,8 @@
   // ---------- gestures are never interrupted by a redraw: changes that arrive mid-swipe wait for it to end ----------
   let v3hold=0,v3pend=false;
   {const _r=render;render=function(){if(v3hold>0){v3pend=true;return;}_r();};}
-  function v3holdOn(){v3hold++;}
-  function v3holdOff(){v3hold=Math.max(0,v3hold-1);if(!v3hold&&v3pend){v3pend=false;setTimeout(()=>{try{render();}catch(e){}},0);}}
+  function v3holdOn(){v3hold++;window.__v3hold=v3hold;}
+  function v3holdOff(){v3hold=Math.max(0,v3hold-1);window.__v3hold=v3hold;if(!v3hold&&v3pend){v3pend=false;setTimeout(()=>{try{render();}catch(e){}},0);}}
   // swipe that works with touch and mouse: a clear threshold, follows the finger, snaps back, then asks
   swipeable=function(card,onRight,onLeft,onTap,labels){labels=labels||{};let x0=null,y0=0,dx=0,dy=0,pid=null,mode=null;
     card.style.touchAction="pan-y";
@@ -222,16 +222,16 @@
     const s=el("div",{class:"tv-scroll"},el("div",{class:"tv-head"},el("h2",{text:"Today"}),el("button",{type:"button",class:"tv-x v3-x","aria-label":"Close",onclick:closeTaskView},"×")),
       ts.length>1?el("p",{class:"hint tv-tip",text:"Tap a card to make it the one you do now. Press and hold, then drag to reorder."}):null,
       ts.length?list:el("p",{class:"tv-empty",text:"All done."}));
-    rc(v,s);s.scrollTop=y;v3dragList(list,".cs-card",ids=>v3reorder(ids));};
+    rc(v,s);s.scrollTop=y;v3dragList(list,".cs-card",ids=>{const held=list.querySelector(".cs-card[data-dragged]");if(ids.join()===ts.map(x=>x.id).join()){if(held)setTimeout(()=>v3taskMenu(held.dataset.id),0);return;}v3reorder(ids);});};
   // press and hold, then drag: a generic reorder for any list of [data-id] rows
-  function v3dragList(list,rowSel,onDrop){[...list.querySelectorAll(rowSel)].forEach(row=>{if(row.dataset.v3d)return;row.dataset.v3d="1";let t=null,y0=0,x0=0,on=false,before=null,pid=null;
+  function v3dragList(list,rowSel,onDrop){[...list.querySelectorAll(rowSel)].forEach(row=>{if(row.dataset.v3d)return;row.dataset.v3d="1";let t=null,y0=0,x0=0,on=false,before=null,pid=null,moved=false;
     row.addEventListener("pointerdown",e=>{if(e.button>0)return;const blk=e.target.closest("button,input,select,a,textarea");if(blk&&!blk.hasAttribute("data-dragok"))return;y0=e.clientY;x0=e.clientX;pid=e.pointerId;
-      t=setTimeout(()=>{on=true;v3holdOn();row.classList.add("v3-lift");try{row.setPointerCapture(pid);}catch(_){}try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}},400);});
-    row.addEventListener("pointermove",e=>{if(!on){if(Math.hypot(e.clientX-x0,e.clientY-y0)>8){clearTimeout(t);t=null;}return;}e.preventDefault();e.stopPropagation();row.style.transform="translateY("+(e.clientY-y0)+"px)";
+      t=setTimeout(()=>{on=true;v3holdOn();row.classList.add("v3-lift");try{row.setPointerCapture(pid);}catch(_){}try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}moved=false;},400);});
+    row.addEventListener("pointermove",e=>{if(!on){if(Math.hypot(e.clientX-x0,e.clientY-y0)>8){clearTimeout(t);t=null;}return;}e.preventDefault();e.stopPropagation();if(Math.abs(e.clientY-y0)>6)moved=true;row.style.transform="translateY("+(e.clientY-y0)+"px)";
       const sib=[...list.querySelectorAll(rowSel)].filter(x=>x!==row);before=null;for(const s of sib){const r=s.getBoundingClientRect();if(e.clientY<r.top+r.height/2){before=s;break;}}
       sib.forEach(s=>s.classList.toggle("v3-before",s===before));});
     const up=e=>{clearTimeout(t);t=null;if(!on)return;on=false;e&&e.stopPropagation&&e.stopPropagation();row.classList.remove("v3-lift");row.style.transform="";
-      const rows=[...list.querySelectorAll(rowSel)].filter(x=>x!==row);rows.forEach(s=>s.classList.remove("v3-before"));const i=before?rows.indexOf(before):rows.length;rows.splice(i,0,row);
+      const all0=[...list.querySelectorAll(rowSel)],rows=all0.filter(x=>x!==row);rows.forEach(s=>s.classList.remove("v3-before"));if(!moved){rows.splice(all0.indexOf(row),0,row);}else{const i=before?rows.indexOf(before):rows.length;rows.splice(i,0,row);}
       row.dataset.dragged=String(Date.now());v3holdOff();onDrop(rows.map(x=>x.dataset.id).filter(Boolean));};
     row.addEventListener("pointerup",up,true);row.addEventListener("pointercancel",up,true);
     row.addEventListener("click",e=>{if(row.dataset.dragged&&Date.now()-row.dataset.dragged<400){e.stopPropagation();e.preventDefault();}},true);});}

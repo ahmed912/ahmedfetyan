@@ -1,4 +1,4 @@
-// Round 36 (steps rows). Journey: open a task with steps: every step shows its title across the full row (first 12+ characters), hairline rows, one quiet "...", one "Add a step" line, no duplicate Subtasks field by default.
+// Round 36 (subtask rows; updated 14 Nov: steps are now subtasks, see r37). Journey: open a task with steps: every step shows its title across the full row (first 12+ characters), hairline rows, one quiet "...", one "Add a step" line, no duplicate Subtasks field by default.
 const MOCK='/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/plan/mock_final.json';
 process.env.MOCKDATA=process.env.MOCKDATA||MOCK;
 const fs=require('fs');
@@ -9,24 +9,22 @@ const base=()=>{const d=JSON.parse(fs.readFileSync(process.env.MOCKDATA,'utf8'))
 const STEPS=['Sketch the layout of every slide in the deck','Export the final files for the client review','Email the client with the link and the notes','Edit'];
 const seed=async(pg,S)=>pg.evaluate(async S=>{const db=await window.claude.use('db');
   await db.doc('tasks/bk1').set({title:'Mugassam',bucket:true,bState:'active',order:1,done:false});
-  const check={};S.forEach((t,i)=>{check['c'+i]={t,done:false,o:i};});
-  await db.doc('tasks/p1').set({title:'Deck task',cat:'portfolio',parent:'bk1',date:'2026-11-16',slot:1,mode:'deep',mins:180,order:1,done:false,check});},S);
+  await db.doc('tasks/p1').set({title:'Deck task',cat:'portfolio',parent:'bk1',date:'2026-11-16',slot:1,mode:'deep',mins:180,order:1,done:false,sprint:2});
+  for(let i=0;i<S.length;i++)await db.doc('tasks/s'+i).set({title:S[i],cat:'portfolio',parent:'p1',sub:true,date:'2026-11-16',sprint:2,order:i,done:false});},S);
 run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const pg=await openp(b,w,{when:'2026-11-14T08:00:00',real:JSON.stringify(base())});const R=async ms=>{await pg.clock.runFor(ms);await pg.waitForTimeout(250);};
   await seed(pg,STEPS);await R(600);
   await pg.evaluate(()=>__r2.setPage('projects'));await R(500);await pg.locator('.bk-row[data-id="p1"] .bk-t').click();await R(600);
-  const m=await pg.evaluate(()=>[...document.querySelectorAll('.ps-sheet .ck-row .ck-t')].map(t=>{const r=t.getBoundingClientRect(),row=t.closest('.ck-row').getBoundingClientRect(),cs=getComputedStyle(t);const c=document.createElement('canvas').getContext('2d');c.font=cs.fontSize+' '+cs.fontFamily;return {w:Math.round(r.width),row:Math.round(row.width),h:Math.round(r.height),need12:Math.round(c.measureText(t.value.slice(0,12)).width),lh:parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.35,sh:t.scrollHeight};}));
+  const m=await pg.evaluate(()=>[...document.querySelectorAll('.ps-sheet .ck-row .ck-t')].map(t=>{const r=t.getBoundingClientRect(),row=t.closest('.ck-row').getBoundingClientRect(),cs=getComputedStyle(t);const c=document.createElement('canvas').getContext('2d');c.font=cs.fontSize+' '+cs.fontFamily;return {w:Math.round(r.width),row:Math.round(row.width),h:Math.round(r.height),need12:Math.round(c.measureText(t.textContent.slice(0,12)).width),lh:parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.35,sh:t.scrollHeight};}));
   ok('4 steps listed',m.length===4,m.length);
   ok('every step is wide enough for its first 12 characters',m.every(x=>x.w>=x.need12+4),JSON.stringify(m));
   ok('steps use most of the row width (>= 55%)',m.every(x=>x.w>=x.row*0.55),JSON.stringify(m));
   ok('titles wrap to 2 lines at most',m.every(x=>x.h<=x.lh*2+8),JSON.stringify(m));
   const tx=(await pg.locator('.ps-sheet').innerText()).replace(/\s+/g,' ');
-  ok('one concept: Steps visible, no Subtasks section or field by default',/Steps \(0 of 4\)/.test(tx)&&!/Subtasks/.test(tx)&&(await pg.locator('.ps-sheet input[aria-label="New subtask"]').count())===0,tx.slice(0,200));
-  ok('one quiet Add a step line',(await pg.locator('.ps-sheet .ck-add').count())===1);
+  ok('one concept: Subtasks (0 of 4), no Steps section',/Subtasks \(0 of 4\)/.test(tx)&&!/Steps/.test(tx),tx.slice(0,200));
+  ok('one quiet Add a subtask line',(await pg.locator('.ps-sheet .ck-add').count())===1);
   ok('hairline rows (no stacked boxes)',await pg.evaluate(()=>{const r=document.querySelectorAll('.ps-sheet .ck-row')[1];const cs=getComputedStyle(r);return parseFloat(cs.borderTopWidth)===1&&cs.backgroundColor==='rgba(0, 0, 0, 0)';}));
   ok('rows aligned: checkboxes share one left edge',await pg.evaluate(()=>new Set([...document.querySelectorAll('.ps-sheet .ck-row input[type=checkbox]')].map(i=>Math.round(i.getBoundingClientRect().left))).size===1));
   await shot(pg,'r36_steps_'+w);
-  await pg.locator('.ps-sheet button:has-text("Details")').click();await R(300);
-  ok('Add a subtask lives under Details',(await pg.locator('.ps-sheet input[aria-label="New subtask"]').count())===1);
   ok('no page errors',!pg.errs.filter(e=>!/Failed to load resource/.test(e)).length,pg.errs.join('|').slice(0,300));
   await pg.context().close();}});

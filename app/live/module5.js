@@ -1,11 +1,12 @@
 /* ===== 12 Nov replan: leaf counting, parent cards, pomodoros, estimates ===== */
 let _pidC=null;
-function parentIds(){if(!_pidC){const s=new Set();for(const t of Object.values(state.tasks||{}))if(t&&t.parent&&!t.cut&&!t.archived)s.add(t.parent);_pidC=s;Promise.resolve().then(()=>{_pidC=null;});}return _pidC;}
-function isLeaf(t){return !!t&&!t.bucket&&!parentIds().has(t.id);}
+function parentIds(){if(!_pidC){const s=new Set();for(const t of Object.values(state.tasks||{}))if(t&&t.parent&&!t.cut&&!t.archived&&!t.sub)s.add(t.parent);_pidC=s;Promise.resolve().then(()=>{_pidC=null;});}return _pidC;}
+function isLeaf(t){return !!t&&!t.bucket&&!t.sub&&!parentIds().has(t.id);}
+function subsOf(id){return Object.entries(state.tasks||{}).map(([i,t])=>({id:i,...t})).filter(t=>t.sub&&t.parent===id&&!t.cut&&!t.archived).sort((a,b)=>(a.order||0)-(b.order||0));}
 function isBk(id){const t=state.tasks&&state.tasks[id];return !!(t&&t.bucket);}
 function isParentId(id){return parentIds().has(id);}
 function leafTasks(){return Object.entries(state.tasks||{}).map(([id,t])=>({id,...t})).filter(isLeaf);}
-function kidsOf(id){return Object.entries(state.tasks||{}).map(([i,t])=>({id:i,...t})).filter(t=>t.parent===id&&!t.cut&&!t.archived).sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.order||0)-(b.order||0));}
+function kidsOf(id){return Object.entries(state.tasks||{}).map(([i,t])=>({id:i,...t})).filter(t=>t.parent===id&&!t.sub&&!t.cut&&!t.archived).sort((a,b)=>(a.date||"").localeCompare(b.date||"")||(a.order||0)-(b.order||0));}
 // estimates: "about 1 h", "about 1.5 h", "about 30 min"
 function aboutH(m){m=Math.round(Number(m)||0);if(m<=0)return "";if(m<45)return "about "+m+" min";const h=Math.round(m/30)/2;return "about "+String(h)+" h";}
 function pomN(m){return Math.round(m/50*10)/10;}
@@ -104,7 +105,7 @@ v3stepResched=function(id){v3rs(id,"step");};
 v3resched=function(id){v3rs(id,"task");};
 // one gesture set everywhere: swipe left = reschedule, swipe right = done, hold = quick menu (same menu as the ... button), drag bars in the waterfall
 function rsLong(node,fn){let tm=null,x0=0,y0=0,fired=false;const stop=()=>{clearTimeout(tm);tm=null;};
-  node.addEventListener("pointerdown",e=>{if(e.button>0||e.target.closest("input,textarea"))return;fired=false;x0=e.clientX;y0=e.clientY;stop();tm=setTimeout(()=>{tm=null;fired=true;if(navigator.vibrate)try{navigator.vibrate(12);}catch(_){}fn();},480);});
+  node.addEventListener("pointerdown",e=>{if(e.button>0||e.target.closest("input,textarea"))return;fired=false;x0=e.clientX;y0=e.clientY;stop();tm=setTimeout(()=>{tm=null;if(node.closest&&node.closest(".v3-lift"))return;fired=true;if(navigator.vibrate)try{navigator.vibrate(12);}catch(_){}fn();},480);});
   node.addEventListener("pointermove",e=>{if(tm&&(Math.abs(e.clientX-x0)>8||Math.abs(e.clientY-y0)>8))stop();});
   ["pointerup","pointercancel","pointerleave"].forEach(ev=>node.addEventListener(ev,stop));
   node.addEventListener("click",e=>{if(fired){fired=false;e.stopPropagation();e.preventDefault();}},true);

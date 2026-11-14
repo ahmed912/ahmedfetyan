@@ -58,16 +58,11 @@ function plSheet(id){psOpen("Plan task",re=>{const t=state.tasks[id];if(!t)retur
     body.push(el("div",{class:"v3-row"},el("button",{type:"button",class:"btn pl-sched",onclick:()=>{psClose(true);v3rs(id,"task");}},"Schedule"),
       t.inbox?el("button",{type:"button",class:"btn ghost pl-back",onclick:()=>{psClose(true);plToBacklog(id);}},"Send to backlog"):null,
       t.inbox?el("button",{type:"button",class:"btn ghost pl-keep",onclick:()=>{psClose(true);}},"Later"):null),
+    el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost pl-edit",onclick:()=>{psClose(true);v3taskSheet(id,true);}},"Edit"),el("button",{type:"button",class:"btn ghost danger del-menu",onclick:()=>v3delete(id)},"Delete")),
       el("button",{type:"button",class:"btn ghost danger pl-drop",onclick:()=>{psClose(true);v3archive(id,true);}},"Drop it"));
     return body;});}
 let plInExp=false,plBlOpen=false,plBlExp=false;
-function plRow(t){const li=el("li",{class:"bk-row pl-row","data-id":t.id,"aria-label":t.title});
-  const cb=el("input",{type:"checkbox","aria-label":"Done: "+t.title});cb.onchange=()=>{setDone(t.id,cb.checked);render();};
-  const tt=el("button",{type:"button",class:"bk-t",text:t.title,onclick:()=>plSheet(t.id)});
-  const dc=el("button",{type:"button",class:"bk-d none","aria-label":"Pick a date: "+t.title,text:"Schedule",onclick:()=>v3rs(t.id,"task")});
-  li.append(cb,tt,dc,el("p",{class:"hint pl-b",text:plBadges(t).join(" · ")}));
-  swipeable(li,()=>{setDone(t.id,true);render();},()=>v3rs(t.id,"task"),null,{r:"Mark as done",rb:"Done",direct:true});rsLong(li,()=>v3taskMenu(t.id));
-  return li;}
+function plRow(t){return bkRow(t,false,{inbox:true});}
 function renderInbox(){const pg=document.querySelector('.page[data-page="projects"]');if(!pg||pg.hidden)return;
   let sec=document.getElementById("planInbox");const bs=document.getElementById("bucketSec");if(!sec){sec=el("section",{id:"planInbox",class:"bucket-sec pl-sec","aria-label":"Inbox and backlog"});}
   if(bs){if(sec.nextElementSibling!==bs)bs.before(sec);}else if(sec.parentElement!==pg)pg.prepend(sec);
@@ -95,5 +90,4 @@ function plExtra(id,re){const t=state.tasks[id];if(!t)return [];
       el("div",{class:"field"},el("span",{class:"label",text:"Priority"}),el("div",{class:"v3-cats",role:"group","aria-label":"Priority"},pb(false,"Normal"),pb(true,"High"))))];}
 // facts on Today cards and bucket rows (only when a due date or High is set)
 {const _vf=v3card;v3card=function(t,top,ctx){const c=_vf(t,top,ctx);try{const tx=plFact(t),h=c.querySelector(".cs-head");if(tx&&h&&!c.querySelector(".pl-fact"))h.after(el("p",{class:"hint pl-fact",text:tx}));}catch(e){console.warn(e);}return c;};}
-{const _bk=bkRow;bkRow=function(t,first){const li=_bk(t,first);try{const tx=plFact(t);if(tx)li.append(el("p",{class:"hint pl-b pl-fact",text:tx}));}catch(e){}return li;};}
 window.__pl.cmp=plCmp;window.__pl.badges=plBadges;

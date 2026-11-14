@@ -35,3 +35,17 @@ python3 test_replan.py  final.json
 python3 rollback_diet.py replan.json restored.json replan-<ts>     # byte-for-byte
 ```
 One portfolio project at a time: HASM active, Javelin queue 1, Real estate 2, Mugassam last (queue 5, 10 tasks), bucket `kind`/`queue`/`bState`, milestone `phase`, dates and blocks (Fridays rest), Javelin 2000 min with 600 min buffer on 21 and 22 Nov. Learning, Reviews stay rails; LinkedIn paused; Taste makers not migrated; nothing deleted. Drift against `--baseline` (default `liveapply/final.json`) exits 2; the run is idempotent. `--later-stubs` adds empty paused F&B and Keynote buckets (queue 3, 4); `--goals` sets the Sprint 3 goal to "Real estate live, first inquiry calls". Note: the HASM and Javelin bucket `kind` was "parent" and becomes "portfolio" (rollback restores it).
+
+## Unify steps and subtasks (14 Nov), step 6
+Steps and Subtasks are one concept: child docs `{parent, sub:true, title, done, order}` with no estimate. The app never counts them as tasks.
+```
+python3 apply_unify.py final.json unified.json [--baseline PATH] [--force]     # scripts only, not run on live
+python3 test_unify.py  final.json mock_final.json
+python3 rollback_diet.py unified.json restored.json unify-<ts>                 # byte-for-byte
+```
+- Every task's `check` list (list or object of `{id,t,done,o}`) becomes real child docs (id = the old item id, title `t`, `done` and order kept, `cat`/`date`/`sprint` inherited, hidden if the parent is hidden), then `check` is removed from the task. 35 checklists become 115 subtasks on `liveapply/final.json`.
+- Old subtasks made by the "Add a subtask" box get `sub:true`. They are found by: has a non-bucket parent, not archived, no `from`/`mergedFrom`/`replacedBy`, `order` is a timestamp (>= 1e12, written by the box), and no `date` and no `sprint`. A stored estimate is cleared only when it is exactly 60 (the app default when nothing is set); any other number was typed by him and stays. Parent estimates are never touched.
+- Drift: every task that has a `check` in the baseline (default `liveapply/final.json`) must still match on done, date, title and check, or the run stops with exit 2. Idempotent: a second run changes nothing.
+- `rollback_diet.py` now restores removed fields at their old position (`pos` in the record), so the rollback is byte-for-byte.
+- `test_unify.py` runs on a copy of `final.json` and `mock_final.json` (also with synthetic old subtasks): backup, rollback byte-for-byte, Sprint counts unchanged (no subtask counted), parents' estimates unchanged, auto-default detection, drift stop, idempotent.
+- App side: the app also converts any leftover `check` list the first time a task is opened, so an unconverted task never loses its list.

@@ -7,7 +7,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const pg=await openp(b,w,{when:'2026-11-14T11:00:00',sb:true});const R=async ms=>{await pg.clock.runFor(ms);await pg.waitForTimeout(200);};
   const T=()=>pg.evaluate(()=>JSON.parse(JSON.stringify(window.__data.tasks)));
   const undo=async()=>{await pg.click('#undoBar .ub-b');await R(500);};
-  const chk=async id=>Object.values(((await T())[id]||{}).check||{}).sort((a,b)=>a.o-b.o);
+  const chk=async id=>{const all=await T();return Object.values(all).filter(x=>x.parent===id&&x.sub&&!x.archived&&!x.cut).sort((a,b)=>a.order-b.order).map(x=>({t:x.title,done:!!x.done,o:x.order}));};
+  const undoS=async()=>{await pg.click('#v3ut .ub-b');await R(500);};
   // seed: a milestone for today plus a parent with 20 open leaves
   await pg.evaluate(async()=>{const db=await window.claude.use('db');
     await db.doc('tasks/brief1').set({title:'Write the brief',date:'2026-11-14',cat:'portfolio',mins:60,order:-9,done:false});
@@ -20,24 +21,21 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('no counter before steps',await card.locator('.ck-line').count()===0);
   // 2 tap the title, sheet shows empty state, add 3 steps with Enter
   await card.locator('.cs-t').click();await R(500);
-  ok('sheet shows No steps yet',await pg.locator('.ps-sheet .ck-empty').isVisible());
+  ok('sheet shows one Subtasks section with an Add a subtask line and no rows',await pg.locator('.ps-sheet .ck-add').isVisible()&&await pg.locator('.ps-sheet .ck-row').count()===0);
   await pg.click('.ps-sheet .ck-add');
   for(const s of ['Problem, audience, the ask','Draft the outline','Call Omar']){await pg.keyboard.type(s);await pg.keyboard.press('Enter');await R(600);}
-  let c=await chk('brief1');ok('3 steps stored',c.length===3&&c[2].t==='Call Omar',JSON.stringify(c));
+  let c=await chk('brief1');ok('3 subtasks stored',c.length===3&&c[2].t==='Call Omar',JSON.stringify(c));
   ok('sheet header says 0 of 3',(await pg.locator('.ps-sheet .ck-sec .label').innerText()).includes('0 of 3'));
   // 3 tick the first step
   await pg.locator('.ps-sheet .ck-row input[type=checkbox]').first().click();await R(600);
   c=await chk('brief1');ok('first step ticked',c[0].done===true&&!c[1].done);
   // 4 mistype and edit inline, undo restores old text
-  const inp=pg.locator('.ps-sheet .ck-row .ck-t').nth(1);await inp.fill('Draft the outlne');await inp.blur();await R(600);
+  await pg.locator('.ps-sheet .ck-row').nth(1).locator('button:has-text("...")').click();await pg.locator('.ps-sheet .ck-row').nth(1).locator('button:has-text("Rename")').click();const inp=pg.locator('.ps-sheet .ck-edit');await inp.fill('Draft the outlne');await inp.blur();await R(600);
   c=await chk('brief1');ok('edited text saved',c[1].t==='Draft the outlne',JSON.stringify(c));
-  await undo();c=await chk('brief1');ok('undo restores old text',c[1]&&c[1].t==='Draft the outline',JSON.stringify(c));
-  // move down then delete then undo each
-  await pg.locator('.ps-sheet .ck-row').first().locator('button:has-text("...")').click();await pg.locator('.ps-sheet .ck-row').first().locator('button:has-text("Move down")').click();await R(600);
-  c=await chk('brief1');ok('move down reorders',c[0].t==='Draft the outline'&&c[1].done===true,JSON.stringify(c));
-  await undo();c=await chk('brief1');ok('undo move',c[0].t==='Problem, audience, the ask');
+  await undoS();c=await chk('brief1');ok('undo restores old text',c[1]&&c[1].t==='Draft the outline',JSON.stringify(c));
+  // (14 Nov: no Move up/down buttons; reorder is hold and drag, covered by r37)
   await pg.locator('.ps-sheet .ck-row').nth(2).locator('button:has-text("...")').click();await pg.locator('.ps-sheet .ck-row').nth(2).locator('button:has-text("Delete")').click();await R(600);
-  ok('delete removes a step',(await chk('brief1')).length===2);await undo();ok('undo delete',(await chk('brief1')).length===3);
+  ok('delete removes a subtask',(await chk('brief1')).length===2);await undoS();ok('undo delete',(await chk('brief1')).length===3);
   await pg.evaluate(()=>__r2.psClose());await R(200);await pg.locator('.cs-card[data-id="brief1"] .cs-t').click();await R(500);
   console.log('ROWS',await pg.locator('.ps-sheet .ck-row').count(),await pg.locator('.ps-sheet').count(),JSON.stringify(await chk('brief1')));
   // ticking the last item does not complete the task
@@ -51,9 +49,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   
   // two contexts: both ticks survive
   await pg.evaluate(async()=>{const db=await window.claude.use('db');
-    await db.doc('tasks/brief1').update({$d:[{p:['check',Object.keys(window.__data.tasks.brief1.check)[0],'t'],set:'Problem, audience, the ask'}]});
-    const k=Object.keys(window.__data.tasks.brief1.check);
-    await Promise.all([db.doc('tasks/brief1').update({$d:[{p:['check',k[1],'done'],set:true}]}),db.doc('tasks/brief1').update({$d:[{p:['check',k[2],'done'],set:false}]})]);});
+    const k=Object.entries(window.__data.tasks).filter(([i,t])=>t.parent==='brief1'&&t.sub&&!t.cut).sort((a,b)=>a[1].order-b[1].order).map(x=>x[0]);
+    await Promise.all([db.doc('tasks/'+k[1]).update({done:true}),db.doc('tasks/'+k[2]).update({done:false})]);});
   await R(500);c=await chk('brief1');ok('two contexts keep both changes',c[1].done===true&&c[2].done===false&&c[0].done===true,JSON.stringify(c));
   // Start 5 minutes from the card details
   await pg.locator('.cs-card[data-id="brief1"] .cl-det').click();await R(300);
@@ -72,7 +69,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('stop logs time on the task',((await T()).brief1.spent||0)>=5,JSON.stringify((await T()).brief1.spent));
   await pg.evaluate(()=>{__r2.closeFull();});await R(300);
   // hold menu has Start for 5 minutes
-  const cb=await pg.locator('.cs-card[data-id="brief1"]').boundingBox();await pg.mouse.move(cb.x+cb.width/2,cb.y+cb.height-6);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);
+  const cb=await pg.locator('.cs-card[data-id="brief1"] .cs-head').boundingBox();await pg.mouse.move(cb.x+24,cb.y+10);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);
   ok('hold menu offers Start for 5 minutes',await pg.locator('.ps-sheet button:has-text("Start for 5 minutes")').count()===1);
   await pg.evaluate(()=>__r2.psClose());await R(300);
   // Projects page: old cards link gone, counts line, 3 plus more

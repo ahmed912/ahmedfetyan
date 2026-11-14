@@ -42,6 +42,9 @@ for rid in ids:
             for k, v in fields.items():
                 if v["old"] == ABSENT:
                     doc.pop(k, None)
+                elif "pos" in v and k not in doc:
+                    # a field the run removed: put it back at its old place so the file is byte-for-byte equal
+                    items = list(doc.items()); items.insert(v["pos"], (k, v["old"])); doc.clear(); doc.update(items)
                 else:
                     doc[k] = v["old"]
     for coll, cids in r["created"].items():

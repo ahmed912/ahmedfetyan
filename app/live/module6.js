@@ -65,12 +65,17 @@ function bkPicker(id,re){const t=state.tasks[id];const sel=el("select",{class:"v
 function bkArchSheet(){psOpen("Archived buckets",re=>{const L=bkList().filter(b=>b.archived);
   return L.length?[el("ul",{class:"ps-sh-list"},...L.map(b=>el("li",{class:"bk-arow"},el("span",{text:b.title}),el("button",{type:"button",class:"mini",onclick:()=>{bkArchive(b.id,false);re();}},"Restore"))))]:[el("p",{class:"hint",text:"No archived buckets."})];});}
 // ---- the grid ----
-function bkRow(t,first){const li=el("li",{class:"bk-row"+(t.done?" done":""),"data-id":t.id,draggable:"true","aria-label":t.title});
-  const cb=el("input",{type:"checkbox","aria-label":"Done: "+t.title});cb.checked=!!t.done;cb.onchange=()=>{setDone(t.id,cb.checked);render();};
-  const tt=el("button",{type:"button",class:"bk-t",text:t.title,onclick:()=>v3taskSheet(t.id)});
-  const dc=el("button",{type:"button",class:"bk-d"+(t.date?"":" none"),"aria-label":(t.date?"Reschedule from "+bkShort(t.date):"Pick a date")+": "+t.title,text:t.date?bkShort(t.date):"No date",onclick:()=>v3rs(t.id,"task")});
-  li.append(cb,tt,dc);
-  if(first&&!t.done)li.classList.add("has-go"),li.append(el("button",{type:"button",class:"mini bk-go","aria-label":"Start now: "+t.title,onclick:()=>v3five(t.id)},"Start for 5 minutes"));
+// ONE shared row for bucket cards, Inbox and (through the same CSS) subtask and parent sheet lists:
+// [check] [title, one line] [day chip]  and one tiny line under the title for the tags (type, High, "n of m"). Nothing else.
+function urTags(t){const o=[];if(t.cat)o.push(CAT_NAME[t.cat]||t.cat);if(Number(t.pri)>0)o.push("High");try{const k=ckCount({...t});if(k.n)o.push(k.d+" of "+k.n);}catch(e){}return o.join(" \u00b7 ");}
+function bkActiveId(){const L=bkList().filter(b=>!b.archived&&b.bState==="active"&&(b.cat==="portfolio"||b.cat==="client"||b.kind==="portfolio"||b.kind==="client"));L.sort((a,b)=>(Number(a.queue)||0)-(Number(b.queue)||0)||(a.order||0)-(b.order||0));return L[0]?L[0].id:null;}
+function bkRow(t,first,opts){opts=opts||{};const li=el("li",{class:"bk-row ur-row"+(opts.inbox?" pl-row":"")+(t.done?" done":""),"data-id":t.id,draggable:"true","aria-label":t.title});
+  const cb=el("input",{type:"checkbox",class:"ur-c","aria-label":"Done: "+t.title});cb.checked=!!t.done;cb.onchange=()=>{setDone(t.id,cb.checked);render();};
+  const tt=el("button",{type:"button",class:"bk-t ur-t",text:t.title,onclick:()=>opts.inbox?plSheet(t.id):v3taskSheet(t.id)});
+  const dc=el("button",{type:"button",class:"bk-d ur-d"+(t.date?"":" none"),"aria-label":(t.date?"Reschedule from "+bkShort(t.date):"Pick a date")+": "+t.title,text:t.date?bkShort(t.date):"No date",onclick:()=>v3rs(t.id,"task")});
+  const tg=el("span",{class:"hint ur-tags",text:urTags({...t})});
+  li.append(cb,tt,dc,tg);
+  if(first&&!t.done&&opts.go)li.classList.add("has-go"),tg.append(el("button",{type:"button",class:"ur-go bk-go","aria-label":"Start now: "+t.title,onclick:()=>v3five(t.id)},"Start for 5 minutes"));
   li.addEventListener("dragstart",e=>{bkDrag=t.id;try{e.dataTransfer.setData("text/plain",t.id);e.dataTransfer.effectAllowed="move";}catch(_){}li.classList.add("drag");document.body.classList.add("bk-dragging");});
   li.addEventListener("dragend",()=>{bkDrag=null;li.classList.remove("drag");document.body.classList.remove("bk-dragging");document.querySelectorAll(".bk-over").forEach(x=>x.classList.remove("bk-over"));});
   if(!t.done){swipeable(li,()=>{setDone(t.id,true);render();},()=>v3rs(t.id,"task"),null,{r:"Mark as done",rb:"Done",direct:true});rsLong(li,()=>v3taskMenu(t.id));}
@@ -81,10 +86,9 @@ function bkCard(b){const none=!b,id=b?b.id:"none",kids=(none?bkLoose():bkKids(b.
   const head=el("div",{class:"bk-head"},none?el("h3",{class:"bk-title",text:"Unbucketed"}):el("button",{type:"button",class:"bk-title",text:b.title,onclick:()=>bkForm(b.id)}),
     none?null:el("button",{type:"button",class:"mini bk-more","aria-label":"Menu for "+b.title,onclick:()=>bkMenu(b.id)},"..."));
   card.append(head);
-  if(!none)card.append(el("div",{class:"bk-sub hint"},dates+(spl?" · "+spl:"")+(paused?" · Paused":"")));
-  card.append(el("div",{class:"bk-prog"},none?el("span",{class:"hint",text:open.length+" open"}):el("span",{class:"hint",text:kids.length?done+" of "+kids.length+" done":"No tasks yet"}),
-    !none&&kids.length?el("span",{class:"bk-bar","aria-hidden":"true"},el("i",{style:"width:"+Math.round(done/kids.length*100)+"%"})):null));
-  const ul=el("ul",{class:"bk-list"},...shown.map((t,i)=>bkRow(t,i===0)));card.append(ul);
+  card.append(el("div",{class:"bk-sub hint"},none?open.length+" open":(dates?dates+" \u00b7 ":"")+(kids.length?done+" of "+kids.length:"No tasks yet")+(paused?" \u00b7 Paused":"")));
+  if(!none&&kids.length)card.append(el("div",{class:"bk-prog"},el("span",{class:"bk-bar","aria-hidden":"true"},el("i",{style:"width:"+Math.round(done/kids.length*100)+"%"}))));
+  const ul=el("ul",{class:"bk-list"},...shown.map((t,i)=>bkRow(t,i===0,{go:!none&&b.id===bkActiveId()})));card.append(ul);
   if(!none&&!kids.length)card.append(el("p",{class:"hint bk-empty",text:"No tasks yet"}));
   if(open.length>3)card.append(el("button",{type:"button",class:"mini bk-moreb",onclick:()=>{bkExp[id]=!ex;render();}},ex?"Show less":(open.length-3)+" more"));
   const inp=el("input",{type:"text",class:"v3-in","aria-label":"Add a task to "+(none?"Unbucketed":b.title),placeholder:"Add task"});
