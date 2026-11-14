@@ -63,8 +63,9 @@
     // safety net: if the server changed and no live update reached this device, fetch the latest
     let lastMax=null,lastCount=-1;
     setInterval(async()=>{if(document.visibilityState!=="visible"||!navigator.onLine)return;try{const q=await window.__sb.from("docs").select("updated_at").order("updated_at",{ascending:false}).limit(1);const t=q&&q.data&&q.data[0]?q.data[0].updated_at:null;
-      if(t&&lastMax&&t!==lastMax&&snapCount===lastCount)window.dispatchEvent(new Event("online"));lastMax=t||lastMax;lastCount=snapCount;}catch(e){}},5000);
+      if(t&&lastMax&&t!==lastMax&&snapCount===lastCount)window.dispatchEvent(new Event("online"));lastMax=t||lastMax;lastCount=snapCount;}catch(e){}},3000);
     // coming back to the app: fetch the latest from the server
-    let hiddenAt=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hiddenAt=Date.now();else if(hiddenAt&&Date.now()-hiddenAt>15000){hiddenAt=0;try{window.dispatchEvent(new Event("online"));}catch(e){}}});
+    let hiddenAt=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hiddenAt=Date.now();else{const away=hiddenAt?Date.now()-hiddenAt:0;hiddenAt=0;if(away>2000){try{window.dispatchEvent(new Event("online"));}catch(e){}}}});
+    let lastPull=0;const pull=()=>{if(Date.now()-lastPull<2000)return;lastPull=Date.now();try{window.dispatchEvent(new Event("online"));}catch(e){}};window.addEventListener("focus",pull);window.addEventListener("pageshow",pull);
     window.__sbSafeApi={applyOps,diffObj,eq,clearRecent:p=>{delete recent[p];}};
   })();

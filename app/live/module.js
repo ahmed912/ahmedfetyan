@@ -1284,7 +1284,7 @@
     try{const l=JSON.parse(localStorage.getItem(WAR_K)||"null");return l&&!dead.includes(l.start)?l:null;}catch(e){return null;}};
   // writes go out one at a time, newest last, so the server always ends on the latest state
   let warBusy=false,warNext=null;
-  const warFlush=async()=>{if(warBusy||!warNext)return;warBusy=true;try{while(warNext){const b=warNext;warNext=null;try{await store.set("timers/war",b);}catch(e){}}}finally{warBusy=false;}};
+  const warFlush=async()=>{if(warBusy||!warNext)return;warBusy=true;try{while(warNext){const b=warNext;warNext=null;try{await window.__entP;}catch(e){}try{await store.set("timers/war",b);}catch(e){}}}finally{warBusy=false;}};
   const warPut=w=>{const prev=(warDoc()||{}).w||null;try{w?localStorage.setItem(WAR_K,JSON.stringify(w)):localStorage.removeItem(WAR_K);}catch(e){}
     const body={active:!!w,w:w||null,custom:warCustom(),at:Date.now()};if(!w&&prev&&prev.start){warBury(prev.start);body.ended={start:prev.start,at:Date.now()};}
     state.timers={...(state.timers||{}),war:body};warNext=body;warFlush();};
