@@ -67,3 +67,4 @@
 - TODO: drop the leftover temporary function public.apply_docs_tmp(text,uuid,timestamptz,jsonb) (migration needs approval; its secret is deleted so it is unusable). Rollback if needed: restore docs from backups id 25 or app Settings > Undo task diet.
 
 - [unpublished, built] Polish batch: wider fluid buckets, names clamped, counts fix (archived excluded), Later shelf focus (module16), Select mode (module15), Move sheets simplified (module17), steps bug fixed (q-row input width). Tests r31 to r36. Next: clean build pubbuild3 + full suite, publish, apply replan, WF2.
+- Published version 1794634486 (polish batch: counts fix, fluid buckets, Later shelf focus, Select mode, simpler Move sheets, steps text fix). 34 of 34 tests pass. Live data diet applied earlier. Replan not applied yet.
