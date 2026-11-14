@@ -60,6 +60,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // 6 menu: edit/rename, pause, archive, restore
   await pg.click('[data-bk="'+id+'"] .bk-more');await R(400);await pg.click('.ps-sheet .btn:has-text("Edit")');await R(400);
   await pg.fill('.ps-sheet .bk-name','Site');await pg.keyboard.press('Tab');await R(400);await pg.fill('.ps-sheet input[aria-label="End date"]','2026-12-10');await pg.keyboard.press('Tab');await R(400);
+  if(await pg.locator('.ps-sheet .wf-mv-no').count()){await pg.click('.ps-sheet .wf-mv-no');await R(400);await pg.click('[data-bk="'+id+'"] .bk-more');await R(400);await pg.click('.ps-sheet .btn:has-text("Edit")');await R(400);}
   await pg.click('.ps-sheet .bk-swb:nth-child(3)');await R(300);await pg.click('.ps-sheet .seg button:has-text("Paused")');await R(400);
   await pg.check('.ps-sheet input[aria-label="Outside sprints"]');await R(400);
   const e=(await T())[id];ok('edit writes fields',e.title==='Site'&&e.bEnd==='2026-12-10'&&e.bColor==='#7C3AED'&&e.bState==='paused'&&e.bNoSprint===true,JSON.stringify(e));
