@@ -37,9 +37,9 @@
     rec.arch.slice().reverse().forEach(a=>{const t=state.tasks[a.id];if(!t)return;const patch={archived:a.archived,cut:a.cut,archivedBy:a.by};state.tasks[a.id]={...t,...patch};setTask(a.id,patch);});
     Object.entries(rec.parents).forEach(([pid,pv])=>{if(!pv||!state.tasks[pid])return;state.tasks[pid]={...state.tasks[pid],...pv};setTask(pid,pv);});render();try{hideUndo();}catch(e){}toast("Undone");}
   // fill: for each working day, pull the next open portfolio/client steps forward until the day reaches the target
-  function v3fill(days,rec){const tgt=v3dayMin(),out={days:[],mins:0,parents:[],steps:0};
+  function v3fill(days,rec){const out={days:[],mins:0,parents:[],steps:0};
     const work=()=>leafTasks().filter(t=>v3isWork(t)&&!t.cut&&!t.archived&&t.date);
-    days.forEach(d=>{if(isFriday(d)||rlBuffer(d))return;let load=work().filter(t=>t.date===d).reduce((a,t)=>a+estMin(t),0);if(load>=tgt)return;
+    days.forEach(d=>{if(isFriday(d)||rlBuffer(d))return;const tgt=v3dayMin(d);let load=work().filter(t=>t.date===d).reduce((a,t)=>a+estMin(t),0);if(load>=tgt)return;
       const cand=work().filter(t=>!t.done&&t.date>d).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.order||0)-(b.order||0));let got=0;
       for(const c of cand){if(load>=tgt)break;const m=estMin(c);if(!(m>0)||load+m>tgt+25)continue;
         const pt=c.parent&&state.tasks[c.parent]?state.tasks[c.parent].title:c.title;if(!out.parents.includes(pt))out.parents.push(pt);
@@ -58,12 +58,12 @@
     const today=iso(new Date()),r=v3fill(v3daysFrom(today),rec);v3syncParents(rec);render();
     v3undoToast("Archived "+(t.title||"task")+". "+(r.days.length?v3fillText(r):"Nothing open to fill with."),()=>v3recUndo(rec));}
   // ---- reschedule one step: swipe left on a step row opens this ----
-  const v3spOf=d=>sprints().find(p=>d>=p.start&&d<=p.end)||null;
+  const v3spOf=d=>(typeof spOn==="function"&&!spOn())?null:(sprints().find(p=>d>=p.start&&d<=p.end)||null);
   function v3stepMove(id,d,typed){const t=state.tasks[id];if(!t)return false;
     if(!typed&&isFriday(d))d=addDays(d,1);
     if(d===t.date){toast("It stays on "+v3dl(d));return false;}
-    const to=v3spOf(d),from=v3spOf(t.date);if(!to){toast("No sprint covers "+v3dl(d));return false;}
-    const warn=[];if(typed&&isFriday(d))warn.push("Friday is your rest day.");if(from&&to.n!==from.n)warn.push("This moves it into Sprint "+to.n+".");
+    const to=v3spOf(d),from=v3spOf(t.date);
+    const warn=[];if(typed&&isFriday(d))warn.push("Friday is your rest day.");if(from&&to&&to.n!==from.n)warn.push("This moves it into Sprint "+to.n+".");
     const run=()=>{const rec=v3rec();v3recMove(rec,id,d);v3syncParents(rec);render();v3undoToast("Moved to "+v3dl(d)+": "+t.title,()=>v3recUndo(rec));psClose(true);};
     if(warn.length){v3confirm(warn.join(" ")+" Move to "+v3dl(d)+"?","Move",run);return true;}
     run();return true;}
@@ -136,7 +136,7 @@
     const chips=el("div",{class:"v3-cats"},...days.map(d=>el("button",{type:"button",class:"cat-chip"+(nd===d?" on":""),onclick:()=>{nd=d;di.value=fmt(d,{day:"numeric",month:"short",year:"numeric"});chips.querySelectorAll(".cat-chip").forEach((c,i)=>c.classList.toggle("on",days[i]===d));}},d===today?"Today":fmt(d,{weekday:"short",day:"numeric"}))));
     const di=v3dateField("New day",t.date,p=>{nd=p;chips.querySelectorAll(".cat-chip").forEach(c=>c.classList.remove("on"));});
     return [el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Sprint "+sp.n+" ends "+v3dl(sp.end)+". Moving past it asks first."}),chips,el("label",{class:"field"},el("span",{class:"label",text:"Or type a day"}),di),
-      el("button",{type:"button",class:"btn",onclick:()=>{const ae=document.activeElement;if(ae&&ae.blur)ae.blur();setTimeout(()=>{if(!v3spOf(nd)){toast("No sprint covers that day");return;}const go=()=>{moveTaskTo(id,nd);psClose(true);};if(nd>sp.end||nd<sp.start)v3confirm("This moves it into Sprint "+v3spOf(nd).n+". Move to "+v3dl(nd)+"?","Move",go);else go();},30);}},"Reschedule")];});}
+      el("button",{type:"button",class:"btn",onclick:()=>{const ae=document.activeElement;if(ae&&ae.blur)ae.blur();setTimeout(()=>{const go=()=>{moveTaskTo(id,nd);psClose(true);};if(v3spOf(nd)&&(nd>sp.end||nd<sp.start))v3confirm("This moves it into Sprint "+v3spOf(nd).n+". Move to "+v3dl(nd)+"?","Move",go);else go();},30);}},"Reschedule")];});}
   function v3length(id){psOpen("Change length",re=>{const t=state.tasks[id],sp=v3sprintOf(t);let dys=t.days||1,mn=t.mins||0;
     const d=el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(dys),"aria-label":"Days it spans"}),m=el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:mn?String(mn):"",placeholder:"min","aria-label":"Estimated minutes"});
     return [el("p",{class:"ps-sh-sum",text:t.title}),el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),d),el("label",{class:"field"},el("span",{class:"label",text:"Minutes of work"}),m)),
@@ -248,7 +248,7 @@
   // ---- day progress: one total and one yardstick (7h) in Today and in Time ----
   function v3worked(d){const it=entriesOn(d).filter(x=>!isEstimate(x)).concat(liveItems(d));return Math.max(0,unionMin(it)+hoursAdj(d)*60);}
   renderEntHero=function(items,total){const box=document.getElementById("entHero");if(!box)return;
-    const adj=hoursAdj(sel)*60,worked=Math.max(0,total+adj),fri=isFriday(sel),plan=fri?0:v3dayMin();
+    const adj=hoursAdj(sel)*60,worked=Math.max(0,total+adj),fri=isFriday(sel),plan=fri?0:v3dayMin(sel);
     const real=items.filter(x=>x.kind!=="event"&&x.kind!=="break"),learnM=unionMin(real.filter(isLearning)),brkM=items.filter(x=>x.kind==="break").reduce((a,x)=>a+Number(x.minutes||0),0),live=items.some(x=>x.live),scale=Math.max(plan,worked,1);
     const seg=(cls,mm,t)=>mm>0?el("span",{class:"eh-seg "+cls,style:"width:"+(mm/scale*100)+"%",title:t+": "+dur(mm)}):null,workPart=Math.max(0,worked-learnM);
     const bar=el("div",{class:"eh-bar",role:"img","aria-label":dur(worked)+" worked"+(plan?" of "+dur(plan):"")},...[seg("work",workPart,"Work"),seg("learn",Math.min(learnM,worked),"Learning"),seg("brk",brkM,"Breaks")].filter(Boolean));
@@ -257,7 +257,7 @@
         plan?el("div",{class:"eh-pct"},el("b",{class:"num",text:pct+"%"}),el("span",{class:"hint v3-edtarget",role:"button",tabindex:"0",title:"Change the day target",onclick:dayTargetSheet,onkeydown:e=>{if(e.key==="Enter")dayTargetSheet();},text:"of "+dur(plan)})):el("div",{class:"eh-pct"},el("span",{class:"hint",text:"Friday: rest day"}))),bar,
       el("div",{class:"eh-keys"},stat("work","Work",workPart),stat("learn","Learning",Math.min(learnM,worked)),brkM?stat("brk","Breaks",brkM):null,adj?el("span",{class:"hint",text:(adj>0?"+":"-")+dur(Math.abs(adj))+" adjusted by hand"}):null));};
   // ---- the day target (default 7 hours) is yours to set. Today and Time both read it, so they always match ----
-  function v3dayMin(){const p=(state.settings&&state.settings.prefs)||{},mn=Number(p.dayMin);return mn>=50&&mn<=1200?mn:FULL_DAY;}
+  function v3dayMin(d){const p=(state.settings&&state.settings.prefs)||{},mn=Number(p.dayMin),base=mn>=50&&mn<=1200?mn:FULL_DAY;return d&&typeof capDayMin==="function"?capDayMin(d,base):base;}
   function v3parseHours(t){t=String(t||"").trim().toLowerCase();let m;if((m=t.match(/^(\d+(?:[.,]\d+)?)\s*(?:p|pom|poms|pomodoro|pomodoros)$/)))return Math.round(parseFloat(m[1].replace(",","."))*50);if((m=t.match(/^(\d+(?:[.,]\d+)?)$/)))return Math.round(parseFloat(m[1].replace(",","."))*50);if((m=t.match(/^(\d{1,2}):(\d{2})$/)))return +m[1]*60+ +m[2];if((m=t.match(/^(\d+)\s*h(?:ours?|rs?)?\s*(?:(\d+)\s*m(?:in)?)?$/)))return +m[1]*60+(+m[2]||0);if((m=t.match(/^(\d+)\s*m(?:in(?:utes?)?)?$/)))return +m[1];if((m=t.match(/^(\d+(?:[.,]\d+)?)$/)))return Math.round(parseFloat(m[1].replace(",","."))*60);return 0;}
   function dayTargetSheet(){psOpen("Day target",re=>{const cur=v3dayMin(),inp=el("input",{type:"text",class:"v3-in tt-in","aria-label":"Pomodoros for a full day",placeholder:"8, or 6h, or 7:30",value:pomS(cur)});
     const save=mn=>{if(!(mn>=30&&mn<=1200)){toast("Type pomodoros like 8, or hours like 6h or 7:30");return;}const p={...((state.settings&&state.settings.prefs)||{}),dayMin:mn,at:Date.now()};state.settings={...(state.settings||{}),prefs:p};try{store.set("settings/prefs",p);}catch(e){}toast("Day target: "+pomS(mn)+" pomodoros");psClose(true);render();};

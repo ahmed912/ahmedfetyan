@@ -105,7 +105,7 @@
     track.addEventListener("click",e=>{if(e.pointerType!=="mouse"&&v3tip&&!v3tip.hidden)e.stopPropagation();},true);
     const now=node.querySelector(".dbar-now");if(now)now.title="Now";
     const f=node.querySelector(".dbar-focus");
-    if(f){const tg=v3dayMin(),wk=v3workMin(d),fp=Math.min(100,wk/tg*100),fill=f.querySelector(".fill"),nm=f.querySelector(".num");if(fill){fill.style.width=fp+"%";fill.classList.toggle("good",fp>=100);}
+    if(f){const tg=v3dayMin(d),wk=v3workMin(d),fp=Math.min(100,wk/tg*100),fill=f.querySelector(".fill"),nm=f.querySelector(".num");if(fill){fill.style.width=fp+"%";fill.classList.toggle("good",fp>=100);}
       if(nm){v3dayNum(nm,wk,tg,d);nm.classList.add("v3-edtarget");nm.setAttribute("role","button");nm.tabIndex=0;nm.title="Change the day target";nm.onclick=e=>{e.stopPropagation();dayTargetSheet();};nm.onkeydown=e=>{if(e.key==="Enter"){e.stopPropagation();dayTargetSheet();}};}}
     if(f&&!f.querySelector(".v3-fill"))f.append(el("button",{type:"button",class:"cl-det v3-fill",onclick:e=>{e.stopPropagation();v3fillDay();}},"Fill my day"));
     if(f&&!f.querySelector(".v3-plan"))f.append(el("button",{type:"button",class:"cl-det v3-plan",onclick:e=>{e.stopPropagation();planSheet();}},"Edit plan"));}
@@ -135,7 +135,7 @@
     return [el("p",{class:"hint",text:"Tap a day to open it."}),...weeks.map(g=>{const wt=g.days.reduce((a,d)=>a+tot(d),0);
       return el("section",{class:"lh-wk open"},el("div",{class:"lh-wh"},el("span",{class:"lh-wn",text:"Week of "+fmt(g.w,{day:"numeric",month:"short"})}),el("span"),el("b",{class:"num",text:dur(wt)})),
         el("table",{class:"lh-tab tr-tab"},el("tbody",{},...g.days.map(d=>{const m=tot(d);return el("tr",{class:"tr-row",tabindex:"0",role:"button","aria-label":"Open "+d,onclick:()=>v3openDay(d),onkeydown:e=>{if(e.key==="Enter")v3openDay(d);}},
-          el("th",{scope:"row",text:fmt(d,{weekday:"short",day:"numeric",month:"short"})}),el("td",{},el("div",{class:"tr-bar"},el("span",{style:"width:"+Math.min(100,m/v3dayMin()*100)+"%"}))),el("td",{class:"num",text:dur(m)}));}))));})];});}
+          el("th",{scope:"row",text:fmt(d,{weekday:"short",day:"numeric",month:"short"})}),el("td",{},el("div",{class:"tr-bar"},el("span",{style:"width:"+Math.min(100,m/v3dayMin(d)*100)+"%"}))),el("td",{class:"num",text:dur(m)}));}))));})];});}
   function v3openDay(d){const o=sel;psClose(true);v3tOrigin=o;sel=clampDate(d);render();setTimeout(()=>{openPop("ent");},50);}
   // edit an entry after logging it: name, task, category, each session's start and end, or delete
   function entryEdit(d,id){psOpen("Edit entry",re=>{const items=entriesOn(d).map(x=>({...x,sessions:sessionsOf(x)})),x=items.find(y=>y.id===id);if(!x)return [el("p",{text:"This entry is gone."})];

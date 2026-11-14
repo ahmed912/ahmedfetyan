@@ -17,7 +17,7 @@ function v3dayNum(nm,wk,tg,d){nm.textContent="";nm.append(document.createTextNod
   if(!pl){pl=el("span",{class:"hint v3-planned"});f.append(pl);}pl.hidden=!pm;pl.textContent=pm?"planned "+pomS(pm)+" of "+pomS(tg):"";}
 // ---- Time hero in pomodoros ----
 renderEntHero=function(items,total){const box=document.getElementById("entHero");if(!box)return;
-  const adj=hoursAdj(sel)*60,worked=Math.max(0,total+adj),fri=isFriday(sel),plan=fri?0:v3dayMin();
+  const adj=hoursAdj(sel)*60,worked=Math.max(0,total+adj),fri=isFriday(sel),plan=fri?0:v3dayMin(sel);
   const real=items.filter(x=>x.kind!=="event"&&x.kind!=="break"),learnM=unionMin(real.filter(isLearning)),workM=Math.min(unionMin(real.filter(isWorkEntry)),worked),brkM=items.filter(x=>x.kind==="break").reduce((a,x)=>a+Number(x.minutes||0),0),live=items.some(x=>x.live),scale=Math.max(plan,worked,1);
   const othM=Math.max(0,worked-workM-Math.min(learnM,worked));
   const seg=(cls,mm,t)=>mm>0?el("span",{class:"eh-seg "+cls,style:"width:"+(mm/scale*100)+"%",title:t+": "+dur(mm)}):null;
@@ -81,7 +81,7 @@ function rsWarn(id,d,ctx,withSteps){const t=state.tasks[id],base=rsBase(id,ctx),
   if(isFriday(d))w.push("Friday is your rest day.");
   if(from&&to&&to.n!==from.n)w.push("This moves it into Sprint "+to.n+".");
   else if(from&&!to&&d>from.end)w.push("That is past the end of Sprint "+from.n+" ("+rsDl(from.end)+").");
-  else if(!to)w.push("No sprint covers that day.");
+  else if(!to&&spOn()&&spAny())w.push("That day is outside the sprints.");
   const go=()=>rsApply(id,d,ctx,withSteps);
   if(w.length)v3confirm(w.join(" ")+" Move to "+rsDl(d)+"?","Move",go);else go();}
 function rsAsk(id,d,ctx){psOpen("Move its steps too?",re=>{const t=state.tasks[id],n=kidsOf(id).filter(k=>!k.done).length;

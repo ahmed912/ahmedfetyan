@@ -382,3 +382,28 @@ body.m1 .m-nav{grid-template-columns:repeat(5,1fr)}
 
 /* Round 9: planning facts */
 .pl-fact{margin:2px 0 0;font-size:.78rem}
+
+/* Round 10: sprints off */
+body.sp-off section[aria-labelledby="sprintH"],body.sp-off .sp-cap,body.sp-off #spCfgRow,body.sp-off .seg[aria-label="Sprint"]{display:none}
+
+/* Round 11: capacity */
+.cap-pick::after{content:attr(data-facts);display:block;font-size:.72rem;opacity:.75;margin-top:2px;white-space:normal;text-align:left}
+.ch-card.ch-over .ch-t{color:var(--amber,#b7791f)}
+.ch-card.ch-over{border-color:var(--amber,#b7791f)}
+.cap-week,.cap-sleep{grid-column:1/-1;margin:2px 0 0}
+.cap-wd{flex-wrap:wrap}
+
+/* Round 12: weekly planning */
+.wk-steps{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.wk-st{font-size:.78rem;padding:3px 8px;border-radius:99px;opacity:.6;border:1px solid transparent}
+.wk-st.on{opacity:1;border-color:currentColor}
+.wk-facts{margin:8px 0;padding-left:18px}.wk-facts li{margin:3px 0}
+.wk-grid{display:grid;gap:6px;margin:8px 0}
+.wk-row{display:grid;grid-template-columns:52px repeat(4,minmax(0,1fr));gap:4px;align-items:stretch}
+.wk-cell{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 6px;border-radius:10px;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;font:inherit;font-size:.72rem;text-align:left;min-height:44px;cursor:pointer}
+.wk-cell.has{border-color:currentColor}.wk-cell.over{border-color:var(--amber,#b7791f)}
+.wk-ck{opacity:.7}.wk-cv{font-weight:600;overflow-wrap:anywhere}
+.wk-flag{grid-column:1/-1;margin:0}.wk-flag.heroic{color:var(--amber,#b7791f)}
+.wk-nav{margin-top:10px}.wk-pool{margin:6px 0}
+.wk-wait{margin:10px 0;padding:8px;border:1px solid rgba(128,128,128,.35);border-radius:12px}
+.wk-open{margin-left:auto}

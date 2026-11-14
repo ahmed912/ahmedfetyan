@@ -138,7 +138,7 @@ function chTitle(c,cfg,total){
   if(c.kind==="shallow"){const open=c.tasks.filter(t=>!t.done);return "Shallow batch · "+open.length+" item"+(open.length===1?"":"s")+" · "+dur(open.reduce((a,t)=>a+estMin(t),0));}
   const n=c.kind==="b3"?"Stretch":"Block "+c.slot,names=[...new Set(c.tasks.map(t=>chBkName(chBk(t))))];
   if(c.kind==="b3")return "Stretch · "+chH(cfg.b3.h);
-  return (names.length>1?names.length+" projects in "+n:n+" · "+(names[0]||"Design"))+" · "+chH(cfg[c.kind].h);}
+  return (names.length>1?names.length+" projects in "+n:n+" · "+(names[0]||"Design"))+" · "+chH(chunkCap(c.key.slice(0,10),c.kind)/60);}
 function chDefaultOpen(d,chunks){const by={};chunks.forEach(c=>{by[c.kind]=c;});const op=c=>c&&c.tasks.some(t=>!t.done);
   const des=["b1","b2","b3"];
   if(d===iso(new Date())){const c=chCfg(),n=new Date(),m=n.getHours()*60+n.getMinutes(),e1=hmMin(c.b1.start)+c.b1.h*60,e2=hmMin(c.b2.start)+c.b2.h*60;
@@ -146,10 +146,10 @@ function chDefaultOpen(d,chunks){const by={};chunks.forEach(c=>{by[c.kind]=c;});
     return op(by.learn)?"learn":op(by.shallow)?"shallow":"learn";}
   return [...des,"learn","shallow"].find(k=>op(by[k]))||null;}
 function chRender(){const ul=document.getElementById("cutStack");if(!ul)return;const d=sel,cfg=chCfg(),chunks=chunksOn(d),by={};chunks.forEach(c=>{by[c.kind]=c;});
-  const doneH=workHoursDone(d),baseH=pomN(v3dayMin()),defOpen=chDefaultOpen(d,chunks),nodes=[];
+  const doneH=workHoursDone(d),baseH=pomN(v3dayMin(d)),defOpen=chDefaultOpen(d,chunks),nodes=[];
   const design=chunks.filter(c=>c.slot&&c.tasks.length);
   const card=(c,visible)=>{const open0=chTog[c.key]!=null?chTog[c.key]:c.kind===defOpen,hasItems=c.tasks.length>0,allDone=hasItems&&c.tasks.every(t=>t.done),open=open0&&hasItems&&!allDone;
-    const title=chTitle(c,cfg)+(allDone?" · done":"");
+    const title=chTitle(c,cfg)+(allDone?" · done":capOverText(c));
     const head=el("button",{type:"button",class:"ch-head","aria-expanded":String(open),disabled:hasItems&&!allDone?null:"",onclick:()=>{chTog[c.key]=!open;renderCutList();}},el("span",{class:"ch-t",text:title}),hasItems&&!allDone&&rlFromText(c.tasks,d)?el("span",{class:"hint ch-from",text:rlFromText(c.tasks,d)}):null,hasItems&&!allDone?el("span",{class:"hint ch-s",text:open?"Less":"Open"}):null);
     if(hasItems&&!allDone)rsLong(head,()=>rlMoveSheet(c.tasks,rlChunkName(c)));
     let body=null;
@@ -159,7 +159,7 @@ function chRender(){const ul=document.getElementById("cutStack");if(!ul)return;c
         body=el("div",{class:"ch-body"},list,cards.length>3?el("button",{type:"button",class:"mini ck-more",onclick:()=>{chExp[c.key]=!ex;renderCutList();}},ex?"Show less":(cards.length-3)+" more"):null,
           el("div",{class:"cl-acts ch-acts"},el("button",{type:"button",class:"btn cl-go ch-go",onclick:()=>chStart(cards)},"Start"),el("button",{type:"button",class:"btn ghost ch-five",onclick:()=>v3five(stepId)},"Just 5 minutes")),el("button",{type:"button",class:"mini ck-more rl-mv",onclick:()=>rlMoveSheet(c.tasks,rlChunkName(c))},"Move chunk"));
       }finally{chBuild=false;}}
-    return el("section",{class:"ch-card"+(open?" open":"")+(allDone?" done":""),"data-ch":c.kind,"aria-label":title},head,body);};
+    return el("section",{class:"ch-card"+(open?" open":"")+(allDone?" done":"")+(!allDone&&capOver(c)>0?" ch-over":""),"data-ch":c.kind,"aria-label":title},head,body);};
   if(!design.length)nodes.push(el("p",{class:"hint ch-empty",text:"No design block planned"}));
   design.forEach(c=>nodes.push(card(c)));
   if(!by.b3.tasks.length&&baseH>0&&doneH>=baseH&&!isFriday(d))nodes.push(el("section",{class:"ch-card ch-free","data-ch":"b3","aria-label":"Stretch free"},el("div",{class:"ch-head ch-line"},el("span",{class:"ch-t",text:"Stretch · free"}))));
@@ -168,23 +168,24 @@ function chRender(){const ul=document.getElementById("cutStack");if(!ul)return;c
   rc(ul,...nodes);}
 {const _rc=renderCutList;renderCutList=function(){_rc();try{chRender();}catch(e){console.warn(e);}};}
 // header: Work x of 8 h · Learning x of 30 min · Gate 1
-v3dayNum=function(nm,wk,tg,d){const cfg=chCfg(),f=nm.closest(".dbar-focus"),stretchH=Number((state.settings&&state.settings.work&&state.settings.work.stretchH)||0)||pomN(tg)+cfg.b3.h;
+v3dayNum=function(nm,wk,tg,d){const cfg=chCfg(),f=nm.closest(".dbar-focus"),stretchH=pomN(tg)+cfg.b3.h;
   nm.textContent="";nm.append(document.createTextNode("Work "+pomS(wk)+" of "+pomS(tg)+" h "),el("small",{class:"v3-pmin",text:dur(wk)}));
   if(!f)return;let hd=f.querySelector(".ch-hdr");if(!hd){hd=el("p",{class:"hint ch-hdr"});f.append(hd);}
   let gate="";try{const n=Math.round((parse(END)-parse(iso(new Date())))/864e5);gate=n>=0?"Gate 1: "+fmt(END,{day:"numeric",month:"short"})+", "+n+" day"+(n===1?"":"s"):"Gate 1: "+fmt(END,{day:"numeric",month:"short"});}catch(e){}
-  const met=pomN(wk)>=stretchH?"Stretch met":(wk>=tg?"Baseline met":"");
-  hd.textContent="Learning "+learnDone(d)+" of "+cfg.learn.minMin+" min"+(gate?" · "+gate:"")+(met?" · "+met:"");
+  const met=pomN(wk)>=stretchH?"Stretch met":(wk>=tg?"Baseline met":""),lmet=learnDone(d)>=cfg.learn.minMin?"Learning minimum met":"";
+  hd.textContent=(isFriday(d)?"":"Stretch "+(Math.round((pomN(tg)+cfg.b3.h)*10)/10)+" h · ")+"Learning "+learnDone(d)+" of "+cfg.learn.minMin+" min"+(gate?" · "+gate:"")+(met?" · "+met:"")+(lmet?" · "+lmet:"");
+  try{capHeaderFacts(f,d);}catch(e){console.warn(e);}
   let pl=f.querySelector(".v3-planned");const pm=planMins(d);if(!pl){pl=el("span",{class:"hint v3-planned"});f.append(pl);}pl.hidden=!pm;pl.textContent=pm?"planned "+pomS(pm)+" of "+pomS(tg)+" h":"";};
 // the task sheet: deep or shallow
 function chModeRow(t,re){const cur=modeOf(t),b=(m,txt)=>el("button",{type:"button",class:"mini ch-mode"+(cur===m?" on":""),"aria-pressed":String(cur===m),onclick:()=>{chSetMode(t.id,m);setTimeout(re,250);}},txt);
   return el("div",{class:"field ch-moderow"},el("span",{class:"label",text:"Block type"}),el("div",{class:"v3-row"},b("deep","Deep"),b("shallow","Shallow")));}
 function chSetMode(id,m){const t=state.tasks[id];if(!t||modeOf(t)===m)return;const pl=t.date?placeInChunk({...t,mode:m,id},t.date):{slot:null};patchTask(id,{mode:m,slot:pl.slot||null});toast(m==="shallow"?"Moved to the shallow batch":"Moved to a deep block");}
 // Settings: day blocks
-function chSave(next,msg){const old={blocks:(state.settings||{}).blocks||null,work:(state.settings||{}).work||null,prefs:(state.settings||{}).prefs||null};
+function chSave(next,msg){{const c=chCfg();if(JSON.stringify([c.b1,c.b2,c.b3,c.learn,c.shallowMin])===JSON.stringify([next.b1,next.b2,next.b3,next.learn,next.shallowMin]))return;}const old={blocks:(state.settings||{}).blocks||null,work:(state.settings||{}).work||null,prefs:(state.settings||{}).prefs||null};
   const bl={...next,at:Date.now()},tH=Number(next.b1.h)+Number(next.b2.h),wk={targetH:tH,stretchH:tH+Number(next.b3.h),at:Date.now()},pf={...((state.settings&&state.settings.prefs)||{}),dayMin:Math.round(tH*50),at:Date.now()};
   state.settings={...(state.settings||{}),blocks:bl,work:wk,prefs:pf};
   try{store.set("settings/blocks",bl);store.set("settings/work",wk);store.set("settings/prefs",pf);}catch(e){fail(e);}
-  v3undoToast(msg||"Blocks saved",()=>{const s={...(state.settings||{})};["blocks","work","prefs"].forEach(k=>{if(old[k]){s[k]=old[k];try{store.set("settings/"+k,old[k]);}catch(e){}}else delete s[k];});state.settings=s;render();});render();}
+  v3undoToast(msg||"Blocks saved",()=>{const s={...(state.settings||{})};["blocks","work","prefs"].forEach(k=>{if(old[k]){s[k]=old[k];try{store.set("settings/"+k,old[k]);}catch(e){}}else{delete s[k];try{store.del("settings/"+k);}catch(e){}}});state.settings=s;render();});render();}
 function chBlocksSheet(){psOpen("Day blocks",re=>{const cfg=chCfg();
     const num=(v,lab,fn,step,min)=>{const i=el("input",{type:"number",class:"v3-in",step:String(step||.5),min:String(min||0),value:String(v),"aria-label":lab});i.onchange=()=>fn(Number(i.value));return el("label",{class:"field"},el("span",{class:"label",text:lab}),i);};
     const tim=(v,lab,fn)=>{const i=el("input",{type:"time",class:"v3-in",value:v,"aria-label":lab});i.onchange=()=>{if(/^\d{2}:\d{2}$/.test(i.value))fn(i.value);};return el("label",{class:"field"},el("span",{class:"label",text:lab}),i);};
@@ -221,7 +222,7 @@ function rlGroups(tasks){const g=new Map();
 function rlSt(d,sim,skip){if(sim[d])return sim[d];const A=chAssign(d,null),S={1:{bk:new Set(),min:0},2:{bk:new Set(),min:0},3:{bk:new Set(),min:0}},st={S,L:0,H:0};
   tasksOn(d).filter(t=>!(skip&&skip.has(t.id))).forEach(t=>{const k=chKind(t),m=estMin(t);if(k==="design"){const s=A.slotOf[t.id]||1;S[s].bk.add(chBk(t));S[s].min+=m;}else if(k==="learn")st.L+=m;else st.H+=m;});
   return sim[d]=st;}
-function rlDays(from,n){const out=[];let d=from;for(let i=0;i<n;i++,d=addDays(d,1)){if(v3spOf(d))out.push(d);}return out;}
+function rlDays(from,n){const out=[];let d=from;for(let i=0;i<n;i++,d=addDays(d,1)){if(v3spOf(d)||!spOn())out.push(d);}return out;}
 // place groups, in order, into the first blocks that fit. A chunk stays together and splits only at a block boundary.
 // o: {cap:max items, force:a day that is allowed even if rest or buffer, allowBuf:buffer days are allowed, skip:Set of ids leaving}
 function rlPlace(groups,days,sim,o){o=o||{};const cfg=chCfg(),placed=[],wait=[];let left=o.cap==null?1e9:o.cap;
@@ -233,9 +234,9 @@ function rlPlace(groups,days,sim,o){o=o||{};const cfg=chCfg(),placed=[],wait=[];
     let ci=0,dead=false;
     g.tasks.forEach(t=>{if(dead||left<=0){wait.push(t.id);return;}const m=estMin(t);let hit=null;
       while(ci<blocks.length){const b=blocks[ci],st=rlSt(b.d,sim,o.skip);let min,cap;
-        if(g.kind==="design"){min=st.S[b.slot].min;cap=cfg["b"+b.slot].h*60;const other=[...st.S[b.slot].bk].some(x=>x!==g.bk);if(!other&&(min+m<=cap||min===0)){hit=b;break;}}
-        else if(g.kind==="learn"){if(st.L+m<=cfg.learn.targetMin||st.L===0){hit=b;break;}}
-        else if(st.H+m<=cfg.shallowMin||st.H===0){hit=b;break;}
+        if(g.kind==="design"){min=st.S[b.slot].min;cap=chunkCap(b.d,"b"+b.slot);const other=[...st.S[b.slot].bk].some(x=>x!==g.bk);if(!other&&(min+m<=cap||min===0)){hit=b;break;}}
+        else if(g.kind==="learn"){if(st.L+m<=chunkCap(b.d,"learn")||st.L===0){hit=b;break;}}
+        else if(st.H+m<=chunkCap(b.d,"shallow")||st.H===0){hit=b;break;}
         ci++;}
       if(!hit){dead=true;wait.push(t.id);return;}
       const st=rlSt(hit.d,sim,o.skip);if(g.kind==="design"){st.S[hit.slot].bk.add(g.bk);st.S[hit.slot].min+=m;}else if(g.kind==="learn")st.L+=m;else st.H+=m;
@@ -269,7 +270,7 @@ async function rlRun(today){const cfg=rlCfg(),prevD=(()=>{let d=addDays(today,-1
   const names=[],seen={};carry.forEach(p=>{const k=p.g.key;if(!seen[k]){seen[k]={g:p.g,n:0};names.push(k);}seen[k].n++;});
   const carried=names.map(k=>({k,name:seen[k].g.name,kind:seen[k].g.kind,n:seen[k].n,ids:carry.filter(p=>p.g.key===k).map(p=>p.id)}));
   const decide=Object.keys(patches).filter(id=>patches[id].decide);
-  const wk=pomS(v3workMin(prevD)),tg=pomS(v3dayMin()),ln=learnDone(prevD);
+  const wk=pomS(v3workMin(prevD)),tg=pomS(v3dayMin(prevD)),ln=learnDone(prevD);
   const rec={at:Date.now(),day:today,prev:prevD,work:Number(wk),target:Number(tg),learn:ln,learnMin:ccfg.learn.minMin,carried,waiting:waitIds,decide,patches:JSON.stringify(old),n:Object.keys(patches).length,undone:false};
   state.rollover={...(state.rollover||{}),[today]:rec};
   try{await store.set("rollover/"+today,rec);}catch(e){console.warn(e);}
@@ -312,7 +313,7 @@ function rlDo(id){const t=state.tasks[id];if(!t)return;psClose(true);const today
 function rlShrink(id,after){const t=state.tasks[id];if(!t)return;const cur=estMin(t),opts=[["Half",Math.max(5,Math.round(cur/2/5)*5)],["25 min",25],["15 min",15]].filter(([n,m],i,a)=>m<cur&&a.findIndex(x=>x[1]===m)===i);
   psOpen("Shrink",re=>[el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Now about "+cur+" min. Pick a smaller version you will start."}),
     opts.length?el("div",{class:"v3-cats"},...opts.map(([n,m])=>el("button",{type:"button",class:"cat-chip v3-rs rl-shrink-pick",onclick:()=>{const old=rlWrite({[id]:rlDecidedPatch(t,"shrink",{mins:m})});render();psClose(true);v3undoToast("Shrunk to "+m+" min: "+t.title,()=>rlRestore(old));if(after)setTimeout(after,250);}},n+" · "+m+" min"))):el("p",{class:"hint",text:"Already small. Split or drop it."})]);}
-function rlNextOpen(from){let d=from;for(let i=0;i<60;i++,d=addDays(d,1)){if(v3spOf(d)&&!rlOff(d))return d;}return from;}
+function rlNextOpen(from){let d=from;for(let i=0;i<60;i++,d=addDays(d,1)){if((v3spOf(d)||!spOn())&&!rlOff(d))return d;}return from;}
 function rlSplit(id){const t=state.tasks[id];if(!t)return;const half=Math.max(5,Math.round(estMin(t)/2/5)*5),today=rlTodayIso(),nd=rlNextOpen(addDays(t.date<today?today:t.date,1)),base=String(t.title).replace(/\s*\((?:part )?[12] of 2\)$/,"");
   const old=rlWrite({[id]:rlDecidedPatch(t,"split",{mins:half,title:base+" (1 of 2)"})});
   const doc={title:base+" (2 of 2)",cat:t.cat||null,parent:t.parent||null,mins:half,date:nd,sprint:rlSpN(nd),order:(t.order||0)+.5,done:false,post:0,decided:{d:today,how:"split"}};if(t.mode)doc.mode=t.mode;if(t.pri)doc.pri=t.pri;if(t.due)doc.due=t.due;
@@ -343,7 +344,7 @@ function rlMoveChunk(tasks,d,typed){const today=rlTodayIso(),open=tasks.filter(t
   go();}
 function rlFits(tasks,d){const ok=tasks.filter(t=>rlLive(t)&&!rlNeedsDecide(t)),skip=new Set(ok.map(t=>t.id)),r=rlPlace(rlGroups(ok),[d],{},{skip});return r.placed.length===ok.length;}
 function rlMoveSheet(tasks,title){const open=tasks.filter(t=>!t.done);if(!open.length){toast("Nothing to move");return;}
-  psOpen("Move chunk",re=>{const today=rlTodayIso(),days=[];for(let d=addDays(today,1),i=0;i<14&&days.length<6;d=addDays(d,1),i++){if(v3spOf(d)&&!rlOff(d))days.push(d);}
+  psOpen("Move chunk",re=>{const today=rlTodayIso(),days=[];for(let d=addDays(today,1),i=0;i<14&&days.length<6;d=addDays(d,1),i++){if((v3spOf(d)||!spOn())&&!rlOff(d))days.push(d);}
     const di=v3dateField("New day",null,p=>{setTimeout(()=>rlMoveChunk(open,p,true),30);});
     return [el("p",{class:"ps-sh-sum",text:title+" · "+rlTasks(open.length)}),el("p",{class:"hint",text:"The whole chunk moves together. Friday and buffer days are skipped; a full day sends it to the next free block."}),
       el("div",{class:"v3-cats"},...days.map(d=>el("button",{type:"button",class:"cat-chip v3-rs rl-day","data-d":d,onclick:()=>rlMoveChunk(open,d,false)},rlDl(d)+(rlFits(open,d)?"":" · full")))),

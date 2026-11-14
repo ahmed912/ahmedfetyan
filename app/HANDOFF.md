@@ -53,3 +53,5 @@
 - [unpublished, verified] Round 5 sprints with buffer (module8.js, r22). Data recut not run.
 
 - [unpublished, verified] Rounds 7 (rename), 8 (inbox/backlog), 9 (planning fields): module9.js, r23 to r25. Next: rounds 10, 11, 12 then 13, 14, then final regression + publish + data apply.
+
+- [unpublished, verified] Rounds 10 (optional sprints, module10), 11 (capacity, module11), 12 (weekly planning, module12). r26 to r28, 23 tests pass. Next: 13 plan vs actual, 14 recurring, final regression, publish, data apply.

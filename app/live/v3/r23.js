@@ -16,7 +16,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const T=id=>pg.evaluate(id=>window.__data.tasks[id].title,id);
   const bar=()=>pg.evaluate(()=>{const b=document.getElementById('v3ut');return b&&!b.hidden?b.innerText.replace(/\s+/g,' '):'';});
   // 1 hold the card: the quick menu lists Rename, the field opens in place
-  const card=pg.locator('.cs-card[data-id="m1"]').first();await card.scrollIntoViewIfNeeded();
+  const card=pg.locator('.cs-card[data-id="m1"]').first();await card.evaluate(e=>e.scrollIntoView({block:'center'}));
   const bx=await card.boundingBox();await pg.mouse.move(bx.x+bx.width/2,bx.y+10);await pg.mouse.down();await R(700);await pg.evaluate(()=>{const c=document.querySelector('.cs-card[data-id="m1"]');c.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true}));});await pg.mouse.up();await R(400);
   ok('hold opens the menu with Rename',await pg.locator('.ps-sheet .rn-menu').count()===1);
   await pg.locator('.ps-sheet .rn-menu').click();await R(500);
