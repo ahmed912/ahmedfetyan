@@ -27,3 +27,11 @@ Newest run first, restores every patched field, deletes created docs, removes `d
 ## Notes
 - `sprint` is the integer sprint number in the data (2), not "s2".
 - Learning and shallow milestones get block 3; shallow ones also `mode:"shallow"`. Deep blocks: larger bucket of the day gets B1 (tie: earlier bStart), a bucket over one block takes both.
+
+## Replan (REPLAN_FOCUS.md round A1), step 5
+```
+python3 apply_replan.py final.json replan.json [--later-stubs] [--goals] [--force] [--baseline PATH]
+python3 test_replan.py  final.json
+python3 rollback_diet.py replan.json restored.json replan-<ts>     # byte-for-byte
+```
+One portfolio project at a time: HASM active, Javelin queue 1, Real estate 2, Mugassam last (queue 5, 10 tasks), bucket `kind`/`queue`/`bState`, milestone `phase`, dates and blocks (Fridays rest), Javelin 2000 min with 600 min buffer on 21 and 22 Nov. Learning, Reviews stay rails; LinkedIn paused; Taste makers not migrated; nothing deleted. Drift against `--baseline` (default `liveapply/final.json`) exits 2; the run is idempotent. `--later-stubs` adds empty paused F&B and Keynote buckets (queue 3, 4); `--goals` sets the Sprint 3 goal to "Real estate live, first inquiry calls". Note: the HASM and Javelin bucket `kind` was "parent" and becomes "portfolio" (rollback restores it).
