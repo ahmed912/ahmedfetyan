@@ -51,3 +51,5 @@
 - Round 3 rollover built by builder a63e835f1ad04888c (report lost in container restart); being re-verified by a runner. Not in the publish build.
 
 - [unpublished, verified] Round 3 missed-day rollover (r21). All tests pass incl. r7 and r9 (fixed stale tests). Next: Round 4 P4b two-week sprints with buffer.
+
+- Data apply scripts (d1, diet, sprints, renames, rollback) in app/apply/ with README. NOT yet run on live data: run after the new app version is live, with a backup first. m-hasm-03 moves 16 Nov to 19 Nov.
