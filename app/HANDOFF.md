@@ -45,11 +45,7 @@
 
 - [unpublished] Round 2B chunk cards on Today (module7.js, slot field, r20). Hold-to-drag reorder on Today removed; reorder to return via quick menu in round 3.
 
-## PENDING PUBLISH (14 Nov, 03:10 UTC)
-- User said "Publish and keep working". Clean build of round 2B ready: scratchpad/pubbuild/app/new.html (md5 515570c9208519404d4a917a9846f3ea), parts in scratchpad/pub (8 parts, version 1794615008, secret in pub/.sec, sha256 8021c78391c24f11cf4d01267999d1d673b31f1bf048adb413a3799a16888af9). All tests pass on it (r7 and r9 were stale tests, fixed).
-- BLOCKED: the Supabase apply_migration approval (enable upload_app_tmp2) was never answered (interrupted twice). When approved: enable (sha256 above), run pub/upload.py with PUBSECRET=$(cat pub/.sec), disable, verify md5 of string_agg(chunk order by part) = 028e7d720a56713f60a1ae8493c77fdd (8 parts), delete pub/.sec, commit.
-- Round 3 rollover built by builder a63e835f1ad04888c (report lost in container restart); being re-verified by a runner. Not in the publish build.
-
-- [unpublished, verified] Round 3 missed-day rollover (r21). All tests pass incl. r7 and r9 (fixed stale tests). Next: Round 4 P4b two-week sprints with buffer.
-
-- Data apply scripts (d1, diet, sprints, renames, rollback) in app/apply/ with README. NOT yet run on live data: run after the new app version is live, with a backup first. m-hasm-03 moves 16 Nov to 19 Nov.
+## PUBLISHED 14 Nov: 1794615008
+- Live = round 2B build: reschedule everywhere, waterfall edit and Week view, calm Time entries, buckets, checklists, Start 5 min, chunk cards on Today. md5 verified, upload function locked, secret deleted.
+- NOT live yet (built, verified, in app/live): Round 3 missed-day rollover. Building: Round 5 sprints with buffer. Data apply scripts in app/apply/ NOT run on live data yet (run after the version containing their app support is live, backup first).
+- Next: rename UI, inbox/backlog, planning fields, optional sprints, capacity, weekly planning, plan vs actual, recurring. Calendar stays out.
