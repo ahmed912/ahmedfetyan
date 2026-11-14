@@ -69,6 +69,9 @@ The ethos is to push hard and work as much as possible to build something. The a
 - The bucket has a type: Portfolio (default) or Client. Creating or editing a bucket asks for the type in one tap. Starting a second portfolio project asks once: "One portfolio project at a time: pause X?" with Undo.
 - Both client and portfolio count as WORK (design), with client first when time is short.
 
+# REORDERING IS ALWAYS A GESTURE (user, 14 Nov)
+Never offer "Move up" or "Move down" as a button or menu item, anywhere in the app, now or in future features. Any list that has an order (tasks, subtasks, rows in a chunk, buckets, the Up next queue, inbox, waterfall rows, steps, habits, music queue, gym lists and so on) is reordered by HOLD, then DRAG up or down, with a clear lift state (slightly raised row, hairline drop indicator), auto-scroll at the edges, and Undo. On desktop a quiet grip appears on hover; no permanent grip icons on touch. Pair with the other gestures: swipe right done, swipe left reschedule, hold-drag reorder, tap opens.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
