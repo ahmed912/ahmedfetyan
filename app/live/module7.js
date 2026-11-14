@@ -150,13 +150,14 @@ function chRender(){const ul=document.getElementById("cutStack");if(!ul)return;c
   const design=chunks.filter(c=>c.slot&&c.tasks.length);
   const card=(c,visible)=>{const open0=chTog[c.key]!=null?chTog[c.key]:c.kind===defOpen,hasItems=c.tasks.length>0,allDone=hasItems&&c.tasks.every(t=>t.done),open=open0&&hasItems&&!allDone;
     const title=chTitle(c,cfg)+(allDone?" · done":"");
-    const head=el("button",{type:"button",class:"ch-head","aria-expanded":String(open),disabled:hasItems&&!allDone?null:"",onclick:()=>{chTog[c.key]=!open;renderCutList();}},el("span",{class:"ch-t",text:title}),hasItems&&!allDone?el("span",{class:"hint ch-s",text:open?"Less":"Open"}):null);
+    const head=el("button",{type:"button",class:"ch-head","aria-expanded":String(open),disabled:hasItems&&!allDone?null:"",onclick:()=>{chTog[c.key]=!open;renderCutList();}},el("span",{class:"ch-t",text:title}),hasItems&&!allDone&&rlFromText(c.tasks,d)?el("span",{class:"hint ch-from",text:rlFromText(c.tasks,d)}):null,hasItems&&!allDone?el("span",{class:"hint ch-s",text:open?"Less":"Open"}):null);
+    if(hasItems&&!allDone)rsLong(head,()=>rlMoveSheet(c.tasks,rlChunkName(c)));
     let body=null;
     if(open){const cards=chCards(c.tasks,d).filter(x=>!x.done),ex=!!chExp[c.key],show=ex?cards:cards.slice(0,3);chBuild=true;
       try{const list=el("div",{class:"ch-list"},...show.map(x=>v3card(x,false,"stack")));
         const first=cards[0],stepId=first&&(first.steps?(first.steps.find(s=>!s.done)||first.steps[0]).id:first.id);
         body=el("div",{class:"ch-body"},list,cards.length>3?el("button",{type:"button",class:"mini ck-more",onclick:()=>{chExp[c.key]=!ex;renderCutList();}},ex?"Show less":(cards.length-3)+" more"):null,
-          el("div",{class:"cl-acts ch-acts"},el("button",{type:"button",class:"btn cl-go ch-go",onclick:()=>chStart(cards)},"Start"),el("button",{type:"button",class:"btn ghost ch-five",onclick:()=>v3five(stepId)},"Just 5 minutes")));
+          el("div",{class:"cl-acts ch-acts"},el("button",{type:"button",class:"btn cl-go ch-go",onclick:()=>chStart(cards)},"Start"),el("button",{type:"button",class:"btn ghost ch-five",onclick:()=>v3five(stepId)},"Just 5 minutes")),el("button",{type:"button",class:"mini ck-more rl-mv",onclick:()=>rlMoveSheet(c.tasks,rlChunkName(c))},"Move chunk"));
       }finally{chBuild=false;}}
     return el("section",{class:"ch-card"+(open?" open":"")+(allDone?" done":""),"data-ch":c.kind,"aria-label":title},head,body);};
   if(!design.length)nodes.push(el("p",{class:"hint ch-empty",text:"No design block planned"}));
@@ -197,3 +198,214 @@ function chBlocksRow(){const rows=document.querySelector('.page[data-page="setti
   rows.append(el("div",{class:"set-row",id:"chBlocksRow"},el("div",{},el("b",{text:"Day blocks"}),el("span",{class:"hint",text:"Hours for Block 1, Block 2, Stretch, Learning and the shallow batch"})),el("button",{type:"button",class:"btn ghost",id:"chBlocksBtn",onclick:chBlocksSheet},"Open")));}
 {const _r8=render;render=function(){_r8();try{chBlocksRow();}catch(e){}};}
 window.__ch={openAll:()=>{chunksOn(sel).forEach(c=>{chTog[c.key]=true;});renderCutList();},setMode:(i,m)=>chSetMode(i,m),moveTaskTo:(i,d)=>moveTaskTo(i,d),taskSheet:i=>v3taskSheet(i),addEntry:(d,x)=>addEntry(d,x),chunksOn,chunkOf,placeInChunk,modeOf,inBlock,workHoursDone,learnDone,chCfg,sheet:chBlocksSheet};
+
+// ===== Round 3: quiet carry-forward, Waiting tray, Spread, Move chunk, decide after 3 =====
+// Stored on tasks: post (postponements), rolled (days it was missed), waiting, decide, decided. Ledger: rollover/<date>.
+function rlCfg(){const r=(state.settings&&state.settings.roll)||{};return {auto:r.auto!==false,todayCap:Math.min(8,Math.max(1,Math.round(Number(r.todayCap))||3)),decideAt:Math.min(9,Math.max(2,Math.round(Number(r.decideAt))||3))};}
+const rlDay=d=>fmt(d,{weekday:"short"}),rlDl=d=>fmt(d,{weekday:"short",day:"numeric",month:"short"});
+const rlPost=t=>Number(t&&t.post)||0;
+const rlTodayIso=()=>iso(new Date());
+function rlBuffer(d){const sp=v3spOf(d),b=sp&&sp.buffer;return Array.isArray(b)?b.includes(d):!!(b&&typeof b==="object"&&b[d]);}
+const rlOff=d=>isFriday(d)||rlBuffer(d);
+function rlNeedsDecide(t){return !!t&&!t.done&&rlPost(t)>=rlCfg().decideAt;}
+// a task may carry forward unless its project is paused, done or archived
+function rlLive(t){if(!t||t.done||t.cut||t.archived||t.inbox||!t.date||t.bucket)return false;const b=state.tasks[chBk(t)];return !(b&&b.bucket&&(b.archived||b.bState==="paused"||b.bState==="done"));}
+function rlGroups(tasks){const g=new Map();
+  tasks.forEach(t=>{const k=chKind(t),key=k==="design"?"d|"+chBk(t):k;if(!g.has(key))g.set(key,{key,kind:k,bk:k==="design"?chBk(t):null,tasks:[]});g.get(key).tasks.push(t);});
+  const kr={design:0,learn:1,shallow:2};
+  g.forEach(x=>{x.tasks.sort((a,b)=>(Number(b.pri)||0)-(Number(a.pri)||0)||(a.date<b.date?-1:a.date>b.date?1:0)||(a.order||0)-(b.order||0));
+    x.pri=Math.max(...x.tasks.map(t=>Number(t.pri)||0));x.due=x.tasks.map(t=>t.due||"9999").sort()[0];x.oldest=x.tasks.map(t=>t.date).sort()[0];
+    x.name=x.kind==="design"?chBkName(x.bk):x.kind==="learn"?"Learning":"Shallow batch";x.mins=x.tasks.reduce((a,t)=>a+estMin(t),0);});
+  return [...g.values()].sort((a,b)=>kr[a.kind]-kr[b.kind]||(b.pri-a.pri)||(a.due<b.due?-1:a.due>b.due?1:0)||(a.oldest<b.oldest?-1:a.oldest>b.oldest?1:0));}
+// what a day already holds, in minutes per block (skip = ids that are leaving)
+function rlSt(d,sim,skip){if(sim[d])return sim[d];const A=chAssign(d,null),S={1:{bk:new Set(),min:0},2:{bk:new Set(),min:0},3:{bk:new Set(),min:0}},st={S,L:0,H:0};
+  tasksOn(d).filter(t=>!(skip&&skip.has(t.id))).forEach(t=>{const k=chKind(t),m=estMin(t);if(k==="design"){const s=A.slotOf[t.id]||1;S[s].bk.add(chBk(t));S[s].min+=m;}else if(k==="learn")st.L+=m;else st.H+=m;});
+  return sim[d]=st;}
+function rlDays(from,n){const out=[];let d=from;for(let i=0;i<n;i++,d=addDays(d,1)){if(v3spOf(d))out.push(d);}return out;}
+// place groups, in order, into the first blocks that fit. A chunk stays together and splits only at a block boundary.
+// o: {cap:max items, force:a day that is allowed even if rest or buffer, allowBuf:buffer days are allowed, skip:Set of ids leaving}
+function rlPlace(groups,days,sim,o){o=o||{};const cfg=chCfg(),placed=[],wait=[];let left=o.cap==null?1e9:o.cap;
+  const ok=d=>d===o.force||!(isFriday(d)||(!o.allowBuf&&rlBuffer(d)));
+  groups.forEach(g=>{const blocks=[];
+    days.filter(ok).forEach(d=>{const st=rlSt(d,sim,o.skip);
+      if(g.kind==="design"){const held=[1,2,3].find(n=>st.S[n].bk.has(g.bk));if(held)blocks.push({d,slot:held});[1,2].forEach(n=>{if(n!==held&&!st.S[n].bk.size)blocks.push({d,slot:n});});}
+      else blocks.push({d,slot:null});});
+    let ci=0,dead=false;
+    g.tasks.forEach(t=>{if(dead||left<=0){wait.push(t.id);return;}const m=estMin(t);let hit=null;
+      while(ci<blocks.length){const b=blocks[ci],st=rlSt(b.d,sim,o.skip);let min,cap;
+        if(g.kind==="design"){min=st.S[b.slot].min;cap=cfg["b"+b.slot].h*60;const other=[...st.S[b.slot].bk].some(x=>x!==g.bk);if(!other&&(min+m<=cap||min===0)){hit=b;break;}}
+        else if(g.kind==="learn"){if(st.L+m<=cfg.learn.targetMin||st.L===0){hit=b;break;}}
+        else if(st.H+m<=cfg.shallowMin||st.H===0){hit=b;break;}
+        ci++;}
+      if(!hit){dead=true;wait.push(t.id);return;}
+      const st=rlSt(hit.d,sim,o.skip);if(g.kind==="design"){st.S[hit.slot].bk.add(g.bk);st.S[hit.slot].min+=m;}else if(g.kind==="learn")st.L+=m;else st.H+=m;
+      left--;placed.push({id:t.id,date:hit.d,slot:hit.slot,mode:modeOf(t),g});});});
+  return {placed,wait};}
+// write fields to tasks and return what they were, so the change can be put back exactly
+let rlSkip=false;
+function rlWrite(patches){const old={};rlSkip=true;
+  try{Object.entries(patches).forEach(([id,p])=>{const t=state.tasks[id];if(!t)return;old[id]={};Object.keys(p).forEach(k=>{old[id][k]=t[k]===undefined?null:JSON.parse(JSON.stringify(t[k]));});state.tasks[id]={...t,...p};setTask(id,p);});}finally{rlSkip=false;}
+  return old;}
+function rlRestore(old){chSkip=true;rlSkip=true;try{Object.entries(old||{}).forEach(([id,p])=>{if(!state.tasks[id])return;state.tasks[id]={...state.tasks[id],...p};setTask(id,p);});}finally{chSkip=false;rlSkip=false;}render();}
+const rlSpN=d=>{const s=v3spOf(d);return s?s.n:null;};
+function rlPlacePatch(p,t,extra){const r={date:p.date,sprint:rlSpN(p.date)!=null?rlSpN(p.date):(t.sprint===undefined?null:t.sprint),slot:p.slot,mode:p.mode,waiting:null};return {...r,...(extra||{})};}
+function rlList(names,n){const a=names.slice(0,n);return a.join(", ")+(names.length>n?" and "+(names.length-n)+" more":"");}
+const rlTasks=n=>n+" task"+(n===1?"":"s");
+// ---- the daily carry-forward ----
+let rlTried={};
+async function rlRun(today){const cfg=rlCfg(),prevD=(()=>{let d=addDays(today,-1);if(isFriday(d))d=addDays(d,-1);return d;})();
+  const cands=leafTasks().filter(t=>rlLive(t)&&t.date<today);
+  const ccfg=chCfg(),sim={},carry=[],patches={};
+  const groups=rlGroups(cands);
+  const days=isFriday(today)?[]:[today];
+  const res=rlPlace(groups,days,sim,{cap:cfg.todayCap,allowBuf:true});
+  const byId={};cands.forEach(t=>{byId[t.id]=t;});
+  res.placed.forEach(p=>{const t=byId[p.id],fresh=!t.waiting,post=rlPost(t)+(fresh?1:0);
+    patches[p.id]=rlPlacePatch(p,t,{post,rolled:fresh?[...(t.rolled||[]),t.date].slice(-10):(t.rolled||[]),decide:post>=cfg.decideAt?true:null});carry.push(p);});
+  const waitIds=res.wait;
+  waitIds.forEach(id=>{const t=byId[id],fresh=!t.waiting,post=rlPost(t)+(fresh?1:0);
+    patches[id]={waiting:true,post,rolled:fresh?[...(t.rolled||[]),t.date].slice(-10):(t.rolled||[]),decide:post>=cfg.decideAt?true:null};});
+  const old=rlWrite(patches);
+  const names=[],seen={};carry.forEach(p=>{const k=p.g.key;if(!seen[k]){seen[k]={g:p.g,n:0};names.push(k);}seen[k].n++;});
+  const carried=names.map(k=>({k,name:seen[k].g.name,kind:seen[k].g.kind,n:seen[k].n,ids:carry.filter(p=>p.g.key===k).map(p=>p.id)}));
+  const decide=Object.keys(patches).filter(id=>patches[id].decide);
+  const wk=pomS(v3workMin(prevD)),tg=pomS(v3dayMin()),ln=learnDone(prevD);
+  const rec={at:Date.now(),day:today,prev:prevD,work:Number(wk),target:Number(tg),learn:ln,learnMin:ccfg.learn.minMin,carried,waiting:waitIds,decide,patches:JSON.stringify(old),n:Object.keys(patches).length,undone:false};
+  state.rollover={...(state.rollover||{}),[today]:rec};
+  try{await store.set("rollover/"+today,rec);}catch(e){console.warn(e);}
+  if(Object.keys(patches).length){render();
+    const msg=rlDay(prevD)+": work "+wk+" of "+tg+" h, learning "+ln+" of "+ccfg.learn.minMin+" min."+(carried.length?" Carried: "+rlList(carried.map(c=>c.kind==="design"?c.name+" chunk ("+rlTasks(c.n)+")":c.name+" ("+c.n+")"),2)+".":"")+(waitIds.length?" Waiting: "+waitIds.length+".":"");
+    v3undoToast(msg,()=>rlUndo(today));}
+  return rec;}
+function rlUndo(day){const r=(state.rollover||{})[day];if(!r||r.undone)return false;try{rlRestore(JSON.parse(r.patches||"{}"));}catch(e){console.warn(e);}
+  const nr={...r,undone:true,undoneAt:Date.now()};state.rollover={...state.rollover,[day]:nr};try{store.set("rollover/"+day,nr);}catch(e){}toast("Rollover undone");return true;}
+function rlAuto(){const today=rlTodayIso(),L=state.loaded||{};if(rlTried[today]||!L.tasks||!L.logs||!L.settings||!L.rollover)return;
+  if((state.rollover||{})[today]){rlTried[today]=1;return;}
+  rlTried[today]=1;if(!rlCfg().auto)return;if(!Object.keys(state.tasks||{}).length)return;Promise.resolve().then(()=>rlRun(today)).catch(e=>console.warn(e));}
+{const _r9=render;render=function(){_r9();try{rlAuto();}catch(e){console.warn(e);}};}
+// ---- manual later-moves add 1 to post; a 3rd postponement asks for a decision instead ----
+function rlBase(t){const today=rlTodayIso();return t.date<today?today:t.date;}
+{const _rsA=rsApply;rsApply=function(id,d,ctx,ws){const ids=[id,...kidsOf(id).map(k=>k.id)],before={};
+    ids.forEach(i=>{const x=state.tasks[i];if(x&&isLeaf({...x,id:i}))before[i]={date:x.date,post:rlPost(x),done:!!x.done};});
+    const gate=Object.keys(before).map(i=>({i,x:state.tasks[i]})).find(o=>o.x&&!before[o.i].done&&rlNeedsDecide(o.x)&&d>rlBase(o.x));
+    if(gate){psClose(true);rlDecideSheet(gate.i);return;}
+    const _ut=v3undoToast;let snap=null;v3undoToast=function(m,fn){return _ut.call(this,m,()=>{fn();if(snap)rlRestore(snap);});};Object.defineProperty(v3undoToast,"_t",{get:()=>_ut._t,set:v=>{_ut._t=v;}});
+    try{_rsA.apply(this,arguments);}finally{v3undoToast=_ut;}
+    snap={};const patches={};Object.entries(before).forEach(([i,b])=>{const x=state.tasks[i];if(x&&!b.done&&x.date&&b.date&&x.date>b.date&&x.date>rlBase({date:b.date})){snap[i]={post:b.post};patches[i]={post:b.post+1};}});
+    if(Object.keys(patches).length){rlWrite(patches);render();}};}
+{const _mvT=moveTaskTo;moveTaskTo=function(id,d){const t=state.tasks[id],b=t&&isLeaf({...t,id})&&!t.done?{date:t.date,post:rlPost(t)}:null;
+    if(b&&d>rlBase(t)&&rlNeedsDecide(t)){rlDecideSheet(id);return;}
+    const r=_mvT.apply(this,arguments);const x=state.tasks[id];if(b&&x&&x.date&&x.date>b.date&&x.date>rlBase({date:b.date})){rlWrite({[id]:{post:b.post+1}});render();}return r;};}
+// ---- the decision: do now, shrink, split or drop ----
+function rlDecideBtns(id,after){const act=(fn)=>()=>{fn();if(after)setTimeout(after,250);};
+  return el("div",{class:"rl-da"},
+    el("button",{type:"button",class:"mini rl-now",onclick:act(()=>rlDo(id))},"Do now"),
+    el("button",{type:"button",class:"mini rl-shrink",onclick:()=>rlShrink(id,after)},"Shrink"),
+    el("button",{type:"button",class:"mini rl-split",onclick:act(()=>rlSplit(id))},"Split"),
+    el("button",{type:"button",class:"mini rl-drop",onclick:act(()=>rlDrop(id))},"Drop"));}
+function rlDecideSheet(id){psOpen("Decide",re=>{const t=state.tasks[id];if(!t)return [el("p",{class:"ps-sh-sum",text:"This task is gone."})];
+  return [el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Postponed "+rlPost(t)+" times. Decide: do it now, shrink it, split it or drop it."}),rlDecideBtns(id,()=>psClose(true))];});}
+function rlDecidedPatch(t,how,extra){return {post:0,decide:null,decided:{d:rlTodayIso(),how},...(extra||{})};}
+function rlDo(id){const t=state.tasks[id];if(!t)return;psClose(true);const today=rlTodayIso(),pl=placeInChunk({...t,id},today);
+  const old=rlWrite({[id]:{date:today,sprint:rlSpN(today)!=null?rlSpN(today):t.sprint||null,slot:pl.slot,mode:pl.mode,waiting:null,...rlDecidedPatch(t,"now")}});render();
+  v3undoToast("Set for today: "+t.title,()=>rlRestore(old));setTimeout(()=>{try{v3start(id);}catch(e){console.warn(e);}},60);}
+function rlShrink(id,after){const t=state.tasks[id];if(!t)return;const cur=estMin(t),opts=[["Half",Math.max(5,Math.round(cur/2/5)*5)],["25 min",25],["15 min",15]].filter(([n,m],i,a)=>m<cur&&a.findIndex(x=>x[1]===m)===i);
+  psOpen("Shrink",re=>[el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Now about "+cur+" min. Pick a smaller version you will start."}),
+    opts.length?el("div",{class:"v3-cats"},...opts.map(([n,m])=>el("button",{type:"button",class:"cat-chip v3-rs rl-shrink-pick",onclick:()=>{const old=rlWrite({[id]:rlDecidedPatch(t,"shrink",{mins:m})});render();psClose(true);v3undoToast("Shrunk to "+m+" min: "+t.title,()=>rlRestore(old));if(after)setTimeout(after,250);}},n+" · "+m+" min"))):el("p",{class:"hint",text:"Already small. Split or drop it."})]);}
+function rlNextOpen(from){let d=from;for(let i=0;i<60;i++,d=addDays(d,1)){if(v3spOf(d)&&!rlOff(d))return d;}return from;}
+function rlSplit(id){const t=state.tasks[id];if(!t)return;const half=Math.max(5,Math.round(estMin(t)/2/5)*5),today=rlTodayIso(),nd=rlNextOpen(addDays(t.date<today?today:t.date,1)),base=String(t.title).replace(/\s*\((?:part )?[12] of 2\)$/,"");
+  const old=rlWrite({[id]:rlDecidedPatch(t,"split",{mins:half,title:base+" (1 of 2)"})});
+  const doc={title:base+" (2 of 2)",cat:t.cat||null,parent:t.parent||null,mins:half,date:nd,sprint:rlSpN(nd),order:(t.order||0)+.5,done:false,post:0,decided:{d:today,how:"split"}};if(t.mode)doc.mode=t.mode;if(t.pri)doc.pri=t.pri;if(t.due)doc.due=t.due;
+  let nid=null;Promise.resolve(store.add("tasks",doc)).then(ref=>{nid=ref.id;state.tasks[nid]=doc;render();}).catch(fail);
+  render();v3undoToast("Split in two: "+base+". Part 2 on "+rlDl(nd),()=>{rlRestore(old);if(nid){delete state.tasks[nid];try{store.del("tasks/"+nid);}catch(e){}render();}});}
+function rlDrop(id){const t=state.tasks[id];if(!t)return;const old=rlWrite({[id]:{archived:true,cut:true,archivedBy:null,waiting:null,decide:null,decided:{d:rlTodayIso(),how:"drop"}}});render();
+  v3undoToast("Dropped: "+t.title,()=>rlRestore(old));}
+// ---- Waiting tray, Spread, Move chunk ----
+function rlWaiting(){return leafTasks().filter(t=>rlLive(t)&&t.waiting);}
+function rlSpread(){const today=rlTodayIso(),all=rlWaiting(),dec=all.filter(rlNeedsDecide),ok=all.filter(t=>!rlNeedsDecide(t));
+  if(!ok.length){toast(dec.length?"Decide first: "+dec.length+" waiting "+(dec.length===1?"task is":"tasks are")+" postponed too often":"Nothing is waiting");return;}
+  const sim={},res=rlPlace(rlGroups(ok),rlDays(addDays(today,1),60),sim,{}),patches={},by={};
+  res.placed.forEach(p=>{const t=state.tasks[p.id];patches[p.id]=rlPlacePatch(p,t);(by[p.g.key]=by[p.g.key]||{g:p.g,days:[]}).days.push(p.date);});
+  if(!Object.keys(patches).length){toast("No free block in the next 60 days");return;}
+  const old=rlWrite(patches);render();
+  const parts=Object.values(by).map(x=>x.g.name+" to "+rlDay(x.days.slice().sort()[0]));
+  v3undoToast("Spread: "+rlList(parts,3)+(res.wait.length?". "+res.wait.length+" still waiting":"")+(dec.length?". "+dec.length+" to decide":""),()=>rlRestore(old));}
+// move a whole chunk to a day; a full or resting day lands on the next block that fits
+function rlMoveChunk(tasks,d,typed){const today=rlTodayIso(),open=tasks.filter(t=>rlLive(t)),ok=open.filter(t=>!rlNeedsDecide(t)),dec=open.length-ok.length;
+  if(!ok.length){toast(open.length?"Decide first: postponed too often":"Nothing to move");return;}
+  const go=()=>{const skip=new Set(ok.map(t=>t.id)),sim={},res=rlPlace(rlGroups(ok),rlDays(d,40),sim,{skip,force:typed?d:null}),patches={};
+    res.placed.forEach(p=>{const t=state.tasks[p.id],later=p.date>rlBase(t);patches[p.id]=rlPlacePatch(p,t,{post:later?rlPost(t)+1:rlPost(t),decide:later&&rlPost(t)+1>=rlCfg().decideAt?true:null});});
+    if(!Object.keys(patches).length){toast("No free block from "+rlDl(d));return;}
+    const old=rlWrite(patches);psClose(true);render();
+    const first=res.placed.map(p=>p.date).sort()[0],g=rlGroups(ok)[0],nm=rlGroups(ok).length>1?rlTasks(Object.keys(patches).length):g.name+" chunk";
+    v3undoToast("Moved "+nm+" to "+rlDl(first)+(first!==d?" ("+rlDay(d)+" is full or resting)":"")+(res.wait.length?". "+res.wait.length+" did not fit":"")+(dec?". "+dec+" to decide":""),()=>rlRestore(old));};
+  if(typed&&rlOff(d)){v3confirm((isFriday(d)?"Friday is your rest day.":"That is a buffer day.")+" Move to "+rlDl(d)+" anyway?","Move",go);return;}
+  go();}
+function rlFits(tasks,d){const ok=tasks.filter(t=>rlLive(t)&&!rlNeedsDecide(t)),skip=new Set(ok.map(t=>t.id)),r=rlPlace(rlGroups(ok),[d],{},{skip});return r.placed.length===ok.length;}
+function rlMoveSheet(tasks,title){const open=tasks.filter(t=>!t.done);if(!open.length){toast("Nothing to move");return;}
+  psOpen("Move chunk",re=>{const today=rlTodayIso(),days=[];for(let d=addDays(today,1),i=0;i<14&&days.length<6;d=addDays(d,1),i++){if(v3spOf(d)&&!rlOff(d))days.push(d);}
+    const di=v3dateField("New day",null,p=>{setTimeout(()=>rlMoveChunk(open,p,true),30);});
+    return [el("p",{class:"ps-sh-sum",text:title+" · "+rlTasks(open.length)}),el("p",{class:"hint",text:"The whole chunk moves together. Friday and buffer days are skipped; a full day sends it to the next free block."}),
+      el("div",{class:"v3-cats"},...days.map(d=>el("button",{type:"button",class:"cat-chip v3-rs rl-day","data-d":d,onclick:()=>rlMoveChunk(open,d,false)},rlDl(d)+(rlFits(open,d)?"":" · full")))),
+      el("label",{class:"field"},el("span",{class:"label",text:"Or type a day"}),di)];});}
+function rlMissText(t){const r=(t.rolled||[]).slice(-4);return r.length?"Missed "+r.map(rlDay).join(", ")+((t.rolled||[]).length>4?" and "+((t.rolled||[]).length-4)+" more":""):"";}
+function rlWaitSheet(){psOpen("Waiting",re=>{const all=rlWaiting();if(!all.length)return [el("p",{class:"ps-sh-sum",text:"Nothing is waiting."})];
+  const groups=rlGroups(all);
+  return [el("p",{class:"hint",text:"Whole chunks wait here when today is full. Spread puts each on the next free day. Friday and buffer days are skipped."}),
+    el("button",{type:"button",class:"btn rl-spread",onclick:()=>{psClose(true);rlSpread();}},"Spread"),
+    ...groups.map(g=>el("section",{class:"rl-grp"},el("div",{class:"rl-gh"},el("b",{text:g.name+" · "+rlTasks(g.tasks.length)}),el("span",{class:"hint",text:dur(g.mins)}),el("button",{type:"button",class:"mini rl-gmove",onclick:()=>{psClose(true);setTimeout(()=>rlMoveSheet(g.tasks,g.name),50);}},"Move")),
+      el("ul",{class:"cut-list ce-list"},...g.tasks.map(t=>{const cb=el("input",{type:"checkbox","aria-label":"Done: "+t.title});cb.onchange=()=>{setDone(t.id,cb.checked);setTimeout(re,300);};
+        return el("li",{class:"cl"},el("div",{class:"cl-row"},cb,el("span",{class:"cl-t",text:t.title}),el("span",{class:"hint",text:rlMissText(t)})),rlNeedsDecide(t)?el("div",{class:"rl-decide"},el("p",{class:"rl-dt",text:"Postponed "+rlPost(t)+" times. Decide:"}),rlDecideBtns(t.id,re)):null);}))))];});}
+function rlRenderTray(){const box=document.getElementById("taskList");if(!box)return;let w=document.getElementById("rlWait");const today=rlTodayIso();
+  const eb=document.getElementById("cutEarlier"),all=sel>=today?rlWaiting():[];
+  if(eb){const ear=sel>=today?leafTasks().filter(t=>rlLive(t)&&t.date<sel&&!t.waiting).length:0;if(!ear){while(eb.firstChild)eb.removeChild(eb.firstChild);}else{const n=eb.querySelector(".ce-n");if(n)n.textContent=String(ear);}}
+  if(!all.length){if(w)w.remove();return;}
+  if(!w){w=el("div",{id:"rlWait",class:"cut-earlier rl-wait"});}
+  const anchor=eb||document.getElementById("cutStack");if(anchor&&w.previousElementSibling!==anchor)anchor.after(w);
+  const nd=all.filter(rlNeedsDecide).length;
+  rc(w,el("button",{type:"button",class:"ce-head rl-wait-b",onclick:rlWaitSheet},el("span",{text:"Waiting"+(nd?" · "+nd+" to decide":"")}),el("span",{class:"ce-n",text:String(all.length)})));}
+{const _rc3=renderCutList;renderCutList=function(){_rc3();try{rlRenderTray();}catch(e){console.warn(e);}};}
+// ---- what a card shows: miss history and the decide card ----
+function rlFromText(tasks,d){const ds=[...new Set(tasks.filter(t=>!t.done&&t.rolled&&t.rolled.length).map(t=>t.rolled[t.rolled.length-1]).filter(x=>x<d))].sort();
+  return ds.length?"from "+(ds.length<=2?ds.map(rlDay).join(", "):ds.length+" days"):"";}
+{const _vc3=v3card;v3card=function(t,top,ctx){const c=_vc3(t,top,ctx);try{const steps=t.steps||[t],hist=[...new Set(steps.filter(s=>!s.done).flatMap(s=>s.rolled||[]))].sort();
+    const head=c.querySelector(".cs-head");
+    if(head&&hist.length){const mt=rlMissText({rolled:hist});head.after(el("p",{class:"hint rl-miss",text:mt}));}
+    const dt=steps.find(s=>rlNeedsDecide(s));
+    if(dt){const anchor=c.querySelector(".rl-miss")||head;if(anchor)anchor.after(el("div",{class:"rl-decide"},el("p",{class:"rl-dt",text:"Postponed "+rlPost(dt)+" times. Decide:"}),rlDecideBtns(dt.id)));}
+  }catch(e){console.warn(e);}return c;};}
+// settings and the ledger
+function rlLine(r){const d=r.prev||r.day;return rlDl(d)+": work "+r.work+" of "+r.target+" h, learning "+r.learn+" of "+r.learnMin+" min"+(r.carried&&r.carried.length?", carried "+r.carried.reduce((a,c)=>a+c.n,0):"")+(r.waiting&&r.waiting.length?", waiting "+r.waiting.length:"")+(r.undone?" (undone)":"");}
+function rlRecent(n){return Object.entries(state.rollover||{}).filter(([k,r])=>r&&r.day).sort((a,b)=>a[0]<b[0]?1:-1).slice(0,n).map(x=>x[1]);}
+function rlSave(next,msg){const old=(state.settings||{}).roll||null,v={...next,at:Date.now()};state.settings={...(state.settings||{}),roll:v};try{store.set("settings/roll",v);}catch(e){fail(e);}
+  v3undoToast(msg||"Rollover saved",()=>{const s={...(state.settings||{})};if(old){s.roll=old;try{store.set("settings/roll",old);}catch(e){}}else delete s.roll;state.settings=s;render();});render();}
+function rlSheet(){psOpen("Rollover",re=>{const c=rlCfg(),today=rlTodayIso(),tr=(state.rollover||{})[today];
+    const num=(v,lab,fn,min,max)=>{const i=el("input",{type:"number",class:"v3-in",step:"1",min:String(min),max:String(max),value:String(v),"aria-label":lab});i.onchange=()=>{const n=Math.round(Number(i.value));if(!(n>=min&&n<=max)){toast(lab+": "+min+" to "+max);re();return;}fn(n);setTimeout(re,200);};return el("label",{class:"field"},el("span",{class:"label",text:lab}),i);};
+    const recent=rlRecent(10);
+    return [el("p",{class:"hint",text:"On the first open of a day, unfinished work moves forward by chunk. At most "+c.todayCap+" carried items show on Today; the rest wait in the Waiting tray."}),
+      el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost rl-auto","aria-pressed":String(c.auto),onclick:()=>{rlSave({...rlCfgRaw(),auto:!c.auto});setTimeout(re,200);}},c.auto?"Auto rollover: on":"Auto rollover: off")),
+      el("div",{class:"v3-row"},num(c.todayCap,"Carried items on Today",v=>rlSave({...rlCfgRaw(),todayCap:v}),1,8),num(c.decideAt,"Decide after postponing",v=>rlSave({...rlCfgRaw(),decideAt:v}),2,9)),
+      tr&&!tr.undone&&tr.n?el("button",{type:"button",class:"btn ghost rl-undo",onclick:()=>{rlUndo(today);setTimeout(re,200);}},"Undo today's rollover"):null,
+      el("span",{class:"label",text:"History"}),recent.length?el("ul",{class:"ps-sh-list rl-hist"},...recent.map(r=>el("li",{class:"ps-sh-hrow"},el("span",{text:rlLine(r)})))):el("p",{class:"hint",text:"No days recorded yet"})];});}
+function rlCfgRaw(){const r=(state.settings&&state.settings.roll)||{};return {auto:r.auto!==false,todayCap:rlCfg().todayCap,decideAt:rlCfg().decideAt};}
+function rlRow(){const rows=document.querySelector('.page[data-page="settings"] .set-rows');if(!rows||document.getElementById("rlRow"))return;
+  rows.append(el("div",{class:"set-row",id:"rlRow"},el("div",{},el("b",{text:"Rollover"}),el("span",{class:"hint",text:"Carry unfinished work forward, the Waiting tray, decide after 3 postponements"})),el("button",{type:"button",class:"btn ghost",id:"rlBtn",onclick:rlSheet},"Open")));}
+function rlReview(){const pg=document.querySelector('.page[data-page="progress"]');if(!pg)return;let s=document.getElementById("rlRev");const L=rlRecent(7);
+  if(!L.length){if(s)s.remove();return;}
+  if(!s){s=el("section",{class:"panel",id:"rlRev","aria-label":"Carried over"});pg.append(s);}
+  rc(s,el("div",{class:"panel-head"},el("h2",{text:"Carried over"}),el("span",{class:"hint",text:"Plan against actual, last "+L.length+" days"})),el("ul",{class:"ps-sh-list rl-hist"},...L.map(r=>el("li",{class:"ps-sh-hrow"},el("span",{text:rlLine(r)})))));}
+{const _r10=render;render=function(){_r10();try{rlRow();rlReview();}catch(e){}};}
+// the Today quick menu: Reorder
+function rlReorder(id){const t0=state.tasks[id];if(!t0)return;const cid=t0.parent&&state.tasks[t0.parent]&&!state.tasks[t0.parent].bucket?t0.parent:id,
+  open=()=>{const d=t0.date,ch=chunksOn(d).find(c=>c.tasks.some(x=>x.id===id));return ch?chCards(ch.tasks,d).filter(x=>!x.done):[];};
+  psOpen("Reorder",re=>{const cards=open();if(cards.length<2)return [el("p",{class:"ps-sh-sum",text:"Only one item here."})];
+    const ids=cards.map(c=>c.id),mv=(i,dir)=>{const a=ids.slice(),j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];v3reorder(a);render();setTimeout(re,250);};
+    const list=el("ul",{class:"q-list rl-order"},...cards.map((c,i)=>el("li",{class:"q-row rl-orow"+(c.id===cid?" on":""),"data-id":c.id},el("span",{class:"q-t",text:c.title}),
+      el("button",{type:"button",class:"mini","aria-label":"Move up: "+c.title,disabled:i?null:"",onclick:()=>mv(i,-1)},"Up"),el("button",{type:"button",class:"mini","aria-label":"Move down: "+c.title,disabled:i<cards.length-1?null:"",onclick:()=>mv(i,1)},"Down"))));
+    v3dragList(list,".rl-orow",o=>{v3reorder(o);render();setTimeout(re,250);});
+    return [el("p",{class:"hint",text:"Press and hold a row, then drag. Or use Up and Down. The top item is the one Start opens."}),list];});}
+{const _tm=v3taskMenu;v3taskMenu=function(id){_tm(id);try{const t=state.tasks[id];if(!t||t.done||!t.date||t.date!==sel||document.querySelector('.page[data-page="today"]')&&document.querySelector('.page[data-page="today"]').hidden)return;
+    const sh=document.querySelector(".ps-sheet");if(!sh||sh.querySelector(".rl-reorder"))return;const b=el("button",{type:"button",class:"btn ghost rl-reorder",onclick:()=>{psClose(true);setTimeout(()=>rlReorder(id),60);}},"Reorder"),
+      anchor=[...sh.querySelectorAll("button")].find(x=>/^Move to bucket$/.test(x.textContent));if(anchor)anchor.after(b);else sh.append(b);}catch(e){console.warn(e);}};}
+window.__rl={run:rlRun,undo:rlUndo,spread:rlSpread,waiting:rlWaiting,place:rlPlace,groups:rlGroups,moveChunk:rlMoveChunk,moveSheet:rlMoveSheet,decide:rlDecideSheet,reorder:rlReorder,cfg:rlCfg,post:rlPost};
+function rlChunkName(c){if(c.kind==="learn")return "Learning";if(c.kind==="shallow")return "Shallow batch";return [...new Set(c.tasks.map(t=>chBkName(chBk(t))))].join(" and ")||"Design";}

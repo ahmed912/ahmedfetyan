@@ -346,3 +346,18 @@ body.m1 .m-nav{grid-template-columns:repeat(5,1fr)}
 .ch-card.done .ch-t{color:var(--muted)}
 .ch-hdr{margin:4px 0 0;font-size:13px;color:var(--muted)}
 .ch-mode.on{outline:2px solid var(--ink);outline-offset:1px}
+/* Round 3: carry-forward, Waiting tray, decide card */
+.ch-from{margin-left:auto;margin-right:8px;font-size:13px}
+.rl-miss{margin:2px 0 0;font-size:13px}
+.rl-decide{margin:8px 0 2px;padding:10px 12px;border-radius:14px;background:var(--gl-fill,var(--surface));border:1px solid var(--gl-line,var(--line))}
+.rl-dt{margin:0 0 8px;font-weight:600;font-size:14px}
+.rl-da{display:flex;flex-wrap:wrap;gap:6px}
+.rl-da .mini{flex:1 1 auto;min-width:64px;min-height:36px}
+.rl-wait .ce-head{width:100%}
+.rl-grp{margin:12px 0}
+.rl-gh{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.rl-gh b{flex:1}
+.rl-spread{width:100%;margin:4px 0 6px}
+.rl-hist{margin:6px 0 0}
+.rl-orow .mini{margin-left:6px}
+.rl-orow.on .q-t{font-weight:600}

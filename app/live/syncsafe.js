@@ -6,7 +6,7 @@
     queueSave=function(s,ms){dirty.add(s);clearTimeout(pending[s]);pending[s]=setTimeout(()=>saveLog(s),Math.min(ms,60));};
   (function(){
     if(!window.claude||!window.__sb||window.__sbSafe)return;window.__sbSafe=true;
-    const SAFE=new Set(["logs","entries","projects","learning","inquiries","sprints","habits","sleep","salah","listen","notes","design","guard","reminders","fin","finlog","buy","acct","diet","plans"]);
+    const SAFE=new Set(["logs","entries","projects","learning","inquiries","sprints","habits","sleep","salah","listen","notes","design","guard","reminders","fin","finlog","buy","acct","diet","plans","rollover"]);
     const clone=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x));
     const isO=x=>x!==null&&typeof x==="object"&&!Array.isArray(x);
     const eq=(a,b)=>{if(a==null&&b==null)return true;if(a===b)return true;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((v,i)=>eq(v,b[i]));

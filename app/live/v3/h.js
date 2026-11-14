@@ -12,6 +12,7 @@ async function openp(b,w,o={}){const ctx=await b.newContext({viewport:{width:w,h
   pg.on('pageerror',e=>pg.errs.push(String(e)));pg.on('console',m=>{if(m.type()==='error')pg.errs.push('console:'+m.text().slice(0,200));});
   await pg.clock.install({time:new Date(o.when||'2026-11-09T11:00:00')});
   let M=o.real?base.replace("const data={tasks:T,logs:{}}","const data="+o.real):mock;if(o.reorder){if(!M.includes(RE_OLD))throw new Error('reorder patch failed');M=M.replace(RE_OLD,RE_NEW);}
+  if(!o.roll)M=M.replace("window.__data=data;","data.settings=data.settings||{};if(!data.settings.roll)data.settings.roll={auto:false};window.__data=data;");
   M=M.replace("window.__data=data;","if(window.__restore)for(const k in window.__restore)data[k]=window.__restore[k];window.__data=data;");
   await pg.addInitScript("try{const s=sessionStorage.getItem('__mockdata');if(s)window.__restore=JSON.parse(s);}catch(e){}");
   await pg.addInitScript(M);if(o.sb)await pg.addInitScript(SBMOCK);await pg.route('**/*',r=>/^https?:/.test(r.request().url())?r.abort():r.continue());

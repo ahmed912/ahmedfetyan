@@ -1,6 +1,6 @@
 const {openp,shot,run}=require('./h.js');const fs=require('fs');
 const ok=(n,c,x)=>console.log((c?'PASS ':'FAIL ')+n+(x!==undefined?' '+x:''));
-const R=JSON.parse(fs.readFileSync('/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/pickerfix/app/cut/real.json','utf8'));
+const R=JSON.parse(fs.readFileSync('/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/pubbuild/app/cut/real.json','utf8'));
 // own fixture: 3 parents, 10 steps over Mon 16, Tue 17, Wed 18 Nov 2026
 const SP=[[1,'2026-11-03','2026-11-12'],[2,'2026-11-13','2026-11-25'],[3,'2026-11-26','2026-12-05'],[4,'2026-12-06','2026-12-15'],[5,'2026-12-16','2026-12-25'],[6,'2026-12-26','2027-01-03']];
 R.sprints={};SP.forEach(([n,s,e])=>{R.sprints['s'+n]={n,start:s,end:e,name:'Sprint '+n,goal:'g'+n,posts:5,comments:40,applications:2};});
@@ -25,29 +25,28 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);const pg=awai
   // stack: one pile, open the full list
   const top=await pg.evaluate("[...document.querySelectorAll('#cutStack .cs-card[data-id]')].map(c=>c.dataset.id)");
   ok('top card is a parent (work first: Javelin)',top.length===1&&top[0]==='pA',JSON.stringify(top));
-  await pg.click('.cs-more');await pg.clock.runFor(500);await W(500);await shot(pg,'r7_view_'+w);
-  const ids=await pg.evaluate("[...document.querySelectorAll('.cs-all > .cs-card')].map(c=>c.dataset.id)");
+  await pg.evaluate(()=>__ch.openAll());await pg.clock.runFor(500);await W(500);await shot(pg,'r7_view_'+w);
+  const ids=await pg.evaluate("[...document.querySelectorAll('#cutStack .ch-list > .cs-card')].map(c=>c.dataset.id)");
   ok('cards shown are parents only, never steps',ids.length>0&&ids.every(i=>/^p[ABC]$/.test(i)),JSON.stringify(ids));
   ok('at most 4 cards',ids.length<=4,ids.length);
   ok('order work, learning, linkedin',JSON.stringify(ids)==='["pA","pB","pC"]',JSON.stringify(ids));
-  const est=await pg.evaluate("document.querySelector('.cs-all')?.innerText");
+  const est=await pg.evaluate("document.querySelector('#cutStack')?.innerText");
   ok('estimates visible (about 1 h, about 1.5 h, about 2.5 h)',/about 1 h/.test(est)&&/about 1\.5 h/.test(est)&&/about 2\.5 h/.test(est),est.replace(/\n/g,' | ').slice(0,200));
-  ok('steps listed with tick boxes',(await pg.locator('.cs-all > .cs-card').first().locator('input[type=checkbox]').count())===2);
-  await pg.locator('.tv-x').click();await pg.clock.runFor(500);await W(400);
-  // day bar in pomodoros
+  ok('steps listed with tick boxes',(await pg.locator('#cutStack .ch-list > .cs-card').first().locator('input[type=checkbox]').count())===2);
+  // day bar in hours (round 2B header)
   const bar=await pg.evaluate("document.querySelector('.dbar-focus')?.innerText.replace(/\\s+/g,' ')");
-  ok('day bar shows pomodoros and planned',/of 8 pomodoros/.test(bar)&&/planned 4\.8 of 8/.test(bar),bar);
+  ok('day bar shows work hours and planned',/Work 0 of 8 h/.test(bar)&&/planned 4\.8 of 8 h/.test(bar),bar);
   // ticking all of today's steps completes the card
-  const cbs=pg.locator('#cutStack .cs-card.cs-top input[type=checkbox]');ok('top card has 2 steps today',(await cbs.count())===2);
+  const cbs=pg.locator('#cutStack .ch-card:first-child input[type=checkbox]');ok('top card has 2 steps today',(await cbs.count())===2);
   await cbs.nth(0).check();await pg.clock.runFor(400);await W(400);
   let t=await TK();ok('first step ticked, parent not done yet',t.sA1.done&&!t.sA2.done&&!t.pA.done);
-  await pg.locator('#cutStack .cs-card.cs-top input[type=checkbox]').nth(1).click();await pg.clock.runFor(500);await W(500);
+  await pg.locator('#cutStack .ch-card:first-child input[type=checkbox]').nth(1).click();await pg.clock.runFor(500);await W(500);
   t=await TK();ok('both steps done, other days untouched',t.sA2.done&&!t.sA3.done&&!t.sA5.done,'pA.done='+t.pA.done);
   const top2=await pg.evaluate("[...document.querySelectorAll('#cutStack .cs-card[data-id]')].map(c=>c.dataset.id)");
   ok('card is complete and the next card (learning) is on top',top2[0]==='pB',JSON.stringify(top2));
   await shot(pg,'r7_after_'+w);
   // Done on a parent card = today's steps done
-  await pg.locator('#cutStack .cs-card.cs-top .cl-act, #cutStack .cs-card.cs-top .btn.ghost:has-text("Done")').first().click();await W(300);
+  await pg.locator('#cutStack .cs-card[data-id] .cl-det').first().click();await W(300);await pg.locator('#cutStack .cs-card[data-id]').first().locator('.btn.ghost:has-text("Done")').click();await W(300);
   await pg.click('.v3-conf .btn:not(.ghost)').catch(()=>{});await pg.clock.runFor(500);await W(400);
   t=await TK();ok('Done on the card finishes its steps for today',t.sB1.done&&!t.sB2.done,JSON.stringify([t.sB1.done,t.sB2.done]));
   // Review: sprint progress counts leaves only

@@ -4,7 +4,7 @@ const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined?' '+x:''));i
 run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const pg=await openp(b,w,{when:'2026-11-12T11:00:00'});const W=ms=>pg.waitForTimeout(ms);
   await W(400);
-  const pg2=await openp(b,w,{when:'2026-11-14T11:00:00'});await pg2.waitForTimeout(500);
+  const pg2=await openp(b,w,{when:'2026-11-14T11:00:00'});await pg2.waitForTimeout(500);await pg2.evaluate("window.__ch&&__ch.openAll()");await pg2.clock.runFor(400);await pg2.waitForTimeout(300);
   const steps=await pg2.evaluate("(()=>{const r=[...document.querySelectorAll('#cutStack .cs-card .cs-step')];if(!r.length)return null;return r.map(li=>{const q=s=>li.querySelector(s).getBoundingClientRect();const c=q('input'),t=q('.cs-step-t'),e=q('.cs-est');return {cx:c.left,cy:c.top+c.height/2,tx:t.left,ty:t.top,th:t.height,ex:e.left,ey:e.top+e.height/2,ew:e.right,lw:li.getBoundingClientRect().right};});})()");
   await shot(pg2,'r9_today_'+w);
   ok('a parent card with steps is on Today',!!steps&&steps.length>0,steps&&steps.length);

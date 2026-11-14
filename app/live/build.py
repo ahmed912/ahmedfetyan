@@ -55,7 +55,7 @@ for _ta,_tb in THEME:
   if _ta in s: s=s.replace(_ta,_tb)
 # ---- 12 Nov replan: END, sprints, leaf counting ----
 _sp_block='    {n:1,name:"Set up and first proof",start:"2026-11-03",end:"2026-11-12",goal:"Systems running, StoryBrand finished, HASM case study live",posts:5,comments:40,applications:2},\n    {n:2,name:"Brand foundation and first proof",start:"2026-11-13",end:"2026-11-25",goal:"HASM and Javelin live, brand script and LinkedIn profile done, posting daily",posts:11,comments:35,applications:4},\n    {n:3,name:"First demand",start:"2026-11-26",end:"2026-12-05",goal:"Mugassam live, post bank back to 5, first inquiry calls",posts:22,comments:75,applications:8},\n    {n:4,name:"Second project, portfolio draft",start:"2026-12-06",end:"2026-12-15",goal:"Real estate live by 13 Dec, offline portfolio draft",posts:34,comments:120,applications:12},\n    {n:5,name:"Portfolio v1",start:"2026-12-16",end:"2026-12-25",goal:"Offline portfolio v1 in 2 versions by 18 Dec, F&B live",posts:47,comments:175,applications:16},\n    {n:6,name:"Close Milestone 1",start:"2026-12-26",end:"2027-01-03",goal:"Keynote live by 31 Dec, Gate 1 review on 3 Jan",posts:60,comments:240,applications:20}'
-R2=[('sub("guard");sub("gym"','sub("guard");sub("diet");sub("plans");sub("gym"',1),
+R2=[('sub("guard");sub("gym"','sub("guard");sub("diet");sub("plans");sub("rollover");sub("gym"',1),
 ('START = "2026-11-03", END = "2026-12-31";','START = "2026-11-03", END = "2027-01-03";',1),
 ('Day <span id="dayNum">--</span> of 59','Day <span id="dayNum">--</span> of 62',1),
 ('(3 Nov to 31 Dec 2026)','(3 Nov to 3 Jan 2027)',1),
