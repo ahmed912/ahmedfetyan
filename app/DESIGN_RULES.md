@@ -50,6 +50,14 @@ The ethos is to push hard and work as much as possible to build something. The a
 - Planning, refill, rollover and rescheduling must respect chunks: re-flow moves a whole chunk, not single tasks apart from their group; a new task joins the chunk of its bucket or type by default; deep blocks never get shallow tasks mixed in.
 - Show the day as a few chunks (work chunks, learning chunk, shallow batch), not as a long list of tasks. That also lowers cognitive load.
 
+# VISUAL TASTE (user is a senior designer; applies to every screen)
+- Minimal text and minimal typography so the eye can focus: few type sizes (one body, one small, one title), light weights, no bold walls, no ALL CAPS shouting, no decoration.
+- Light text on calm surfaces; clear, calm, quiet. Never loud colour; colour only as a small signal.
+- Generous white space (air) between and inside groups. Space does the grouping, not lines, boxes or dividers.
+- Small tabs under the text: the category or type shown as a tiny, light tag/label under the task title (work, learning, shallow, bucket, due). They are tiny on purpose, they save time and carry the categorisation. Keep them consistent in size, weight and position everywhere.
+- Designer-grade alignment: one spacing scale (multiples of 4 or 8 px), one left edge per column, consistent padding and radius, baseline-aligned text, aligned numbers and time columns, consistent row heights inside a list, optical alignment of icons and text. Check alignment and white space at 390 and 1300 on every change.
+- Buckets and cards may differ in size by content, but their edges, gutters and inner padding stay on the grid.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
