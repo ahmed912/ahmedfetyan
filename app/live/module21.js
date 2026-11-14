@@ -49,25 +49,15 @@ warEnd=function(auto){const w=warGet();if(!w)return warClose();
   toast((auto===true?(w.missedAt?"War ended, check-in missed. ":"War ended after 2 hours paused. "):"")+"War on "+w.label+": "+w.done.length+" of "+w.ids.length+" done, "+dur(mins)+" logged");warPut(null);warClose();};
 
 // ---- 3. one tap in the entry sheet: trim a missed check-in back to the check-in ----
-function v21trim(d,id){const items=v20all(d).map(x=>({...x}));const x=items.find(y=>y.id===id);if(!x||!x.missed)return;
+function v21trim(d,id){const orig=v20all(d).map(x=>({...x}));const items=v20all(d).map(x=>({...x}));const x=items.find(y=>y.id===id);if(!x||!x.missed)return;
   const at=x.missed.at,ss=sessionsOf(x).map(s=>({...s})).filter(s=>s.start<at).map(s=>s.end>at?{...s,end:at,minutes:v21r1((at-s.start)/60000)}:s);
   if(!ss.length){toast("Nothing before the check-in");return;}
   const sum=ss.reduce((a,s)=>a+Number(s.minutes||0),0),target=Number(x.missed.minutes)||sum;ss[ss.length-1].minutes=v21r1(Math.max(0,ss[ss.length-1].minutes+(target-sum)));
   x.sessions=ss;x.minutes=v21r1(ss.reduce((a,s)=>a+Number(s.minutes||0),0));x.end=at;delete x.missed;x.note=String(x.note||"").replace(" · check-in missed","")+" · trimmed to the check-in";
-  saveEntries(d,items.filter(y=>!y.deleted));toast("Trimmed to the check-in: "+dur(x.minutes));}
-window.__v21trim=v21trim;
+  saveEntries(d,items.filter(y=>!y.deleted));v3undoToast("Trimmed to the check-in: "+dur(x.minutes),()=>{saveEntries(d,orig.filter(y=>!y.deleted));});}
+window.__v21trim=v21trim;window.__v21edit=(d,id)=>entryEdit(d,id);
 
-// ---- 4. on load: an entry with paused minutes and no pause you pressed gets those minutes back as a counted session (idempotent) ----
-let v21done=false;
-function v21fix(force){if((v21done&&!force)||!(state.loaded&&state.loaded.entries))return 0;v21done=true;let n=0;
-  Object.keys(state.entries||{}).forEach(d=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return;let ch=false;
-    const out=v20all(d).map(x=>{if(!x||x.deleted||x.kind==="event"||!(Number(x.paused)>0)||(x.pauses&&x.pauses.length)||!(/^war/.test(String(x.id||""))||/^War on /.test(String(x.label||""))))return x;
-      const p=Number(x.paused),ss=sessionsOf(x).map(s=>({...s})),last=ss.reduce((a,s)=>Math.max(a,s.end||0),0)||x.end||x.start||0;ch=true;n++;
-      ss.push({start:last,end:last+p*60000,minutes:v21r1(p),paused:0});
-      return {...x,sessions:ss,minutes:v21r1(Number(x.minutes||0)+p),paused:0,...(x.end?{end:last+p*60000}:{}),note:(x.note?x.note+" · ":"")+"unanswered check-in time added back"};});
-    if(ch)saveEntries(d,out);});return n;}
-{const _r=render;render=function(){_r();try{v21fix();}catch(e){console.warn(e);}};}
 // the same day seen from Today (day total), Time (day rows), Review (work hours) and the plain sum of the entries
 function v21surf(d){const it=entriesOn(d).filter(x=>!isEstimate(x)&&x.kind!=="event"&&x.kind!=="break");
   return {today:workedMin(d),time:unionMin(it),review:v3workMin(d),sum:Math.round(it.reduce((a,x)=>a+Number(x.minutes||0),0)*10)/10};}
-window.__u21={fix:()=>v21fix(true),warAnswer,surf:v21surf};
+window.__u21={warAnswer,surf:v21surf};

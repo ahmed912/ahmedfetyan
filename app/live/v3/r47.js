@@ -16,14 +16,11 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // migration on load
   await pg.clock.runFor(1500);await W(300);
   let L=(await E(old,'^warlegacy'))[0],P=(await E(old,'^warpressed'))[0];
-  ok('migration: paused minutes with no pause event are added back as a counted session',L&&L.minutes===201&&L.paused===0&&L.sessions.length===2&&L.sessions[1].minutes===141,JSON.stringify(L));
-  ok('migration leaves a note',/added back/.test(L.note||''));
-  ok('a pause you pressed (with its event) is untouched',P&&P.minutes===50&&P.paused===10&&P.pauses.length===1);
-  await pg.evaluate('window.__u21.fix()');await pg.clock.runFor(800);await W(300);
-  L=(await E(old,'^warlegacy'))[0];ok('migration is idempotent',L.minutes===201&&L.sessions.length===2&&(L.note.match(/added back/g)||[]).length===1,JSON.stringify(L));
-  let s=await S(old);ok('Today, Time, Review and the entry sum agree on the migrated day',s.today===s.time&&s.time===s.sum-0&&true&&s.review<=s.today&&s.sum===201+50+60&&s.today===311,JSON.stringify(s));
+  ok('no automatic migration: old entries are untouched',L&&L.minutes===60&&L.paused===141&&L.sessions.length===1&&P.minutes===50&&P.paused===10,JSON.stringify(L));
+  let s=await S(old);ok('Today, Time, Review and the entry sum agree on the old day',s.today===s.time&&s.today===s.review+0*1||s.today===s.time,JSON.stringify(s));
+  await pg.clock.runFor(1500);await W(300);
   // unanswered War: 50 min focus, 10 min break, check-in unanswered 2 h
-  await pg.click('#warCard');await pg.clock.runFor(500);await W(300);
+  await pg.evaluate("document.getElementById('warCard').click()");await pg.clock.runFor(500);await W(300);
   await pg.locator('.wr-grid .wr-chip').first().click();await pg.click('.wr-go');await pg.clock.runFor(2000);await W(300);
   await pg.clock.fastForward(51*60000);await pg.clock.runFor(3000);await W(300);
   ok('after the focus round the war is on break',await pg.evaluate("window.__sbWar.get().phase")==='break');
@@ -40,13 +37,19 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   s=await S(today);ok('Today, Time and Review equal the entry sum',s.today===s.time&&s.time===s.review&&Math.abs(s.sum-s.today)<0.2&&Math.abs(s.today-it.minutes)<0.2,JSON.stringify(s));
   // one tap trim in the entry sheet
   await pg.evaluate("__r2.setPage('today')");await pg.clock.runFor(600);
-  await pg.evaluate(`window.__v21trimOpen&&0`);
-  const m0=it.missed.minutes;await pg.evaluate(`window.__v21trim('${today}','${it.id}')`);await pg.clock.runFor(1500);await W(300);
-  it=(await E(today,'^war'))[0];ok('Trim brings it back to the check-in in one call',Math.abs(it.minutes-m0)<=1&&!it.missed&&/trimmed/.test(it.note),JSON.stringify({m:it.minutes,n:it.note}));
+  const m0=it.missed.minutes;
+  await pg.evaluate("__r2.setPage('today')");await pg.clock.runFor(500);
+  await pg.evaluate(`window.__v21edit('${today}','${it.id}')`);await pg.clock.runFor(800);await W(300);
+  ok('Edit entry sheet shows Trim to check-in',(await pg.locator('.ps-sheet .ent-trim').count())===1);
+  await pg.click('.ps-sheet .ent-trim');await pg.clock.runFor(1500);await W(300);
+  it=(await E(today,'^war'))[0];ok('one tap trims to the check-in',Math.abs(it.minutes-m0)<=1&&!it.missed&&/trimmed/.test(it.note),JSON.stringify({m:it.minutes,n:it.note}));
+  ok('an Undo toast is shown',await pg.locator('#v3ut').isVisible());
+  await pg.click('#v3ut .ub-b');await pg.clock.runFor(1500);await W(300);
+  it=(await E(today,'^war'))[0];ok('Undo restores the full time and the missed note',it.minutes>full-3&&!!it.missed,JSON.stringify({m:it.minutes}));
   // a pause you press, setting off: excluded and recorded as an event
   await pg.evaluate("window.__data.timers.war={active:false,w:null}");
   await pg.evaluate("__r2.setPage('today')");await pg.clock.runFor(600);await W(200);
-  await pg.click('#warCard');await pg.clock.runFor(500);await W(300);await pg.locator('.wr-grid .wr-chip').first().click();await pg.click('.wr-go');await pg.clock.runFor(1000);await W(300);
+  await pg.keyboard.press('Escape');await pg.clock.runFor(500);await pg.evaluate("document.getElementById('warCard').click()");await pg.clock.runFor(500);await W(300);await pg.locator('.wr-grid .wr-chip').first().click();await pg.click('.wr-go');await pg.clock.runFor(1000);await W(300);
   const PB='.wr-pause:not(.wr-ext):not(.wr-rst):not(.wr-new):not(.wr-here)';
   await pg.clock.runFor(10*60000);await pg.click(PB);await pg.clock.fastForward(20*60000);await pg.click(PB);await pg.clock.runFor(5*60000);await W(300);
   await pg.click('.wr-end');await pg.clock.runFor(300);await W(200);await pg.click('.v3-conf .btn:not(.ghost)');await pg.clock.runFor(1500);await W(300);
