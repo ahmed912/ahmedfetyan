@@ -26,15 +26,15 @@ function ckRow(tid,s,re){const cb=el("input",{type:"checkbox","aria-label":"Done
   return el("li",{class:"q-row ck-row ur-row","data-id":s.id,"data-ck":s.id},cb,ttl,more,acts);}
 // a dated task that sits under this task (an older nesting) shows in the same list: tick, title, quiet day, no time
 function ckKidRow(s,re){const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.title});cb.checked=!!s.done;cb.onchange=()=>{patchTask(s.id,{done:cb.checked,doneAt:cb.checked?iso(new Date()):null});setTimeout(re,250);};
-  const li=el("li",{class:"q-row ck-row ur-row ck-kid","data-id":s.id,"data-step":s.id},cb,el("span",{class:"ck-t"+(s.done?" v3-done":""),text:s.title}),s.date?el("span",{class:"hint ck-d",text:v3dl(s.date)}):null);
-  if(s.date&&!s.done)v3stepSwipe(li,s);return li;}
+  const li=el("li",{class:"q-row ck-row ur-row ck-kid v3-sub","data-id":s.id,"data-step":s.id},cb,el("span",{class:"ck-t"+(s.done?" v3-done":""),text:s.title}),s.date?el("span",{class:"hint ck-d",text:v3dl(s.date)}):null);
+  if(s.date&&!s.done)v3stepSwipe(li,s);return typeof selRow==="function"?selRow(li,s.id):li;}
 function ckSection(t,re){const id=t.id;if(ckLegacy(state.tasks[id]||t).length){ckEnsure(id).then(ok=>{if(ok)setTimeout(re,200);});}
   const L=ckList({...t,id}).filter(x=>!x.legacy),kids=kidsOf(id),n=L.length+kids.length,d=L.filter(x=>x.done).length+kids.filter(x=>x.done).length;
   const add=el("input",{type:"text",class:"v3-in ck-add","aria-label":"New subtask",placeholder:"Add a subtask"});
   add.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const v=add.value;add.value="";ckAdd(id,v).then(()=>{re();setTimeout(()=>{const x=document.querySelector(".ps-sheet .ck-add");if(x)x.focus();},60);});}});
   const ul=el("ul",{class:"q-list ck-list"},...L.map(s=>ckRow(id,s,re)),...kids.map(k=>ckKidRow(k,re)));
   if(L.length>1)v3dragList(ul,".ck-row:not(.ck-kid)",ids=>{ckReorder(ids);setTimeout(re,250);});
-  return el("section",{class:"ck-sec","aria-label":"Subtasks"},el("span",{class:"label",text:"Subtasks"+(n?" ("+d+" of "+n+")":"")}),n?ul:null,add);}
+  return el("section",{class:"ck-sec","aria-label":"Subtasks"},el("div",{class:"v3-row sel-head"},el("span",{class:"label",text:"Subtasks"+(n?" ("+d+" of "+n+")":"")}),kids.length&&typeof selStart==="function"&&!selOn?el("button",{type:"button",class:"hint bk-link sel-go",onclick:()=>selStart(null,re)},"Select"):null),n?ul:null,add);}
 // Today card: "1 of 3 · next: ..." under the title
 {const _vc=v3card;v3card=function(t,top,ctx){const c=_vc(t,top,ctx);try{const src=state.tasks[t.id]||t,k=ckCount({...src,id:t.id});
     if(k.n&&!c.querySelector(".ck-line")){const head=c.querySelector(".cs-head");const line=el("p",{class:"hint ck-line",text:k.d+" of "+k.n+(k.next?" · next: "+k.next.t:"")});if(head)head.after(line);else c.prepend(line);}

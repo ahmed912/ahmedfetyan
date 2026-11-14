@@ -26,9 +26,9 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('sorted work, learning, shallow; High then earliest due inside work',ord==='d1,d2,d3,ln,sh',ord);
   const rows=await pg.locator('.pl-inbox .pl-row').evaluateAll(r=>r.map(x=>x.dataset.id).join());
   ok('screen shows the first three of that order',rows==='d1,d2,d3',rows);
-  const bd=await pg.locator('.pl-row[data-id="d1"] .pl-b').innerText();
-  ok('badges are plain facts: due with days, High, type',/Due 2 Dec \(in 4 days\)/.test(bd)&&/High/.test(bd)&&/Portfolio/.test(bd)&&/Deep/.test(bd),bd);
-  ok('no badge on a task without fields beyond type',!/Due|High/.test(await pg.locator('.pl-row[data-id="d3"] .pl-b').innerText().then(x=>x.replace(/Due 20 Dec \(in 22 days\)/,''))));
+  const bd=await pg.locator('.pl-row[data-id="d1"] .ur-tags').innerText();
+  ok('shared row shows plain facts: category, High (r34 unify: due and type live in the Plan sheet)',/High/.test(bd)&&/Portfolio/.test(bd),bd);
+  ok('no badge on a task without fields beyond type',!/High/.test(await pg.locator('.pl-row[data-id="d3"] .ur-tags').innerText()));
   await shot(pg,'r25_inbox_'+w);
   // 2 triage the learning task: estimate, due, priority, each with Undo
   await pg.locator('#planInbox .bk-moreb').first().click();await R(400);
