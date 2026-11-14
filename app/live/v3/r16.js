@@ -39,6 +39,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
     await undo();ok('journey: Undo brings it back',(await T())[id0].date==='2026-11-13');}
   // 3 Task sheet in Review waterfall, plus waterfall edits
   await nav('Review');await W(400);
+  await pg.evaluate("[...document.querySelectorAll('#wfBody .seg button')].find(b=>b.textContent==='By day')?.click()");await pg.clock.runFor(300);await pg.waitForTimeout(300);
   const rows=pg.locator('#wfBody .v3-wft');ok('waterfall rows',(await rows.count())>0);
   await pg.locator('#wfBody').scrollIntoViewIfNeeded();
   // week view: 7 days from Saturday, prev/next, This week
@@ -58,7 +59,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('bars are interactive',(await pg.locator('#wfBody .wf-bar[role=button]').count())>0);
   if(par){const pt=(await T())[par];await pg.locator('#wfBody .v3-wft').filter({hasText:pt.title}).first().click();await R(500);
     ok('task sheet has Reschedule',(await pg.locator('.ps-sheet .rs-sheet-btn').count())===1);
-    await pg.click('.ps-sheet .rs-sheet-btn');await R(400);await pg.click('.ps-sheet .rs-pick >> nth=2');await R(500);
+    await pg.click('.ps-sheet .rs-sheet-btn');await R(400);await pg.click('.ps-sheet .rs-pick >> nth=0');await R(500);
     ok('parent asks about steps',(await pg.locator('.rs-steps-yes').count())===1);await pg.click('.rs-steps-no');await R(300);
     if(await pg.locator('#v3Conf').count())await pg.click('#v3Conf .btn:not(.ghost)');await R(500);
     const P1=(await T())[par];ok('parent only moved +1 week',P1.date!==pt.date&&P1.date===pt.date.replace(/.*/,P1.date),pt.date+' -> '+P1.date);await undo();}

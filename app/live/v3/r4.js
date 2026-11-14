@@ -18,6 +18,7 @@ run(async b=>{const pg=await openp(b,390);const W=ms=>pg.waitForTimeout(ms);cons
   await pg.click('#todayBtn');await pg.clock.runFor(300);await W(300);
   // --- Review
   await pg.click('.m-tab:has-text("Review")');await pg.clock.runFor(500);await W(700);
+  await pg.evaluate("[...document.querySelectorAll('#wfBody .seg button')].find(b=>b.textContent==='By day')?.click()");await pg.clock.runFor(300);await pg.waitForTimeout(300);
   ok('waterfall is open (rows visible)',(await pg.locator('#wfBody .v3-wft').count())>0,await pg.locator('#wfBody .v3-wft').count());
   ok('no fold button on waterfall/insights',(await pg.locator('section[aria-labelledby="wfH"] .collapse-btn, section[aria-labelledby="ihH"] .collapse-btn').count())===0);
   console.log('insights title:',await pg.evaluate("document.getElementById('ihH').textContent"),'| body:',(await pg.evaluate("document.getElementById('ihBody').innerText")).replace(/\n/g,' | ').slice(0,200));
@@ -36,8 +37,8 @@ run(async b=>{const pg=await openp(b,390);const W=ms=>pg.waitForTimeout(ms);cons
   await pg.locator('.ps-sheet .v3-trow').nth(2).click();await W(300);await pg.click('.v3-conf .btn:not(.ghost)');await pg.clock.runFor(500);await W(700);
   const t1=await T();const nested=t1.filter(x=>x.parent);ok('one task nested under another (data otherwise unchanged)',nested.length===1&&t1.length===t0.length,JSON.stringify(nested));
   await shot(pg,'r4_parent');
-  const det=await pg.locator('.ps-sheet .v3-sub .mini:has-text("Detach")').count();ok('parent sheet lists it with Detach',det===1,det);
-  await pg.locator('.ps-sheet .v3-sub .mini:has-text("Detach")').click();await pg.clock.runFor(400);await W(500);
+  const det=await pg.locator('.ps-sheet .v3-sub').count();ok('parent sheet lists it, no per-row Detach (r32: Select mode)',det===1&&(await pg.locator('.ps-sheet .v3-sub .mini').count())===0,det);
+  await pg.locator('.ps-sheet .sel-go').click();await pg.clock.runFor(300);await W(300);await pg.locator('#selBar .sel-all').click();await pg.locator('#selBar .sel-detach').click();await pg.clock.runFor(400);await W(500);
   ok('detach restores it',(await T()).filter(x=>x.parent).length===0);await esc();
   // group tool
   await pg.locator('#wfBody .mini:has-text("Group tasks")').click();await W(600);await shot(pg,'r4_group');

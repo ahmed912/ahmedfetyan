@@ -38,7 +38,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // 3 the picker shows each day's blocks
   await pg.evaluate(()=>__sp10.rs('sh1','task'));await R(500);
   const f=await pg.evaluate(()=>[...document.querySelectorAll('.ps-sheet .rs-pick')].map(x=>x.dataset.facts));
-  ok('picker: each day shows B1, B2, Learning and Shallow',f.length>=2&&f.every(x=>/B1 /.test(x)&&/B2 /.test(x)&&/Learning \d+ of 60/.test(x)&&/Shallow \d+ of 120/.test(x)),JSON.stringify(f));
+  ok('picker (r35): choices carry no capacity numbers',f.length>=2&&f.every(x=>!x),JSON.stringify(f));
   await shot(pg,'r27_picker_'+w);
   const df=await pg.evaluate(()=>__cap.dayFacts('2026-11-18'));
   ok('18 Nov facts: B1 Mugassam 5 of 4 h, B2 free 4 h, Learning 30 of 60, Shallow 50 of 120',df==='B1 Mugassam 5 of 4 h · B2 free 4 h · Learning 30 of 60 · Shallow 50 of 120',df);

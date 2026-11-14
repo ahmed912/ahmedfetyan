@@ -16,7 +16,7 @@ function ckDel(tid,id){const cur=ckAsObj(state.tasks[tid]);if(!cur[id])return;de
 function ckMove(tid,id,dir){const L=ckList(state.tasks[tid]),i=L.findIndex(x=>x.id===id),j=i+dir;if(i<0||j<0||j>=L.length)return;const cur=ckAsObj(state.tasks[tid]);
   const a=L[i],b=L[j];cur[a.id]={...cur[a.id],o:b.o};cur[b.id]={...cur[b.id],o:a.o};ckSave(tid,cur,[{p:["check",a.id,"o"],set:b.o},{p:["check",b.id,"o"],set:a.o}]);}
 function ckRow(tid,s,i,L,re){const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.t});cb.checked=s.done;cb.onchange=()=>{ckTick(tid,s.id,cb.checked);setTimeout(re,250);};
-  const inp=el("input",{type:"text",class:"v3-in ck-t"+(s.done?" v3-done":""),"aria-label":"Step"});inp.value=s.t;inp.onchange=()=>{ckEdit(tid,s.id,inp.value);setTimeout(re,250);};
+  const inp=el("textarea",{rows:"1",class:"v3-in ck-t"+(s.done?" v3-done":""),"aria-label":"Step"});inp.value=s.t;const fit=()=>{inp.style.height="auto";inp.style.height=Math.min(inp.scrollHeight,48)+"px";};setTimeout(fit,0);inp.addEventListener("input",fit);inp.onchange=()=>{ckEdit(tid,s.id,inp.value);setTimeout(re,250);};
   inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.blur();}});
   const acts=el("div",{class:"ck-acts",hidden:""},el("button",{type:"button",class:"mini",disabled:i===0?"":null,onclick:()=>{ckMove(tid,s.id,-1);setTimeout(re,250);}},"Move up"),
     el("button",{type:"button",class:"mini",disabled:i===L.length-1?"":null,onclick:()=>{ckMove(tid,s.id,1);setTimeout(re,250);}},"Move down"),
@@ -339,16 +339,10 @@ function rlMoveChunk(tasks,d,typed){const today=rlTodayIso(),open=tasks.filter(t
     if(!Object.keys(patches).length){toast("No free block from "+rlDl(d));return;}
     const old=rlWrite(patches);psClose(true);render();
     const first=res.placed.map(p=>p.date).sort()[0],g=rlGroups(ok)[0],nm=rlGroups(ok).length>1?rlTasks(Object.keys(patches).length):g.name+" chunk";
-    v3undoToast("Moved "+nm+" to "+rlDl(first)+(first!==d?" ("+rlDay(d)+" is full or resting)":"")+(res.wait.length?". "+res.wait.length+" did not fit":"")+(dec?". "+dec+" to decide":""),()=>rlRestore(old));};
+    v3undoToast("Moved to "+rlDl(first)+(res.wait.length?". "+res.wait.length+" did not fit":"")+(dec?". "+dec+" to decide":""),()=>rlRestore(old));};
   if(typed&&isFriday(d)){v3confirm("Friday is your rest day. Move to "+rlDl(d)+" anyway?","Move",go);return;}
   go();}
 function rlFits(tasks,d){const ok=tasks.filter(t=>rlLive(t)&&!rlNeedsDecide(t)),skip=new Set(ok.map(t=>t.id)),r=rlPlace(rlGroups(ok),[d],{},{skip});return r.placed.length===ok.length;}
-function rlMoveSheet(tasks,title){const open=tasks.filter(t=>!t.done);if(!open.length){toast("Nothing to move");return;}
-  psOpen("Move chunk",re=>{const today=rlTodayIso(),days=[];for(let d=addDays(today,1),i=0;i<14&&days.length<6;d=addDays(d,1),i++){if((v3spOf(d)||!spOn())&&!rlOff(d))days.push(d);}
-    const di=v3dateField("New day",null,p=>{setTimeout(()=>rlMoveChunk(open,p,true),30);});
-    return [el("p",{class:"ps-sh-sum",text:title+" · "+rlTasks(open.length)}),el("p",{class:"hint",text:"The whole chunk moves together. Friday and buffer days are skipped; a full day sends it to the next free block."}),
-      el("div",{class:"v3-cats"},...days.map(d=>el("button",{type:"button",class:"cat-chip v3-rs rl-day","data-d":d,onclick:()=>rlMoveChunk(open,d,false)},rlDl(d)+(rlFits(open,d)?"":" · full")))),
-      el("label",{class:"field"},el("span",{class:"label",text:"Or type a day"}),di)];});}
 function rlMissText(t){const r=(t.rolled||[]).slice(-4);return r.length?"Missed "+r.map(rlDay).join(", ")+((t.rolled||[]).length>4?" and "+((t.rolled||[]).length-4)+" more":""):"";}
 function rlWaitSheet(){psOpen("Waiting",re=>{const all=rlWaiting();if(!all.length)return [el("p",{class:"ps-sh-sum",text:"Nothing is waiting."})];
   const groups=rlGroups(all);

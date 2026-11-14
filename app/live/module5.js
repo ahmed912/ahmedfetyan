@@ -94,12 +94,12 @@ function rsGo(id,d,ctx){const t=state.tasks[id];if(!t||!d)return;if(!/^\d{4}-\d{
   if(kidsOf(id).length)rsAsk(id,d,ctx);else rsWarn(id,d,ctx,false);}
 function v3rs(id,ctx){if(!state.tasks[id])return;psOpen("Reschedule",re=>{const t=state.tasks[id];if(!t)return [el("p",{class:"ps-sh-sum",text:"This task is gone."})];
   const today=iso(new Date()),base=rsBase(id,ctx),sp=v3spOf(base),kids=kidsOf(id).length;
-  const picks=[["Tomorrow",v3skipFri(addDays(today,1))],["Next Sat",rsNextSat()],["+1 week",addDays(base,7)]];
+  const nf=mvNextFree(null,addDays(base>today?base:today,1)),tm=v3skipFri(addDays(today,1)),picks=[["Next free day: ",nf,1],["Tomorrow, ",tm],["Next Saturday, ",rsNextSat()]];
   const di=el("input",{type:"date",class:"tt-in v3-date rs-date","aria-label":"New day",value:base});
   di.addEventListener("change",()=>{if(di.value)setTimeout(()=>rsGo(id,di.value,ctx),30);});
-  return [el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Now on "+rsDl(base)+(sp?". Sprint "+sp.n+" ends "+rsDl(sp.end)+". Moving past it asks first.":". Outside the sprints.")+(kids?" It has steps, so you will be asked about them.":"")}),
-    el("div",{class:"v3-cats"},...picks.map(([n,d])=>el("button",{type:"button",class:"cat-chip v3-rs rs-pick","data-d":d,onclick:()=>rsGo(id,d,ctx)},n+" · "+rsDl(d)))),
-    el("label",{class:"field"},el("span",{class:"label",text:"Pick any date"}),di)];});}
+  return [el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Now on "+rsDl(base)}),
+    el("div",{class:"mv-list"},...picks.map(([n,d,pr])=>el("button",{type:"button",class:"btn mv-choice rs-pick"+(pr?" mv-main":" ghost"),"data-d":d,onclick:()=>rsGo(id,d,ctx)},n+rsDl(d)))),
+    el("label",{class:"field mv-date"},el("span",{class:"label",text:"Pick a date"}),di)];});}
 v3stepResched=function(id){v3rs(id,"step");};
 v3resched=function(id){v3rs(id,"task");};
 // one gesture set everywhere: swipe left = reschedule, swipe right = done, hold = quick menu (same menu as the ... button), drag bars in the waterfall

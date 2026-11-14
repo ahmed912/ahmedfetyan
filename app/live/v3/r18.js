@@ -14,8 +14,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await (w<700?pg.click('.m-tab:has-text("Projects")'):pg.click('.ptab[data-p="projects"]'));await R(600);
   ok('Projects page open with the buckets grid',await pg.locator('#bucketSec .bk-grid').isVisible());
   ok('old project cards hidden by default',!(await pg.locator('#projH').isVisible()));
-  const cols=await pg.evaluate(()=>getComputedStyle(document.querySelector('.bk-grid')).gridTemplateColumns.split(' ').length);
-  ok('columns '+cols,cols===(w===390?1:4),cols);
+  const cols=await pg.evaluate(()=>new Set([...document.querySelectorAll('.bk-grid>*')].map(c=>Math.round(c.getBoundingClientRect().left))).size);
+  ok('columns '+cols,cols===(w===390?1:2),cols);
   ok('no horizontal overflow',await pg.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   ok('empty state: no buckets shows New bucket card',(await pg.locator('.bk-new').count())===1&&(await pg.locator('.bk-card:not(.none)').count())===0);
   ok('Unbucketed card shows next 3 plus more',(await pg.locator('.bk-card.none .bk-row').count())===3&&(await pg.locator('.bk-card.none .bk-moreb').count())===1);
@@ -37,7 +37,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // 4 move a loose task in (drag on desktop, hold + menu on phone), then undo
   const looseRow=pg.locator('.bk-card.none .bk-row').first();const lid=await looseRow.getAttribute('data-id');const before=(await T())[lid].parent;
   if(w>=700){await looseRow.dragTo(card);await R(600);}
-  else{const bb=await looseRow.boundingBox();await pg.mouse.move(bb.x+60,bb.y+bb.height/2);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);
+  else{await looseRow.scrollIntoViewIfNeeded();const bb=await looseRow.boundingBox();await pg.evaluate(()=>{const u=document.getElementById('v3ut');if(u)u.hidden=true;});await looseRow.evaluate(e=>e.scrollIntoView({block:'center'}));await R(300);const bb2=await looseRow.boundingBox();bb.x=bb2.x;bb.y=bb2.y;await pg.mouse.move(bb.x+60,bb.y+bb.height/2);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);
     ok('hold opens the menu with Move to bucket',await pg.locator('.ps-sheet .btn:has-text("Move to bucket")').count()===1);
     await pg.click('.ps-sheet .btn:has-text("Move to bucket")');await R(400);await pg.click('.ps-sheet .ps-sh-row:has-text("Website")');await R(600);}
   ok('task moved into the bucket',(await T())[lid].parent===id);
@@ -45,7 +45,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate(([l,i])=>{},[lid,id]);
   // move again and keep it for the Today check
   if(w>=700){await pg.locator('.bk-card.none .bk-row[data-id="'+lid+'"]').dragTo(card);await R(600);}
-  else{const r=pg.locator('.bk-card.none .bk-row[data-id="'+lid+'"]');const bb=await r.boundingBox();await pg.mouse.move(bb.x+60,bb.y+bb.height/2);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);await pg.click('.ps-sheet .btn:has-text("Move to bucket")');await R(400);await pg.click('.ps-sheet .ps-sh-row:has-text("Website")');await R(600);}
+  else{const r=pg.locator('.bk-card.none .bk-row[data-id="'+lid+'"]');await r.scrollIntoViewIfNeeded();const bb=await r.boundingBox();await pg.mouse.move(bb.x+60,bb.y+bb.height/2);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);await pg.click('.ps-sheet .btn:has-text("Move to bucket")');await R(400);await pg.click('.ps-sheet .ps-sh-row:has-text("Website")');await R(600);}
   // 5 tick and reschedule
   const rid=tk[0];const row=card.locator('.bk-row[data-id="'+rid+'"]');
   await row.locator('input[type=checkbox]').click();await R(500);
@@ -64,7 +64,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.check('.ps-sheet input[aria-label="Outside sprints"]');await R(400);
   const e=(await T())[id];ok('edit writes fields',e.title==='Site'&&e.bEnd==='2026-12-10'&&e.bColor==='#7C3AED'&&e.bState==='paused'&&e.bNoSprint===true,JSON.stringify(e));
   await pg.keyboard.press('Escape');await R(500);
-  ok('paused label and outside sprints',/Paused/.test(await pg.locator('[data-bk="'+id+'"]').innerText())&&/Outside sprints/.test(await pg.locator('[data-bk="'+id+'"]').innerText()));
+  ok('paused bucket leaves the grid and sits on the Later shelf (r33)',(await pg.locator('.bk-later-h').count())===1&&(await pg.locator('.bk-card[data-bk="'+id+'"]').count())===0&&/Later \(1\)/.test(await pg.locator('.bk-later-h').innerText()));
+  await pg.click('.bk-later-h');await R(300);await pg.click('.bk-lrow .mini:has-text("Resume")');await R(500);
   if(scheme==='light'||w===1300)await shot(pg,'r18_grid_'+w+'_'+scheme);
   const pre=await T();
   await pg.click('[data-bk="'+id+'"] .bk-more');await R(400);await pg.click('.ps-sheet .btn:has-text("Archive")');await R(700);

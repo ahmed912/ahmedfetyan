@@ -20,9 +20,11 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   // waterfall: open section if folded, open a task, add subtask, menu, archive
   await pg.evaluate("{const s=document.querySelector('section[aria-labelledby=\"wfH\"]');if(s&&s.classList.contains('collapsed')){const b=s.querySelector('.collapse-btn');if(b)b.click();}}");await W(500);
   await pg.locator('#wfBody').scrollIntoViewIfNeeded();await shot(pg,'r3_wf_'+w);
+  await pg.evaluate("[...document.querySelectorAll('#wfBody .seg button')].find(b=>b.textContent==='By day')?.click()");await pg.clock.runFor(300);await pg.waitForTimeout(300);
   const rows=await pg.locator('.v3-wft').count();ok('waterfall rows',rows>0,rows);
   const sub0=(await T()).filter(x=>x.parent).length;
   await pg.locator('.v3-wft').first().click();await W(600);await shot(pg,'r3_wtask_'+w);
+  if(!(await pg.locator('.ps-sheet input[aria-label="New subtask"]').count())){await pg.locator('.ps-sheet button:has-text("Details")').click();await pg.clock.runFor(300);await W(300);}
   await pg.fill('.ps-sheet input[aria-label="New subtask"]','draft');await pg.press('.ps-sheet input[aria-label="New subtask"]','Enter');await pg.clock.runFor(300);await W(500);
   await pg.fill('.ps-sheet input[aria-label="New subtask"]','refine');await pg.press('.ps-sheet input[aria-label="New subtask"]','Enter');await pg.clock.runFor(300);await W(500);
   const t2=await T();const subs=t2.filter(x=>x.parent);ok('2 subtasks created without date',subs.length-sub0===2&&subs.filter(s=>s.t==='draft'||s.t==='refine').every(s=>!s.d),subs.length);

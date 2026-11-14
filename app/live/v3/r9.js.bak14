@@ -1,0 +1,30 @@
+// Sprint 1 real performance + step row layout, post-plan data
+const {openp,shot,run}=require('./h.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined?' '+x:''));if(!c)process.exitCode=1;};
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const pg=await openp(b,w,{when:'2026-11-12T11:00:00'});const W=ms=>pg.waitForTimeout(ms);
+  await W(400);
+  const pg2=await openp(b,w,{when:'2026-11-14T11:00:00'});await pg2.waitForTimeout(500);await pg2.evaluate("window.__ch&&__ch.openAll()");await pg2.clock.runFor(400);await pg2.waitForTimeout(300);
+  const steps=await pg2.evaluate("(()=>{const r=[...document.querySelectorAll('#cutStack .cs-card .cs-step')];if(!r.length)return null;return r.map(li=>{const q=s=>li.querySelector(s).getBoundingClientRect();const c=q('input'),t=q('.cs-step-t'),e=q('.cs-est');return {cx:c.left,cy:c.top+c.height/2,tx:t.left,ty:t.top,th:t.height,ex:e.left,ey:e.top+e.height/2,ew:e.right,lw:li.getBoundingClientRect().right};});})()");
+  await shot(pg2,'r9_today_'+w);
+  ok('a parent card with steps is on Today',!!steps&&steps.length>0,steps&&steps.length);
+  if(steps){const s=steps[0];
+    ok('checkbox left of title',s.cx<s.tx);
+    ok('checkbox on the same line as the title',s.cy>=s.ty-2&&s.cy<=s.ty+s.th+2,JSON.stringify([s.cy,s.ty,s.th]));
+    ok('estimate right of the title',s.ex>=s.tx+10);
+    ok('estimate on the same line',Math.abs(s.ey-s.cy)<Math.max(s.th,24));
+    ok('estimate pushed to the right edge',s.lw-s.ew<40,s.lw-s.ew);}
+  await pg2.close();
+  await pg.click(w<700?'.m-tab:has-text("Review")':'.topnav :text("Review")');await pg.clock.runFor(500);await W(700);
+  const read=async()=>pg.evaluate("document.querySelector('#bars .bar')?.innerText.replace(/\\s+/g,' ')");
+  console.log('current:',await read());
+  await pg.locator('#spSwitch button:has-text("Sprint 1")').click();await pg.clock.runFor(300);await W(500);
+  const t1=await read();console.log('sprint 1:',t1);
+  const m=/(\d+)\s*\/\s*(\d+)/.exec(t1)||[];
+  ok('Sprint 1 shows about 7 / 43, not 0',+m[1]>=6&&+m[1]<=9&&+m[2]>=40&&+m[2]<=50,m[0]);
+  const wf=await pg.evaluate("document.querySelector('#wfBody .wf-sum')?.innerText.replace(/\\s+/g,' ')");console.log('waterfall:',wf);
+  ok('waterfall counts the same tasks',/^\d+%/.test(wf)&&!/^0%/.test(wf)&&/of \d+ tasks/.test(wf),wf);
+  await shot(pg,'r9_review_'+w);
+  await pg.locator('#spSwitch button:has-text("Sprint 2")').click();await pg.clock.runFor(300);await W(400);
+  ok('Sprint 2 chip switches back',/Sprint 2/.test(await pg.evaluate("document.querySelector('#spSwitch [aria-pressed=true]').innerText")));
+  const er=pg.errs.filter(e=>!e.includes('ERR_FAILED'));ok('no console errors',er.length===0,er.slice(0,3).join(' '));await pg.close();}});

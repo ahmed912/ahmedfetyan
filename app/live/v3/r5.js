@@ -20,6 +20,7 @@ run(async b=>{for(const w of [390,1300]){const pg=await openp(b,w);const W=ms=>p
   // waterfall names are complete
   await pg.click(w<700?'.m-tab:has-text("Review")':'.topnav :text("Review")');await pg.clock.runFor(500);await W(700);
   await pg.locator('#wfBody').scrollIntoViewIfNeeded();await shot(pg,'r5_wf_'+w);
-  const full=await pg.evaluate("(()=>{const els=[...document.querySelectorAll('#wfBody .v3-wft .wf-t')];const bad=els.filter(e=>{const cs=getComputedStyle(e);return cs.textOverflow==='ellipsis'||e.scrollHeight>e.clientHeight+2||e.scrollWidth>e.clientWidth+2;});return {n:els.length,clipped:bad.length,sample:bad.slice(0,2).map(e=>e.textContent)}})()");
-  console.log('waterfall names',JSON.stringify(full));ok('no waterfall name is cut off',full.n>0&&full.clipped===0);
+  await pg.locator('#wfBody button:has-text("By day")').click();await pg.clock.runFor(300);await W(400);
+  const full=await pg.evaluate("(()=>{const els=[...document.querySelectorAll('#wfBody .v3-wft .wf-t')];const bad=els.filter(e=>{const cs=getComputedStyle(e);return e.getBoundingClientRect().height>parseFloat(cs.lineHeight||cs.fontSize*1.3)*1.6;});return {n:els.length,clipped:bad.length,sample:bad.slice(0,2).map(e=>e.textContent)}})()");
+  console.log('waterfall names',JSON.stringify(full));ok('waterfall names stay on 1 line (r31: clamped, full name in the sheet)',full.n>0&&full.clipped===0);
   console.log('errors',pg.errs.filter(e=>!e.includes('ERR_FAILED')).slice(0,4));await pg.close();}});

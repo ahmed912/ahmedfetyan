@@ -1,0 +1,266 @@
+
+  // =====================================================================
+  // 12 Nov, part C: Review screen. Sprint progress sheets, calm waterfall with subtasks, day insights, sprint board
+  // =====================================================================
+  WF_ST.cut="Archived";WF_HOW.cut="you archived it";
+  const v3chip=t=>t.cat?el("span",{class:"cat-chip","data-cat":t.cat,text:CAT_NAME[t.cat]||t.cat}):null;
+  const v3tk=()=>Object.entries(state.tasks||{}).map(([id,t])=>({id,...t}));
+  const v3real=t=>(!t.parent||isBk(t.parent))&&!t.cut&&!t.archived&&t.date;
+  const v3leaf=t=>!t.cut&&!t.archived&&t.date&&isLeaf(t);
+  // sprint switcher: any sprint's performance, closed sprints include the tasks the replan archived
+  window.spView=null;window.spViewOf=cur=>sprints().find(p=>p.n===window.spView)||cur;
+  window.spEnd=(sp,d)=>sp.end<d?sp.end:d;
+  window.spTasks=sp=>leafTasks().filter(t=>t.sprint===sp.n&&(!t.cut||t.replacedBy||t.parkReason));
+  window.spChips=sp=>{const bars=document.getElementById("bars");if(!bars)return;let row=document.getElementById("spSwitch");if(!row){row=el("div",{class:"seg sp-switch",id:"spSwitch",role:"group","aria-label":"Sprint"});bars.parentNode.insertBefore(row,bars);}
+    rc(row,...sprints().map(p=>el("button",{type:"button","aria-pressed":String(p.n===sp.n),text:"Sprint "+p.n,title:p.name,onclick:()=>{window.spView=p.n;wfSprint=p.n;render();}})));};
+  const v3dl=d=>fmt(d,{weekday:"short",day:"numeric",month:"short"});
+  async function v3newTask(body){try{const ref=await store.add("tasks",body);state.tasks[ref.id]=body;render();return ref.id;}catch(e){fail(e);return null;}}
+  // archive = hidden everywhere (it also sets cut, which the whole app already respects)
+  // ---- archive with automatic refill, reschedule helpers, undo bar ----
+  const v3isWork=t=>t.cat==="portfolio"||t.cat==="client";
+  const v3skipFri=d=>{while(isFriday(d))d=addDays(d,1);return d;};
+  function v3undoToast(msg,fn){let b=document.getElementById("v3ut");if(!b){b=el("div",{id:"v3ut",class:"undo-bar",role:"status","aria-live":"polite",hidden:""},el("span",{class:"ub-t"}),el("button",{type:"button",class:"ub-b"},"Undo"));document.body.append(b);}
+    b.querySelector(".ub-t").textContent=msg;const bt=b.querySelector(".ub-b");bt.onclick=()=>{b.hidden=true;try{fn();}catch(e){console.warn(e);}};b.hidden=false;
+    try{hideUndo();}catch(e){}clearTimeout(v3undoToast._t);v3undoToast._t=setTimeout(()=>{b.hidden=true;},9000);}
+  const v3rec=()=>({moves:[],arch:[],parents:{}});
+  function v3recMove(rec,id,d){const t=state.tasks[id];if(!t||t.date===d)return;if(!rec.moves.some(m=>m.id===id))rec.moves.push({id,date:t.date,sprint:t.sprint});
+    const sp=sprintFor(d).n;state.tasks[id]={...t,date:d,sprint:sp};setTask(id,{date:d,sprint:sp});if(t.parent)rec.parents[t.parent]=rec.parents[t.parent]||null;}
+  function v3recArch(rec,id,on,by){const t=state.tasks[id];if(!t)return;rec.arch.push({id,archived:!!t.archived,cut:!!t.cut,by:t.archivedBy||null});
+    const patch=on?{archived:true,cut:true,archivedBy:by||null}:{archived:false,cut:false,archivedBy:null};state.tasks[id]={...t,...patch};setTask(id,patch);if(t.parent)rec.parents[t.parent]=rec.parents[t.parent]||null;}
+  // keep each touched parent's date, span and minutes in step with its live steps
+  function v3syncParents(rec){Object.keys(rec.parents).forEach(pid=>{const P=state.tasks[pid];if(!P||P.archived||P.bucket)return;
+    const ks=Object.entries(state.tasks).map(([i,x])=>({id:i,...x})).filter(x=>x.parent===pid&&!x.archived&&!x.cut&&x.date);if(!ks.length)return;
+    const dates=ks.map(x=>x.date).sort(),first=dates[0],last=dates[dates.length-1],days=Math.max(1,Math.round((new Date(last+"T12:00")-new Date(first+"T12:00"))/864e5)+1),mins=ks.reduce((a,x)=>a+estMin(x),0);
+    if(!rec.parents[pid])rec.parents[pid]={date:P.date,days:P.days,mins:P.mins};
+    const patch={date:first,days,mins};state.tasks[pid]={...P,...patch};setTask(pid,patch);});}
+  function v3recUndo(rec){rec.moves.forEach(m=>{const t=state.tasks[m.id];if(!t)return;const patch={date:m.date,sprint:m.sprint===undefined?sprintFor(m.date).n:m.sprint};state.tasks[m.id]={...t,...patch};setTask(m.id,patch);});
+    rec.arch.slice().reverse().forEach(a=>{const t=state.tasks[a.id];if(!t)return;const patch={archived:a.archived,cut:a.cut,archivedBy:a.by};state.tasks[a.id]={...t,...patch};setTask(a.id,patch);});
+    Object.entries(rec.parents).forEach(([pid,pv])=>{if(!pv||!state.tasks[pid])return;state.tasks[pid]={...state.tasks[pid],...pv};setTask(pid,pv);});render();try{hideUndo();}catch(e){}toast("Undone");}
+  // fill: for each working day, pull the next open portfolio/client steps forward until the day reaches the target
+  function v3fill(days,rec){const out={days:[],mins:0,parents:[],steps:0};
+    const work=()=>leafTasks().filter(t=>v3isWork(t)&&!t.cut&&!t.archived&&t.date);
+    days.forEach(d=>{if(isFriday(d)||rlBuffer(d))return;const tgt=v3dayMin(d);let load=work().filter(t=>t.date===d).reduce((a,t)=>a+estMin(t),0);if(load>=tgt)return;
+      const cand=work().filter(t=>!t.done&&t.date>d).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.order||0)-(b.order||0));let got=0;
+      for(const c of cand){if(load>=tgt)break;const m=estMin(c);if(!(m>0)||load+m>tgt+25)continue;
+        const pt=c.parent&&state.tasks[c.parent]?state.tasks[c.parent].title:c.title;if(!out.parents.includes(pt))out.parents.push(pt);
+        v3recMove(rec,c.id,d);load+=m;got+=m;out.steps++;}
+      if(got){out.days.push(d);out.mins+=got;}});
+    return out;}
+  function v3fillText(r){const dl=r.days.length===1?v3dl(r.days[0]):r.days.length+" days",ys=r.parents.length<=2?r.parents.join(" and "):r.steps+" steps";return "Filled "+dl+" with "+ys+" ("+r.mins+" min)";}
+  function v3daysFrom(d){const sp=sprintFor(d),out=[];for(let x=d;x<=sp.end;x=addDays(x,1))out.push(x);return out;}
+  function v3fillDay(){const d=sel,today=iso(new Date());if(isFriday(d)){toast("Friday is a rest day");return;}if(rlBuffer(d)){toast("Buffer day: no planned load. Overflow and moved work land here.");return;}if(d<today){toast("Pick today or a later day");return;}
+    const rec=v3rec(),r=v3fill([d],rec);v3syncParents(rec);render();
+    if(!r.days.length){toast("Nothing to fill. The day is full or no open work is left.");return;}v3undoToast(v3fillText(r),()=>v3recUndo(rec));}
+  function v3archive(id,on){const t=state.tasks[id];if(!t)return;
+    if(!on){const rec=v3rec();v3recArch(rec,id,false);Object.entries(state.tasks).forEach(([k,x])=>{if(x.parent===id&&x.archivedBy===id)v3recArch(rec,k,false);});render();toast("Restored");return;}
+    const rec=v3rec(),kids=Object.entries(state.tasks).filter(([k,x])=>x.parent===id&&!x.archived).map(([k])=>k);
+    v3recArch(rec,id,true);kids.forEach(k=>v3recArch(rec,k,true,id));
+    const today=iso(new Date()),r=v3fill(v3daysFrom(today),rec);v3syncParents(rec);render();
+    v3undoToast("Archived "+(t.title||"task")+". "+(r.days.length?v3fillText(r):"Nothing open to fill with."),()=>v3recUndo(rec));}
+  // ---- reschedule one step: swipe left on a step row opens this ----
+  const v3spOf=d=>(typeof spOn==="function"&&!spOn())?null:(sprints().find(p=>d>=p.start&&d<=p.end)||null);
+  function v3stepMove(id,d,typed){const t=state.tasks[id];if(!t)return false;
+    if(!typed&&isFriday(d))d=addDays(d,1);
+    if(d===t.date){toast("It stays on "+v3dl(d));return false;}
+    const to=v3spOf(d),from=v3spOf(t.date);
+    const warn=[];if(typed&&isFriday(d))warn.push("Friday is your rest day.");if(from&&to&&to.n!==from.n)warn.push("This moves it into Sprint "+to.n+".");
+    const run=()=>{const rec=v3rec();v3recMove(rec,id,d);v3syncParents(rec);render();v3undoToast("Moved to "+v3dl(d)+": "+t.title,()=>v3recUndo(rec));psClose(true);};
+    if(warn.length){v3confirm(warn.join(" ")+" Move to "+v3dl(d)+"?","Move",run);return true;}
+    run();return true;}
+  function v3stepResched(id){const t0=state.tasks[id];if(!t0)return;psOpen("Reschedule step",re=>{const t=state.tasks[id];if(!t)return [el("p",{class:"ps-sh-sum",text:"This step is gone."})];
+    const today=iso(new Date()),base=t.date||today,sp=sprintFor(base);
+    const opts=[["Tomorrow",v3skipFri(addDays(base,1))],["Next working day",nextWork(base>today?base:today)],["In 2 days",v3skipFri(addDays(base,2))],["Next week",v3skipFri(addDays(base,7))]];
+    const go=(d,typed)=>{const ae=document.activeElement;if(ae&&ae.blur)ae.blur();setTimeout(()=>{v3stepMove(id,d,typed);},30);};
+    const di=v3dateField("New day",t.date,p=>go(p,true));
+    return [el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Now on "+v3dl(base)+". Sprint "+sp.n+" ends "+v3dl(sp.end)+". Friday is a rest day."}),
+      el("div",{class:"v3-cats"},...opts.map(([n,d])=>el("button",{type:"button",class:"cat-chip v3-rs","data-d":d,onclick:()=>go(d)},n+" · "+v3dl(d)))),
+      el("label",{class:"field"},el("span",{class:"label",text:"Or type a day"}),di)];});}
+  // wire the swipe on a step row: left = reschedule, right = done (after the usual confirm)
+  function v3stepSwipe(li,s){li.addEventListener("pointerdown",e=>{li._x=e.clientX;li._drag=false;e.stopPropagation();});
+    li.addEventListener("pointermove",e=>{if(li._x!=null&&Math.abs(e.clientX-li._x)>10)li._drag=true;});
+    li.addEventListener("click",e=>{if(li._drag){e.preventDefault();e.stopPropagation();li._drag=false;}},true);
+    li.setAttribute("aria-label",s.title);li.setAttribute("data-step",s.id);
+    swipeable(li,()=>{setDone(s.id,true);},()=>v3stepResched(s.id),null,{r:"Mark step as done",rb:"Done",direct:true});}
+  function v3sprintOf(t){return sprints().find(p=>p.n===(t.sprint||sprintFor(t.date).n))||sprintFor(t.date);}
+  // order inside a day: moves the task up or down and keeps Today in step
+  function v3move(id,dir){const t=state.tasks[id];if(!t)return;const L=v3tk().filter(x=>v3real(x)&&x.date===t.date).sort((a,b)=>(v3pos(a)-v3pos(b)));const i=L.findIndex(x=>x.id===id),j=i+dir;
+    if(i<0||j<0||j>=L.length){toast(dir<0?"Already first":"Already last");return;}[L[i],L[j]]=[L[j],L[i]];L.forEach((x,k)=>{if(x.pos!==k)patchTask(x.id,{pos:k});});toast("Moved");}
+  // ---- task pop-up: name and description, subtasks, start now. Details behind one button ----
+  let v3tEdit=false;
+  function v3taskSheet(id){v3tEdit=false;psOpen("Task",re=>{const t=state.tasks[id];if(!t)return [el("p",{class:"ps-sh-sum",text:"This task is gone."})];
+    const subs=v3tk().filter(x=>x.parent===id&&!x.archived).sort((a,b)=>(a.order||0)-(b.order||0));
+    const nm=el("textarea",{class:"v3-in v3-big","aria-label":"Task name",rows:"2"});nm.value=t.title||"";nm.onchange=()=>{const v=nm.value.trim();if(v&&v!==t.title)patchTask(id,{title:v});};
+    const ds=el("textarea",{class:"v3-in","aria-label":"Description",rows:"3",placeholder:"Description"});ds.value=t.desc||"";ds.onchange=()=>patchTask(id,{desc:ds.value.trim()});
+    const list=el("ul",{class:"q-list"},...subs.map(s=>{const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.title});cb.checked=!!s.done;cb.onchange=()=>{patchTask(s.id,{done:cb.checked,doneAt:cb.checked?iso(new Date()):null});setTimeout(re,250);};
+      return ((li,s)=>{if(s.date&&!s.done)v3stepSwipe(li,s);return li;})(el("li",{class:"q-row v3-sub"+(s.date?" v3-sub-d":""),"data-id":s.id},cb,el("span",{class:"q-t"+(s.done?" v3-done":""),text:s.title}),el("span",{class:"hint cs-est",text:aboutH(estMin(s))}),s.date?el("span",{class:"hint",text:v3dl(s.date)}):null,s.date?el("button",{type:"button",class:"mini","aria-label":"Detach "+s.title+" from this task",onclick:()=>{patchTask(s.id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach"):el("button",{type:"button",class:"x","aria-label":"Remove "+s.title,onclick:()=>{patchTask(s.id,{archived:true,cut:true});setTimeout(re,250);}},"\u00d7")),s);}));
+    v3dragList(list,".v3-sub",ids=>{ids.forEach((sid,k)=>patchTask(sid,{order:k}));setTimeout(re,300);});
+    const sIn=el("input",{type:"text",class:"v3-in",placeholder:"Add a subtask","aria-label":"New subtask"});
+    const addSub=async()=>{const v=sIn.value.trim();if(!v)return;sIn.value="";await v3newTask({title:v,cat:t.cat||null,parent:id,done:false,order:Date.now()});setTimeout(re,250);};
+    sIn.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addSub();}});
+    const sp=v3sprintOf(t);
+    const det=v3tEdit?el("section",{class:"v3-ncard"},
+      el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Day"}),v3dateField("Task day",t.date,p=>{rsGo(id,p,"task");})),
+        el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),(i=>{i.onchange=()=>{const n=Math.max(1,Math.min(14,+i.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);i.value=String(t.days||1);return;}patchTask(id,{days:n});};return i;})(el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(t.days||1),"aria-label":"Days it spans"}))),
+        el("label",{class:"field"},el("span",{class:"label",text:"Minutes"}),(i=>{i.onchange=()=>patchTask(id,{mins:Math.max(0,Math.round(+i.value||0))});return i;})(el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:t.mins?String(t.mins):"","aria-label":"Estimated minutes",placeholder:"min"})))),
+      el("div",{class:"field"},el("span",{class:"label",text:"Category"}),v3catChips(t.cat,c=>{patchTask(id,{cat:c});setTimeout(re,200);})),
+      ...(typeof plExtra==="function"&&!t.bucket?plExtra(id,re):[]),
+      t.parent&&state.tasks[t.parent]&&!state.tasks[t.parent].bucket?el("div",{class:"v3-row"},el("span",{class:"hint",text:"Part of: "+state.tasks[t.parent].title}),el("button",{type:"button",class:"mini",onclick:()=>{psClose(true);v3taskSheet(t.parent);}},"Open"),el("button",{type:"button",class:"mini",onclick:()=>{patchTask(id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach")):
+        el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3parentPick([id]);}},"Make it a subtask of..."),
+      (!t.parent||isBk(t.parent))?bkPicker(id,re):null,
+      el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down"),
+        el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive"))):null;
+    const estM=subs.length?subs.reduce((q,k)=>q+estMin(k),0):estMin(t);
+    return [nm,v3chip(t),(typeof chModeRow==="function"&&!t.bucket?chModeRow({...t,id},re):null),aboutH(estM)?el("span",{class:"hint v3-estl",text:aboutH(estM)}):null,ds,ckSection({...t,id},re),el("span",{class:"label",text:"Subtasks"+(subs.length?" ("+subs.filter(s=>s.done).length+" of "+subs.length+")":"")}),subs.length?list:null,sIn,
+      el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:()=>{psClose(true);v3start(id);}},"Start now"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3five(id);}},"Start for 5 minutes"),el("button",{type:"button",class:"btn ghost rs-sheet-btn",onclick:()=>v3rs(id,"task")},"Reschedule"),el("button",{type:"button",class:"btn ghost","aria-expanded":String(v3tEdit),onclick:()=>{v3tEdit=!v3tEdit;re();}},v3tEdit?"Hide details":"Details")),det];});}
+  // ---- nesting: no data is changed until you choose. Any task can become a subtask of another, and come back out ----
+  const v3wfSprint=()=>{const today=iso(new Date()),cur=sprintFor(sel>today?today:sel);return sprints().find(p=>p.n===(wfSprint||cur.n))||cur;};
+  function v3parentPick(ids){let q="";psOpen("Subtask of...",re=>{const sp=v3wfSprint(),L=v3tk().filter(t=>v3real(t)&&!ids.includes(t.id)&&t.date>=sp.start&&t.date<=sp.end&&(!q||t.title.toLowerCase().includes(q.toLowerCase()))).sort((a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
+      const search=el("input",{type:"search",class:"v3-in",placeholder:"Find the parent task","aria-label":"Find the parent task",value:q});search.oninput=()=>{q=search.value;const p=search.selectionStart;re();setTimeout(()=>{const x=document.querySelector(".ps-sheet input[type=search]");if(x){x.focus();try{x.setSelectionRange(p,p);}catch(e){}}},0);};
+      return [el("p",{class:"hint",text:(ids.length>1?ids.length+" tasks become":"This task becomes")+" subtasks. They keep their own days and stay on Today. Detach any time."}),search,
+        L.length?el("ul",{class:"v3-tlist v3-tall"},...L.map(t=>el("li",{},el("button",{type:"button",class:"v3-trow",onclick:()=>v3confirm("Nest under: "+t.title+"?","Nest",()=>{ids.forEach(i=>patchTask(i,{parent:t.id}));toast("Nested");psClose(true);v3taskSheet(t.id);})},el("span",{text:t.title}),el("span",{class:"v3-rtag"},v3chip(t),el("span",{class:"hint",text:v3dl(t.date)})))))):el("p",{class:"ps-sh-sum",text:"No task matches."})];});}
+  let v3gSel=new Set(),v3gQ="";
+  function v3groupSheet(){v3gSel=new Set();v3gQ="";psOpen("Group tasks",re=>{const sp=v3wfSprint(),L=v3tk().filter(t=>v3real(t)&&t.date>=sp.start&&t.date<=sp.end&&(!v3gQ||t.title.toLowerCase().includes(v3gQ.toLowerCase()))).sort((a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
+      const search=el("input",{type:"search",class:"v3-in",placeholder:"Find tasks","aria-label":"Find tasks",value:v3gQ});search.oninput=()=>{v3gQ=search.value;const p=search.selectionStart;re();setTimeout(()=>{const x=document.querySelector(".ps-sheet input[type=search]");if(x){x.focus();try{x.setSelectionRange(p,p);}catch(e){}}},0);};
+      return [el("p",{class:"hint",text:"Tick the steps, then choose the task they belong to. Nothing changes until you confirm."}),search,
+        el("ul",{class:"q-list"},...L.map(t=>{const cb=el("input",{type:"checkbox","aria-label":"Select "+t.title});cb.checked=v3gSel.has(t.id);cb.onchange=()=>{cb.checked?v3gSel.add(t.id):v3gSel.delete(t.id);re();};
+          return el("li",{class:"q-row"},cb,el("span",{class:"q-t",text:t.title}),v3chip(t));})),
+        el("button",{type:"button",class:"btn",disabled:v3gSel.size?null:"",onclick:()=>{const ids=[...v3gSel];psClose(true);v3parentPick(ids);}},v3gSel.size?"Choose the parent for "+v3gSel.size:"Tick the steps first")];});}
+  // ---- the ⋯ menu on every waterfall task: reschedule, change length, move, archive ----
+  function v3taskMenu(id){const t=state.tasks[id];if(!t)return;psOpen("More",re=>{const sp=v3sprintOf(t);
+    return [el("p",{class:"ps-sh-sum",text:t.title}),
+      el("button",{type:"button",class:"btn ghost rn-menu",onclick:()=>{psClose(true);setTimeout(()=>rnStart(id),60);}},"Rename"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3resched(id);}},"Reschedule"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3taskSheet(id);}},"Edit"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3five(id);}},"Start for 5 minutes"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkMoveSheet(id);}},"Move to bucket"),
+            el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down")),
+      t.archived?el("button",{type:"button",class:"btn",onclick:()=>{v3archive(id,false);psClose(true);}},"Restore"):el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive")];});}
+  function v3resched(id){psOpen("Reschedule",re=>{const t=state.tasks[id],sp=v3sprintOf(t),today=iso(new Date());let nd=t.date;
+    const days=[];for(let d=today>sp.start?today:sp.start;d<=sp.end&&days.length<7;d=addDays(d,1))days.push(d);
+    const chips=el("div",{class:"v3-cats"},...days.map(d=>el("button",{type:"button",class:"cat-chip"+(nd===d?" on":""),onclick:()=>{nd=d;di.value=fmt(d,{day:"numeric",month:"short",year:"numeric"});chips.querySelectorAll(".cat-chip").forEach((c,i)=>c.classList.toggle("on",days[i]===d));}},d===today?"Today":fmt(d,{weekday:"short",day:"numeric"}))));
+    const di=v3dateField("New day",t.date,p=>{nd=p;chips.querySelectorAll(".cat-chip").forEach(c=>c.classList.remove("on"));});
+    return [el("p",{class:"ps-sh-sum",text:t.title}),el("p",{class:"hint",text:"Sprint "+sp.n+" ends "+v3dl(sp.end)+". Moving past it asks first."}),chips,el("label",{class:"field"},el("span",{class:"label",text:"Or type a day"}),di),
+      el("button",{type:"button",class:"btn",onclick:()=>{const ae=document.activeElement;if(ae&&ae.blur)ae.blur();setTimeout(()=>{const go=()=>{moveTaskTo(id,nd);psClose(true);};if(v3spOf(nd)&&(nd>sp.end||nd<sp.start))v3confirm("This moves it into Sprint "+v3spOf(nd).n+". Move to "+v3dl(nd)+"?","Move",go);else go();},30);}},"Reschedule")];});}
+  function v3length(id){psOpen("Change length",re=>{const t=state.tasks[id],sp=v3sprintOf(t);let dys=t.days||1,mn=t.mins||0;
+    const d=el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(dys),"aria-label":"Days it spans"}),m=el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:mn?String(mn):"",placeholder:"min","aria-label":"Estimated minutes"});
+    return [el("p",{class:"ps-sh-sum",text:t.title}),el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),d),el("label",{class:"field"},el("span",{class:"label",text:"Minutes of work"}),m)),
+      el("button",{type:"button",class:"btn",onclick:()=>{const n=Math.max(1,Math.min(14,+d.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);return;}patchTask(id,{days:n,mins:Math.max(0,Math.round(+m.value||0))});psClose(true);toast("Length updated");}},"Save")];});}
+  // ---- waterfall: parent tasks only, calm rows, tap a task for its pop-up ----
+  let wfView="sprint",wfWk=null;const wfSat=d=>{while(parse(d).getDay()!==6)d=addDays(d,-1);return d;};
+  renderWaterfall=function(){const box=document.getElementById("wfBody");if(!box)return;const pg=box.closest(".page");if(pg&&pg.hidden)return;
+    const today=iso(new Date()),cur=sprintFor(sel>today?today:sel);let sp=sprints().find(p=>p.n===(wfSprint||cur.n))||cur;
+    const week=wfView==="week",days=[];if(week){const w0=wfWk||wfSat(today);for(let i=0;i<7;i++)days.push(addDays(w0,i));sp=v3spOf(days[0])||sp;}else for(let d=sp.start;d<=sp.end;d=addDays(d,1))days.push(d);
+    const all=v3tk().filter(t=>(!t.parent||isBk(t.parent))&&t.date>=days[0]&&t.date<=days[days.length-1]);
+    const counts={};all.forEach(t=>{const s=taskStatus(t,today);counts[s]=(counts[s]||0)+1;});
+    const legacy=t=>t.archived&&(t.replacedBy||t.parkReason),ts=all.filter(t=>wfCut||!t.archived||legacy(t)).sort(wfGroup==="cat"?(a,b)=>(CAT_NAME[a.cat]||"").localeCompare(CAT_NAME[b.cat]||"")||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):wfGroup==="bucket"?(a,b)=>bkName(a.id).localeCompare(bkName(b.id))||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):(a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
+    const ctrls=el("div",{class:"wf-ctrls"},
+      el("div",{class:"seg",role:"group","aria-label":"Sprint"},...sprints().map(p=>el("button",{type:"button","aria-pressed":String(p.n===sp.n),text:"Sprint "+p.n,title:p.name,onclick:()=>{wfSprint=p.n;wfView="sprint";render();}}))),
+      el("div",{class:"seg",role:"group","aria-label":"View"},el("button",{type:"button",class:"wf-v-sprint","aria-pressed":String(!week),text:"Sprint",onclick:()=>{wfView="sprint";render();}}),el("button",{type:"button",class:"wf-v-week","aria-pressed":String(week),text:"Week",onclick:()=>{wfView="week";if(!wfWk)wfWk=wfSat(today);render();}})),
+      week?el("div",{class:"seg wf-wk",role:"group","aria-label":"Week"},el("button",{type:"button",class:"wf-prev","aria-label":"Previous week",text:"Prev",onclick:()=>{wfWk=addDays(days[0],-7);render();}}),el("span",{class:"hint wf-wk-l",text:fmt(days[0],{day:"numeric",month:"short"})+" to "+fmt(days[6],{day:"numeric",month:"short"})}),el("button",{type:"button",class:"wf-next","aria-label":"Next week",text:"Next",onclick:()=>{wfWk=addDays(days[0],7);render();}}),el("button",{type:"button",class:"wf-this",text:"This week",onclick:()=>{wfWk=wfSat(today);render();}})):null,
+      el("div",{class:"seg",role:"group","aria-label":"Group tasks"},el("button",{type:"button","aria-pressed":String(wfGroup==="day"),text:"By day",onclick:()=>{wfGroup="day";render();}}),el("button",{type:"button","aria-pressed":String(wfGroup==="cat"),text:"By category",onclick:()=>{wfGroup="cat";render();}}),el("button",{type:"button","aria-pressed":String(wfGroup==="bucket"),text:"By bucket",onclick:()=>{wfGroup="bucket";render();}})),
+      el("button",{type:"button",class:"mini","aria-pressed":String(wfCut),text:wfCut?"Hide archived":"Show archived",onclick:()=>{wfCut=!wfCut;render();}}),
+      el("button",{type:"button",class:"mini",onclick:()=>v3groupSheet()},"Group tasks"));
+    const live=all.filter(t=>!t.archived||legacy(t)),done=live.filter(t=>t.done).length;
+    const sum=el("div",{class:"wf-sum"},el("span",{class:"wf-pct num",text:(live.length?Math.round(done/live.length*100):0)+"%"}),el("span",{class:"hint",text:done+" of "+live.length+" tasks done · "+sp.name}));
+    const grid=el("div",{class:"wf-grid"+(week?" wf-week":""),style:"--n:"+days.length});let r=1;
+    grid.append(el("div",{class:"wf-h wf-lbl",style:"grid-row:1;grid-column:1",text:"Task"}),...days.map((d,i)=>el("div",{class:"wf-h"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:1;grid-column:"+(i+2),title:fmt(d)+(rlBuffer(d)?" · buffer day":"")},el("span",{text:fmt(d,{weekday:"short"}).slice(0,2)}),el("b",{class:"num",text:String(parse(d).getDate())}))));
+    if(!ts.length){r++;grid.append(el("div",{class:"wf-empty",style:"grid-row:"+r,text:"No tasks in this sprint yet."}));}
+    let last=null;
+    ts.forEach(t=>{const st=legacy(t)&&t.done?"done":taskStatus(t,today),g=wfGroup==="cat"?(CAT_NAME[t.cat]||"Other"):wfGroup==="bucket"?bkName(t.id):fmt(t.date,{weekday:"long",day:"numeric",month:"short"});
+      if(g!==last){r++;grid.append(el("div",{class:"wf-grp",style:"grid-row:"+r,text:g}));last=g;}r++;
+      const a=days.indexOf(t.date);let b=a;
+      if(st==="done"&&t.doneAt&&t.doneAt>t.date)b=Math.max(a,days.indexOf(t.doneAt>sp.end?sp.end:t.doneAt));
+      if((st==="late"||st==="doing")&&t.date<today)b=Math.max(a,days.indexOf(today>sp.end?sp.end:today));
+      b=Math.max(b,Math.min(days.length-1,a+(t.days||1)-1));
+      const subs=v3tk().filter(x=>x.parent===t.id&&!x.archived),sd=subs.filter(x=>x.done).length;
+      grid.append(el("div",{"data-id":t.id,class:"wf-lbl v3-wfrow st-"+st,style:"grid-row:"+r+";grid-column:1"},
+        el("button",{type:"button",class:"wf-task v3-wft","aria-label":t.title+", "+WF_ST[st]+", "+v3dl(t.date)+". Open task.",onclick:()=>v3taskSheet(t.id)},el("span",{class:"wf-t",text:t.title}),v3chip(t),subs.length?el("span",{class:"hint num",text:sd+"/"+subs.length}):null),
+        el("button",{type:"button",class:"mini v3-more","aria-label":"More for "+t.title,onclick:()=>v3taskMenu(t.id)},"\u22EF")));
+      days.forEach((d,i)=>grid.append(el("div",{"data-d":d,"data-id":t.id,class:"wf-cell"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:"+r+";grid-column:"+(i+2)})));
+      grid.append(el("div",{"data-id":t.id,class:"wf-bar st-"+st,style:"grid-row:"+r+";grid-column:"+(a+2)+" / "+(b+3),"aria-hidden":"true",title:WF_ST[st]+(t.moved?" · moved "+t.moved+" time"+(t.moved>1?"s":""):"")+((t.spent||0)>0?" · "+dur(t.spent)+" tracked":"")}));});
+    rc(box,ctrls,sum,el("div",{class:"wf-scroll"},grid));};
+  // ---- sprint progress: every bar opens its own pop-up ----
+  let v3stTab="todo",v3stAdd=false;
+  function v3taskRow(t,extra){return el("li",{},el("button",{type:"button",class:"v3-trow",onclick:()=>v3taskSheet(t.id)},el("span",{text:t.title}),el("span",{class:"v3-rtag"},v3chip(t),extra?el("span",{class:"hint",text:extra}):null)));}
+  function v3grouped(list,keyf,lab){const out=[];let last=null;list.forEach(t=>{const k=keyf(t);if(k!==last){out.push(el("li",{class:"v3-gh",text:lab(k)}));last=k;}out.push(v3taskRow(t,t.done?"Done":""));});return out;}
+  function v3sprintSheet(k){k=k||"tasks";const today=iso(new Date()),sp=spViewOf(sprintFor(sel>today?today:sel));
+    const T={tasks:"Tasks",posts:"LinkedIn posts",comments:"Comments",applications:"Applications",hours:"Hours this week"};
+    psOpen("Sprint "+sp.n+" · "+T[k],re=>{
+      if(k==="tasks"){const all=v3tk().filter(t=>v3leaf(t)||(isLeaf(t)&&t.date&&t.archived&&(t.replacedBy||t.parkReason))),inSp=all.filter(t=>t.date>=sp.start&&t.date<=sp.end);
+        const todo=inSp.filter(t=>!t.done).sort((a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b))),dn=all.filter(t=>t.done).sort((a,b)=>String(b.doneAt||b.date).localeCompare(String(a.doneAt||a.date)));
+        const tabs=el("div",{class:"seg",role:"group"},...[["todo","Not done ("+todo.length+")"],["done","Done ("+dn.length+")"],["all","All ("+inSp.length+")"]].map(([x,n])=>el("button",{type:"button","aria-pressed":String(v3stTab===x),onclick:()=>{v3stTab=x;re();}},n)));
+        let nt="",nd=today>=sp.start&&today<=sp.end?today:sp.start,nc=null;
+        const form=v3stAdd?el("section",{class:"v3-ncard"},(i=>{i.oninput=()=>{nt=i.value;};return i;})(el("input",{type:"text",class:"v3-in",placeholder:"Task name","aria-label":"New task name"})),
+          el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Day"}),v3dateField("Task day",nd,p=>{nd=p;}))),
+          v3catChips(null,c=>{nc=c;form.querySelectorAll(".cat-chip").forEach(b=>b.classList.toggle("on",b.dataset.cat===c));}),
+          el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:async()=>{const ae=document.activeElement;if(ae&&ae.blur)ae.blur();await new Promise(r=>setTimeout(r,30));const title=nt.trim();if(!title){toast("Type a name");return;}if(nd>sp.end||nd<sp.start){toast("Pick a day inside Sprint "+sp.n);return;}
+            await v3newTask({title,cat:nc||"portfolio",date:nd,sprint:sp.n,done:false,moved:0,order:Date.now()});v3stAdd=false;toast("Added");re();}},"Add task"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3stAdd=false;re();}},"Cancel"))):null;
+        const allT=inSp.slice().sort((a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
+        const rows=v3stTab==="todo"?ckProjectRows(todo,re):v3stTab==="all"?v3grouped(allT,t=>t.date,v3dl):v3grouped(dn,t=>t.doneAt||t.date,d=>v3dl(d));
+        return [tabs,v3stTab==="todo"&&todo.length?ckCountLine(todo):null,v3stAdd?form:el("button",{type:"button",class:"btn ghost v3-addt",onclick:()=>{v3stAdd=true;re();}},"Add task"),rows.length?el("ul",{class:"v3-tlist v3-tall"},...rows):el("p",{class:"ps-sh-sum",text:v3stTab==="todo"?"Everything in this sprint is done.":v3stTab==="all"?"No tasks in this sprint yet.":"Nothing done yet."})];}
+      if(k==="hours"){const ws=weekStart(sel>today?today:sel),tgt=weeklyTarget(sel);const rows=[0,1,2,3,4,5,6].map(i=>{const d=addDays(ws,i);return [d,d>today?0:focusMin(d)];});const tot=rows.reduce((a,x)=>a+x[1],0);
+        return [el("p",{class:"ps-sh-sum",text:dur(tot)+" of "+tgt+" hours"+(tot/60>=tgt?". Done.":". "+dur(Math.max(0,tgt*60-tot))+" to go.")}),el("table",{class:"lh-tab"},el("thead",{},el("tr",{},el("th",{text:"Day"}),el("th",{text:"Worked"}))),el("tbody",{},...rows.map(([d,m])=>el("tr",{},el("th",{scope:"row",text:v3dl(d)}),el("td",{class:"num",text:d>today?"":dur(m)})))))];}
+      const tgtv=sp[k]||0,val=sumLogs(START,spEnd(sp,sel),k),days=[];for(let d=START;d<=spEnd(sp,today);d=addDays(d,1)){const n=Number((state.logs[d]||{})[k]||0);if(n)days.push([d,n]);}days.reverse();
+      return [el("p",{class:"ps-sh-sum",text:fmtNum(val)+" of "+tgtv+" so far"+(val>=tgtv?". Target reached.":". "+fmtNum(tgtv-val)+" to go.")}),days.length?el("table",{class:"lh-tab"},el("thead",{},el("tr",{},el("th",{text:"Day"}),el("th",{text:"Done"}))),el("tbody",{},...days.map(([d,n])=>el("tr",{},el("th",{scope:"row",text:v3dl(d)}),el("td",{class:"num",text:String(n)}))))):el("p",{class:"ps-sh-sum",text:"None logged yet."})];});}
+  function v3wireReview(){const keys=["tasks","posts","comments","applications","hours"];document.querySelectorAll("#bars .bar").forEach((b,i)=>{const k=keys[i];if(!k||b.dataset.v3)return;b.dataset.v3=k;b.setAttribute("role","button");b.tabIndex=0;b.style.cursor="pointer";
+      b.addEventListener("click",e=>{if(e.target.closest("input,.ie,button"))return;v3sprintSheet(k);});b.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.target.closest("input"))v3sprintSheet(k);});});
+    const ph=document.querySelector("#sprintH");if(ph&&!document.getElementById("v3Done")){const hd=ph.closest(".panel-head");if(hd)hd.append(el("button",{type:"button",id:"v3Done",class:"mini",onclick:()=>{v3stTab="done";v3sprintSheet("tasks");}},"Tasks done"));}
+    document.querySelectorAll("#timeline .spr").forEach((c,i)=>{if(c.dataset.v3)return;c.dataset.v3="1";c.setAttribute("role","button");c.tabIndex=0;c.style.cursor="pointer";const p=sprints()[i];if(!p)return;c.append(el("span",{class:"d sp-bufl",text:spBufLine(p)}));
+      c.addEventListener("click",e=>{e.stopImmediatePropagation();e.preventDefault();v3boardSheet(p.n);},true);c.addEventListener("keydown",e=>{if(e.key==="Enter")v3boardSheet(p.n);});});
+    const ih=document.querySelector("#ihH");if(ih&&ih.nextElementSibling)ih.nextElementSibling.textContent="Daily insights, newest first";}
+  {const _rw=render;render=function(){_rw();try{v3wireReview();}catch(e){console.warn(e);}};}
+  // ---- sprint board: the sprint's goals and its tasks by category, one simple view ----
+  function v3boardSheet(n){const sp=sprints().find(p=>p.n===n);if(!sp)return;psOpen("Sprint "+sp.n+": "+sp.name,re=>{const all=v3tk().filter(t=>v3leaf(t)&&t.date>=sp.start&&t.date<=sp.end),by={};all.forEach(t=>{(by[t.cat||"other"]=by[t.cat||"other"]||[]).push(t);});
+    const goals=[["LinkedIn posts",sp.posts],["Comments",sp.comments],["Applications",sp.applications]].filter(g=>g[1]);
+    const nmI=el("input",{type:"text",class:"v3-in","aria-label":"Sprint name",value:sp.name||""});nmI.onchange=()=>{const v=nmI.value.trim();if(v&&v!==sp.name)patchSprint(sp.n,{name:v});};
+    const goI=el("textarea",{class:"v3-in","aria-label":"Sprint goal",rows:"2",placeholder:"What this sprint ships"});goI.value=sp.goal||"";goI.onchange=()=>patchSprint(sp.n,{goal:goI.value.trim()});
+    return [el("p",{class:"hint",text:fmt(sp.start,{day:"numeric",month:"short"})+" to "+fmt(sp.end,{day:"numeric",month:"short"})+" · "+all.filter(t=>t.done).length+" of "+all.length+" tasks done"}),spDaysCard(sp,re),
+      el("section",{class:"v3-ncard"},el("label",{class:"field"},el("span",{class:"label",text:"Name"}),nmI),el("label",{class:"field"},el("span",{class:"label",text:"Goal"}),goI),goals.length?el("div",{class:"v3-row"},...goals.map(([l,v])=>el("span",{class:"hint num",text:l+": "+v+" by the end"}))):null),
+      ...Object.keys(by).sort((a,b)=>(CAT_NAME[a]||"zz").localeCompare(CAT_NAME[b]||"zz")).map(c=>{const L=by[c].sort((a,b)=>a.date.localeCompare(b.date));
+        return el("section",{class:"v3-ncard"},el("div",{class:"lh-wh"},el("span",{class:"cat-chip","data-cat":c,text:CAT_NAME[c]||"Other"}),el("span"),el("b",{class:"num",text:L.filter(t=>t.done).length+"/"+L.length})),
+          el("ul",{class:"v3-tlist v3-tall"},...L.map(t=>el("li",{},el("button",{type:"button",class:"v3-trow"+(t.done?" v3-done":""),onclick:()=>v3taskSheet(t.id)},el("span",{text:t.title}),el("span",{class:"hint",text:t.done?"Done":v3dl(t.date)}))))));}),
+      all.length?null:el("p",{class:"ps-sh-sum",text:"No tasks in this sprint yet."})];});}
+  // ---- Insights: the bank of Capture. Ideas, notes, reflections, voice notes and day insights in one place, with the Capture pop-up ----
+  const V3K={idea:"Idea",reflection:"Reflection",insight:"Insight",task:"Task note",linkedin:"LinkedIn",learning:"Learning",decision:"Decision",note:"Note",dayinsight:"Day insight"};
+  function v3bank(){const out=[];
+    Object.entries(state.notes||{}).forEach(([id,x])=>{if(x&&x.status!=="deleted"&&x.text)out.push({src:"note",id,kind:x.type||"note",text:String(x.text),at:x.created||Date.parse((x.date||"")+"T12:00")||0,date:x.date||iso(new Date(x.created||Date.now()))});});
+    Object.entries(VOICE).forEach(([id,v])=>{if(v&&(v.text||v.audio))out.push({src:"voice",id,kind:v.kind||"note",text:String(v.text||"Voice note"),at:v.at||0,date:v.date||iso(new Date(v.at||Date.now())),audio:v.audio,secs:v.secs});});
+    Object.keys(state.logs||{}).forEach(d=>{const r=(state.logs[d]||{}).reflection;if(r&&String(r).trim())out.push({src:"day",id:d,kind:"dayinsight",text:String(r),at:Date.parse(d+"T20:00")||0,date:d});});
+    return out.sort((a,b)=>b.at-a.at);}
+  const v3bankRow=x=>el("li",{},el("button",{type:"button",class:"v3-trow",onclick:()=>v3bankOpen(x)},el("span",{class:"v3-bt",text:x.text.length>110?x.text.slice(0,110)+"...":x.text}),el("span",{class:"v3-rtag"},el("span",{class:"cat-chip",text:V3K[x.kind]||x.kind}),el("span",{class:"hint",text:v3dl(x.date)}))));
+  function v3bankOpen(x){if(x.src==="note"){v3cMode="all";v3cOpen=x.id;captureReview(false);return;}
+    if(x.src==="day"){psOpen("Day insight",re=>{const ta=el("textarea",{class:"v3-in","aria-label":"Day insight",rows:"6"});ta.value=(state.logs[x.id]||{}).reflection||"";ta.onchange=()=>{setLogPatch(x.id,{reflection:ta.value.trim()||null});toast("Saved");};
+        return [el("p",{class:"hint",text:v3dl(x.id)}),ta];});return;}
+    psOpen(V3K[x.kind]||"Capture",re=>[el("p",{class:"hint",text:v3dl(x.date)+(x.at?" · "+t12(hhmm(x.at)):"")}),x.audio?el("audio",{controls:"",preload:"none",src:x.audio,class:"vn-a"}):null,el("p",{class:"vn-t",dir:"auto",text:x.text}),
+      el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);sel=clampDate(x.date);render();setTimeout(()=>openPop("cap"),60);}},"Open that day in Capture"),
+        el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Delete this capture?","Delete",()=>{delVoice(x.id);psClose(true);})},"Delete"))]);}
+  let v3bkF="all",v3bkQ="";
+  function v3bankSheet(){psOpen("Insights",re=>{const all=v3bank(),kinds=[...new Set(all.map(x=>x.kind))],q=v3bkQ.toLowerCase(),L=all.filter(x=>(v3bkF==="all"||x.kind===v3bkF)&&(!q||x.text.toLowerCase().includes(q)));
+      const search=el("input",{type:"search",class:"v3-in",placeholder:"Search the bank","aria-label":"Search the bank",value:v3bkQ});search.oninput=()=>{v3bkQ=search.value;const p=search.selectionStart;re();setTimeout(()=>{const s=document.querySelector(".ps-sheet input[type=search]");if(s){s.focus();try{s.setSelectionRange(p,p);}catch(e){}}},0);};
+      const byDay={};L.forEach(x=>{(byDay[x.date]=byDay[x.date]||[]).push(x);});
+      return [el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:()=>openPop("cap")},"Capture"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3cMode="due";v3cOpen=null;captureReview(false);}},"Review ("+brDue().length+")")),search,
+        el("div",{class:"v3-cats"},...[["all","All ("+all.length+")"],...kinds.map(k=>[k,(V3K[k]||k)+" ("+all.filter(x=>x.kind===k).length+")"])].map(([k,n])=>el("button",{type:"button",class:"cat-chip"+(v3bkF===k?" on":""),"aria-pressed":String(v3bkF===k),onclick:()=>{v3bkF=k;re();}},n))),
+        L.length?el("ul",{class:"v3-tlist v3-tall"},...Object.keys(byDay).sort().reverse().flatMap(d=>[el("li",{class:"v3-gh",text:v3dl(d)}),...byDay[d].map(v3bankRow)])):el("p",{class:"ps-sh-sum",text:"Nothing here."})];});}
+  renderInsights=function(){const box=document.getElementById("ihBody");if(!box)return;const pg=box.closest(".page");if(pg&&pg.hidden)return;const pn=box.closest(".panel"),all=v3bank();
+    const h=pn&&pn.querySelector("h2");if(h&&h.textContent!=="Insights")h.textContent="Insights";const hn=pn&&pn.querySelector(".panel-head .hint");if(hn)hn.textContent="Your Capture bank";
+    rc(box,el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:v3bankSheet},"Open bank ("+all.length+")"),el("button",{type:"button",class:"btn ghost",onclick:()=>openPop("cap")},"Capture")),
+      all.length?el("ul",{class:"v3-tlist v3-tall"},...all.slice(0,4).map(v3bankRow)):el("p",{class:"hint",text:"Nothing captured yet. Use Capture on Today."}));};
+  // the waterfall and Insights are always open: no folded cards to hunt for
+  const v3unfold=()=>["wfH","ihH"].forEach(id=>{const sec=document.querySelector('section[aria-labelledby="'+id+'"]');if(!sec)return;sec.classList.remove("collapsed");const b=sec.querySelector(".collapse-btn");if(b)b.remove();});
+  {const _ru=render;render=function(){_ru();try{v3unfold();}catch(e){}};}
+  try{render();}catch(e){}
+  // ---- day progress: one total and one yardstick (7h) in Today and in Time ----
+  function v3worked(d){const it=entriesOn(d).filter(x=>!isEstimate(x)).concat(liveItems(d));return Math.max(0,unionMin(it)+hoursAdj(d)*60);}
+  renderEntHero=function(items,total){const box=document.getElementById("entHero");if(!box)return;
+    const adj=hoursAdj(sel)*60,worked=Math.max(0,total+adj),fri=isFriday(sel),plan=fri?0:v3dayMin(sel);
+    const real=items.filter(x=>x.kind!=="event"&&x.kind!=="break"),learnM=unionMin(real.filter(isLearning)),brkM=items.filter(x=>x.kind==="break").reduce((a,x)=>a+Number(x.minutes||0),0),live=items.some(x=>x.live),scale=Math.max(plan,worked,1);
+    const seg=(cls,mm,t)=>mm>0?el("span",{class:"eh-seg "+cls,style:"width:"+(mm/scale*100)+"%",title:t+": "+dur(mm)}):null,workPart=Math.max(0,worked-learnM);
+    const bar=el("div",{class:"eh-bar",role:"img","aria-label":dur(worked)+" worked"+(plan?" of "+dur(plan):"")},...[seg("work",workPart,"Work"),seg("learn",Math.min(learnM,worked),"Learning"),seg("brk",brkM,"Breaks")].filter(Boolean));
+    const pct=plan?Math.round(worked/plan*100):null,stat=(cls,label,mm)=>el("span",{class:"eh-k"},el("i",{class:"eh-sw "+cls}),label+" ",el("b",{class:"num",text:dur(mm)}));
+    rc(box,el("div",{class:"eh-top"},el("div",{class:"eh-big"},el("b",{class:"num",text:worked>=1?dur(worked):"0m"}),el("span",{class:"eh-lbl",text:"worked"+(sel===iso(new Date())?" today":" on "+fmt(sel,{weekday:"short",day:"numeric",month:"short"}))+(live?" · live":"")})),
+        plan?el("div",{class:"eh-pct"},el("b",{class:"num",text:pct+"%"}),el("span",{class:"hint v3-edtarget",role:"button",tabindex:"0",title:"Change the day target",onclick:dayTargetSheet,onkeydown:e=>{if(e.key==="Enter")dayTargetSheet();},text:"of "+dur(plan)})):el("div",{class:"eh-pct"},el("span",{class:"hint",text:"Friday: rest day"}))),bar,
+      el("div",{class:"eh-keys"},stat("work","Work",workPart),stat("learn","Learning",Math.min(learnM,worked)),brkM?stat("brk","Breaks",brkM):null,adj?el("span",{class:"hint",text:(adj>0?"+":"-")+dur(Math.abs(adj))+" adjusted by hand"}):null));};
+  // ---- the day target (default 7 hours) is yours to set. Today and Time both read it, so they always match ----
+  function v3dayMin(d){const p=(state.settings&&state.settings.prefs)||{},mn=Number(p.dayMin),base=mn>=50&&mn<=1200?mn:FULL_DAY;return d&&typeof capDayMin==="function"?capDayMin(d,base):base;}
+  function v3parseHours(t){t=String(t||"").trim().toLowerCase();let m;if((m=t.match(/^(\d+(?:[.,]\d+)?)\s*(?:p|pom|poms|pomodoro|pomodoros)$/)))return Math.round(parseFloat(m[1].replace(",","."))*50);if((m=t.match(/^(\d+(?:[.,]\d+)?)$/)))return Math.round(parseFloat(m[1].replace(",","."))*50);if((m=t.match(/^(\d{1,2}):(\d{2})$/)))return +m[1]*60+ +m[2];if((m=t.match(/^(\d+)\s*h(?:ours?|rs?)?\s*(?:(\d+)\s*m(?:in)?)?$/)))return +m[1]*60+(+m[2]||0);if((m=t.match(/^(\d+)\s*m(?:in(?:utes?)?)?$/)))return +m[1];if((m=t.match(/^(\d+(?:[.,]\d+)?)$/)))return Math.round(parseFloat(m[1].replace(",","."))*60);return 0;}
+  function dayTargetSheet(){psOpen("Day target",re=>{const cur=v3dayMin(),inp=el("input",{type:"text",class:"v3-in tt-in","aria-label":"Pomodoros for a full day",placeholder:"8, or 6h, or 7:30",value:pomS(cur)});
+    const save=mn=>{if(!(mn>=30&&mn<=1200)){toast("Type pomodoros like 8, or hours like 6h or 7:30");return;}const p={...((state.settings&&state.settings.prefs)||{}),dayMin:mn,at:Date.now()};state.settings={...(state.settings||{}),prefs:p};try{store.set("settings/prefs",p);}catch(e){}toast("Day target: "+pomS(mn)+" pomodoros");psClose(true);render();};
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();save(v3parseHours(inp.value));}});
+    return [el("p",{class:"hint",text:"1 pomodoro is 50 minutes of focus. Type a number of pomodoros (8), or hours (6h or 7:30). Today and Time use the same number."}),el("label",{class:"field"},el("span",{class:"label",text:"Pomodoros"}),inp),
+      el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:()=>save(v3parseHours(inp.value))},"Save"),el("button",{type:"button",class:"btn ghost",onclick:()=>save(FULL_DAY)},"Back to "+pomS(FULL_DAY)+" pomodoros"))];});}

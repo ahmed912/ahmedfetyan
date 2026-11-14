@@ -1,0 +1,55 @@
+// Round 32 (select mode). Journey: open a parent, tap Select, tick rows, one bar acts: Detach, Move to bucket, Archive, each with Undo. No per-row Detach. Plan page: Select in the header, rows keep clean text.
+const MOCK='/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/plan/mock_final.json';
+process.env.MOCKDATA=process.env.MOCKDATA||MOCK;
+const fs=require('fs');
+const {openp,shot,run}=require('./h.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const base=()=>{const d=JSON.parse(fs.readFileSync(process.env.MOCKDATA,'utf8'));d.tasks={};d.entries={};d.sleep={};d.rollover={};
+  d.sprints={s2:{n:2,name:'Brand foundation',start:'2026-11-14',end:'2026-12-27',goal:'x'}};return d;};
+const seed=async pg=>pg.evaluate(async()=>{const db=await window.claude.use('db');
+  await db.doc('tasks/bk1').set({title:'Mugassam',bucket:true,bState:'active',order:1,done:false});
+  await db.doc('tasks/bk2').set({title:'HASM',bucket:true,bState:'active',order:2,done:false});
+  await db.doc('tasks/p1').set({title:'Parent task',cat:'portfolio',parent:'bk1',date:'2026-11-16',slot:1,mode:'deep',mins:180,order:1,done:false});
+  for(let i=1;i<=4;i++)await db.doc('tasks/s'+i).set({title:'Step '+i,cat:'portfolio',parent:'p1',date:'2026-11-16',slot:1,mode:'deep',mins:45,order:i,done:false});
+  for(let i=1;i<=3;i++)await db.doc('tasks/m'+i).set({title:'Mug task '+i,cat:'portfolio',parent:'bk1',mins:60,order:10+i,done:false});});
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const pg=await openp(b,w,{when:'2026-11-14T08:00:00',real:JSON.stringify(base())});const R=async ms=>{await pg.clock.runFor(ms);await pg.waitForTimeout(250);};
+  await seed(pg);await R(600);
+  const T=id=>pg.evaluate(id=>window.__data.tasks[id],id);
+  const U=async()=>{await pg.evaluate(()=>{const b=document.querySelector('#v3ut:not([hidden]) .ub-b');b&&b.click();});await R(400);};
+  await pg.evaluate(()=>__r2.setPage('projects'));await R(500);await pg.locator('.bk-row[data-id="p1"] .bk-t').click();await R(500);
+  ok('no per-row Detach button',(await pg.locator('.ps-sheet .v3-sub button:has-text("Detach")').count())===0&&(await pg.locator('.ps-sheet .v3-sub button').count())===0);
+  ok('header has one Select',(await pg.locator('.ps-sheet .sel-go').count())===1);
+  await pg.locator('.ps-sheet .sel-go').click();await R(400);
+  ok('checkboxes and one action bar',(await pg.locator('.ps-sheet .sel-cb').count())===4&&(await pg.locator('#selBar').count())===1);
+  await pg.locator('#selBar .sel-all').click();await R(200);
+  ok('Select all ticks 4',/4 selected/.test(await pg.locator('#selBar').innerText()));
+  await pg.locator('.ps-sheet .v3-sub[data-id="s3"]').click();await R(200);await pg.locator('.ps-sheet .v3-sub[data-id="s4"]').click();await R(200);
+  ok('tapping rows toggles (2 selected)',/2 selected/.test(await pg.locator('#selBar').innerText()));
+  await shot(pg,'r32_select_'+w);
+  await pg.locator('#selBar .sel-detach').click();await R(500);
+  let s1=await T('s1'),s3=await T('s3');ok('Detach acts on the selection only',s1.parent===null&&(await T('s2')).parent===null&&s3.parent==='p1'&&(await T('s4')).parent==='p1',JSON.stringify([s1.parent,s3.parent]));
+  ok('select mode ended, bar gone',(await pg.locator('#selBar').count())===0);
+  await U();ok('Undo re-attaches',(await T('s1')).parent==='p1'&&(await T('s2')).parent==='p1');
+  if(!(await pg.locator('.ps-sheet').count())){await pg.locator('.bk-row[data-id="p1"] .bk-t').click();await R(500);}
+  // select, Cancel changes nothing
+  await R(400);await pg.evaluate(()=>{const b=document.querySelector('.ps-sheet .sel-go');b&&b.click();});await R(300);
+  await pg.locator('#selBar .sel-cancel').click();await R(300);ok('Cancel leaves everything',(await pg.locator('#selBar').count())===0&&(await T('s1')).parent==='p1');
+  await pg.keyboard.press('Escape');await R(300);
+  // Plan page: Select in the header, move to a bucket, archive
+  await pg.evaluate(()=>__r2.setPage('projects'));await R(500);
+  ok('Plan header has Select',(await pg.locator('#bucketSec .sel-go').count())===1);
+  await pg.locator('#bucketSec .sel-go').click();await R(400);
+  ok('bucket rows show checkboxes, no done boxes',(await pg.locator('#bucketSec .bk-row .sel-cb').count())>=3);
+  await pg.locator('.bk-row[data-id="m1"]').click();await R(200);await pg.locator('.bk-row[data-id="m2"]').click();await R(200);
+  await pg.locator('#selBar .sel-move').click();await R(400);
+  await pg.locator('.ps-sheet .ps-sh-row',{hasText:'HASM'}).click();await R(500);
+  ok('Move to bucket moved both',(await T('m1')).parent==='bk2'&&(await T('m2')).parent==='bk2'&&(await T('m3')).parent==='bk1');
+  await U();ok('Undo moves back',(await T('m1')).parent==='bk1'&&(await T('m2')).parent==='bk1');
+  await pg.locator('#bucketSec .sel-go').click();await R(300);
+  await pg.locator('.bk-row[data-id="m2"]').click();await R(200);await pg.locator('#selBar .sel-archive').click();await R(600);
+  ok('Archive archives the selection',(await T('m2')).archived===true);
+  await U();ok('Undo restores',!(await T('m2')).archived);
+  await shot(pg,'r32_plan_'+w);
+  ok('no page errors',!pg.errs.filter(e=>!/Failed to load resource/.test(e)).length,pg.errs.join('|').slice(0,300));
+  await pg.context().close();}});

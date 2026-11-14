@@ -112,7 +112,7 @@ body.m1 .war-fab{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 .q-nb{display:flex;gap:8px;flex-wrap:wrap}
 .q-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .q-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--surface);touch-action:pan-y;user-select:none}
-.q-row input{width:20px;height:20px;margin:0}
+.q-row input[type=checkbox]{width:20px;height:20px;margin:0}
 .q-t{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:0;overflow-wrap:anywhere}
 .v3-addq{margin-left:auto}
 .v3-ncard{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:16px;background:var(--surface);box-shadow:var(--sh,0 1px 2px rgba(0,0,0,.06))}
@@ -408,3 +408,64 @@ body.sp-off section[aria-labelledby="sprintH"],body.sp-off .sp-cap,body.sp-off #
 .wk-wait{margin:10px 0;padding:8px;border:1px solid rgba(128,128,128,.35);border-radius:12px}
 .wk-open{margin-left:auto}
 .pa-nav{margin:4px 0}.pa-grp{margin:8px 0}.pa-grp .label{display:block;margin-bottom:2px}
+
+/* Round 31: fluid, content-sized bucket cards (masonry columns), names clamped, no card grows without limit */
+.bk-grid{display:block!important;column-width:230px;column-gap:14px;columns:230px auto;orphans:1;widows:1}
+.bk-grid>*{break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 14px;width:100%;box-sizing:border-box}
+.bk-card{max-height:450px;overflow:hidden}
+.bk-list{overflow-y:auto;overscroll-behavior:contain;max-height:230px;min-height:0}
+.bk-title{display:block;flex:1 1 auto;min-width:0;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.bk-t{display:block;min-width:0;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.bk-head{min-width:0}
+.bk-row .bk-d{max-width:92px;overflow:hidden;text-overflow:ellipsis}
+.cs-card .cs-head .cs-t,.cs-card .cs-t{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;display:block;min-width:0;max-width:100%}
+.wk-wait .hint{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.v3-wft .wf-t{display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-overflow:ellipsis!important}
+.ps-sheet .ps-sh-sum,.ps-sheet .ps-sh-row,.ps-sheet .q-t,.ps-sheet .wk-chip,.ps-sheet .rl-orow .q-t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.pl-row .bk-t,.bk-row .bk-t{white-space:nowrap!important}
+
+/* Round 32: select mode, hairlines instead of boxes, spacing scale 8/16 */
+.bk-grid{column-gap:16px}.bk-grid>*{margin-bottom:16px}
+.bk-card{padding:16px}
+.bk-row{padding:8px 0;border-radius:0}.bk-row+.bk-row{border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent)}
+.bk-list{gap:0}
+.sel-head{align-items:center;justify-content:space-between}
+.sel-go{margin-left:12px}
+.sel-bar{position:fixed;left:0;right:0;bottom:0;z-index:260;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);box-sizing:border-box;justify-content:center}
+.sel-bar .sel-n{flex:1 1 100%;font-size:13px;color:var(--muted);text-align:center}
+.sel-bar .mini{min-height:36px}
+.sel-bar .mini[disabled]{opacity:.4}
+body.sel-on{padding-bottom:120px}
+.sel-picked{background:color-mix(in oklab,var(--accent) 10%,transparent)}
+.sel-cb{width:18px;height:18px;margin:0}
+.sel-bar[hidden]{display:none}
+/* Round 31b: 50% wider bucket cards (230 to 345) and Sprint progress tiles (150 to 225); labels wrap, never clip */
+.bk-grid{column-width:345px;columns:345px auto}
+body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!important}
+@media (max-width:699px){#bars{grid-template-columns:minmax(0,1fr)!important}}
+#bars .bar,#bars .bar *{min-width:0;overflow-wrap:anywhere;white-space:normal!important;text-overflow:clip}
+#bars .bar .row{flex-wrap:wrap}
+/* Round 33b: later shelf, collapsed waterfall buckets, hairlines */
+.bk-later{margin-top:8px;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent);padding-top:12px;column-span:all}
+.bk-lrow{display:flex;align-items:center;gap:12px;padding:8px 0;color:var(--muted)}.bk-lrow .bk-lt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-bk .wf-bkb{font-weight:600}.wf-bkbar{opacity:.7}
+.wf-more{padding:4px 0}
+/* Round 35: one decision per move */
+.mv-list{display:flex;flex-direction:column;gap:0;margin:12px 0}
+.mv-choice{width:100%;justify-content:flex-start;text-align:left;border-radius:0;border:0;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent);min-height:48px;box-shadow:none;font-weight:400}
+.mv-choice.mv-main{border-top:0;font-weight:500}
+.mv-date.mv-choice{padding:12px 0;display:flex;flex-direction:column;align-items:stretch}
+.mv-more{margin-top:4px}.mv-more summary{cursor:pointer;padding:8px 0}
+.mv-days{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0}
+
+/* Round 36: steps use the full row width; hairline rows, quiet add line */
+.ck-sec{gap:0;margin:12px 0}
+.ck-list{gap:0}
+.ck-row.q-row{background:transparent;border-radius:0;padding:8px 0;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent);grid-template-columns:20px minmax(0,1fr) auto;gap:12px}
+.ck-row:first-child{border-top:0}
+.ck-row .ck-t{width:100%;min-width:0;box-sizing:border-box;border:0;background:transparent;padding:2px 0;resize:none;overflow:hidden;font:inherit;line-height:1.35;color:inherit;text-overflow:ellipsis}
+.ck-row .ck-t.v3-done{color:var(--muted);text-decoration:line-through}
+.ck-row .mini{border:0;background:transparent;color:var(--muted);min-height:32px;padding:0 6px}
+.ck-add{border:0!important;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent)!important;border-radius:0!important;background:transparent!important;padding:12px 0!important;box-shadow:none!important}
+.v3-sub.q-row,.v3-sub{background:transparent;border-radius:0;padding:8px 0;border-top:1px solid color-mix(in oklab,var(--ink) 8%,transparent)}
+.v3-sub .q-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}

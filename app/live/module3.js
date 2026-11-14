@@ -10,7 +10,7 @@
   // sprint switcher: any sprint's performance, closed sprints include the tasks the replan archived
   window.spView=null;window.spViewOf=cur=>sprints().find(p=>p.n===window.spView)||cur;
   window.spEnd=(sp,d)=>sp.end<d?sp.end:d;
-  window.spTasks=sp=>leafTasks().filter(t=>t.sprint===sp.n&&(!t.cut||t.replacedBy||t.parkReason));
+  window.spTasks=sp=>leafTasks().filter(t=>!laterTask(t)&&t.sprint===sp.n&&((!t.cut&&!t.archived)||((t.replacedBy||t.parkReason)&&(sp.end<iso(new Date())||wfCut))));
   window.spChips=sp=>{const bars=document.getElementById("bars");if(!bars)return;let row=document.getElementById("spSwitch");if(!row){row=el("div",{class:"seg sp-switch",id:"spSwitch",role:"group","aria-label":"Sprint"});bars.parentNode.insertBefore(row,bars);}
     rc(row,...sprints().map(p=>el("button",{type:"button","aria-pressed":String(p.n===sp.n),text:"Sprint "+p.n,title:p.name,onclick:()=>{window.spView=p.n;wfSprint=p.n;render();}})));};
   const v3dl=d=>fmt(d,{weekday:"short",day:"numeric",month:"short"});
@@ -92,7 +92,7 @@
     const nm=el("textarea",{class:"v3-in v3-big","aria-label":"Task name",rows:"2"});nm.value=t.title||"";nm.onchange=()=>{const v=nm.value.trim();if(v&&v!==t.title)patchTask(id,{title:v});};
     const ds=el("textarea",{class:"v3-in","aria-label":"Description",rows:"3",placeholder:"Description"});ds.value=t.desc||"";ds.onchange=()=>patchTask(id,{desc:ds.value.trim()});
     const list=el("ul",{class:"q-list"},...subs.map(s=>{const cb=el("input",{type:"checkbox","aria-label":"Done: "+s.title});cb.checked=!!s.done;cb.onchange=()=>{patchTask(s.id,{done:cb.checked,doneAt:cb.checked?iso(new Date()):null});setTimeout(re,250);};
-      return ((li,s)=>{if(s.date&&!s.done)v3stepSwipe(li,s);return li;})(el("li",{class:"q-row v3-sub"+(s.date?" v3-sub-d":""),"data-id":s.id},cb,el("span",{class:"q-t"+(s.done?" v3-done":""),text:s.title}),el("span",{class:"hint cs-est",text:aboutH(estMin(s))}),s.date?el("span",{class:"hint",text:v3dl(s.date)}):null,s.date?el("button",{type:"button",class:"mini","aria-label":"Detach "+s.title+" from this task",onclick:()=>{patchTask(s.id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach"):el("button",{type:"button",class:"x","aria-label":"Remove "+s.title,onclick:()=>{patchTask(s.id,{archived:true,cut:true});setTimeout(re,250);}},"\u00d7")),s);}));
+      return ((li,s)=>{if(s.date&&!s.done)v3stepSwipe(li,s);return typeof selRow==="function"?selRow(li,s.id):li;})(el("li",{class:"q-row v3-sub"+(s.date?" v3-sub-d":""),"data-id":s.id},cb,el("span",{class:"q-t"+(s.done?" v3-done":""),text:s.title}),el("span",{class:"hint cs-est",text:aboutH(estMin(s))}),s.date?el("span",{class:"hint",text:v3dl(s.date)}):null,null),s);}));
     v3dragList(list,".v3-sub",ids=>{ids.forEach((sid,k)=>patchTask(sid,{order:k}));setTimeout(re,300);});
     const sIn=el("input",{type:"text",class:"v3-in",placeholder:"Add a subtask","aria-label":"New subtask"});
     const addSub=async()=>{const v=sIn.value.trim();if(!v)return;sIn.value="";await v3newTask({title:v,cat:t.cat||null,parent:id,done:false,order:Date.now()});setTimeout(re,250);};
@@ -102,6 +102,7 @@
       el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Day"}),v3dateField("Task day",t.date,p=>{rsGo(id,p,"task");})),
         el("label",{class:"field"},el("span",{class:"label",text:"Days it spans"}),(i=>{i.onchange=()=>{const n=Math.max(1,Math.min(14,+i.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);i.value=String(t.days||1);return;}patchTask(id,{days:n});};return i;})(el("input",{type:"number",class:"v3-in",min:"1",max:"14",value:String(t.days||1),"aria-label":"Days it spans"}))),
         el("label",{class:"field"},el("span",{class:"label",text:"Minutes"}),(i=>{i.onchange=()=>patchTask(id,{mins:Math.max(0,Math.round(+i.value||0))});return i;})(el("input",{type:"number",class:"v3-in",min:"0",step:"5",value:t.mins?String(t.mins):"","aria-label":"Estimated minutes",placeholder:"min"})))),
+      ...(subs.length?[]:[el("div",{class:"field"},el("span",{class:"label",text:"Subtasks"}),sIn)]),
       el("div",{class:"field"},el("span",{class:"label",text:"Category"}),v3catChips(t.cat,c=>{patchTask(id,{cat:c});setTimeout(re,200);})),
       ...(typeof plExtra==="function"&&!t.bucket?plExtra(id,re):[]),
       t.parent&&state.tasks[t.parent]&&!state.tasks[t.parent].bucket?el("div",{class:"v3-row"},el("span",{class:"hint",text:"Part of: "+state.tasks[t.parent].title}),el("button",{type:"button",class:"mini",onclick:()=>{psClose(true);v3taskSheet(t.parent);}},"Open"),el("button",{type:"button",class:"mini",onclick:()=>{patchTask(id,{parent:null});toast("Detached. It is a normal task again.");setTimeout(re,250);}},"Detach")):
@@ -110,7 +111,7 @@
       el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,-1);}},"Move up"),el("button",{type:"button",class:"btn ghost",onclick:()=>{v3move(id,1);}},"Move down"),
         el("button",{type:"button",class:"btn ghost danger",onclick:()=>v3confirm("Archive: "+t.title+"?","Archive",()=>{v3archive(id,true);psClose(true);})},"Archive"))):null;
     const estM=subs.length?subs.reduce((q,k)=>q+estMin(k),0):estMin(t);
-    return [nm,v3chip(t),(typeof chModeRow==="function"&&!t.bucket?chModeRow({...t,id},re):null),aboutH(estM)?el("span",{class:"hint v3-estl",text:aboutH(estM)}):null,ds,ckSection({...t,id},re),el("span",{class:"label",text:"Subtasks"+(subs.length?" ("+subs.filter(s=>s.done).length+" of "+subs.length+")":"")}),subs.length?list:null,sIn,
+    return [nm,v3chip(t),(typeof chModeRow==="function"&&!t.bucket?chModeRow({...t,id},re):null),aboutH(estM)?el("span",{class:"hint v3-estl",text:aboutH(estM)}):null,ds,(!subs.length||ckList({...t,id}).length?ckSection({...t,id},re):null),subs.length?el("div",{class:"v3-row sel-head"},el("span",{class:"label",text:"Subtasks"+(subs.length?" ("+subs.filter(s=>s.done).length+" of "+subs.length+")":"")}),subs.length>0&&!selOn?el("button",{type:"button",class:"hint bk-link sel-go",onclick:()=>selStart(null,re)},"Select"):null):null,subs.length?list:null,subs.length?sIn:null,
       el("div",{class:"v3-row"},el("button",{type:"button",class:"btn",onclick:()=>{psClose(true);v3start(id);}},"Start now"),el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);v3five(id);}},"Start for 5 minutes"),el("button",{type:"button",class:"btn ghost rs-sheet-btn",onclick:()=>v3rs(id,"task")},"Reschedule"),el("button",{type:"button",class:"btn ghost","aria-expanded":String(v3tEdit),onclick:()=>{v3tEdit=!v3tEdit;re();}},v3tEdit?"Hide details":"Details")),det];});}
   // ---- nesting: no data is changed until you choose. Any task can become a subtask of another, and come back out ----
   const v3wfSprint=()=>{const today=iso(new Date()),cur=sprintFor(sel>today?today:sel);return sprints().find(p=>p.n===(wfSprint||cur.n))||cur;};
@@ -143,12 +144,14 @@
       el("button",{type:"button",class:"btn",onclick:()=>{const n=Math.max(1,Math.min(14,+d.value||1));if(addDays(t.date,n-1)>sp.end){toast("That runs past the end of Sprint "+sp.n);return;}patchTask(id,{days:n,mins:Math.max(0,Math.round(+m.value||0))});psClose(true);toast("Length updated");}},"Save")];});}
   // ---- waterfall: parent tasks only, calm rows, tap a task for its pop-up ----
   let wfView="sprint",wfWk=null;const wfSat=d=>{while(parse(d).getDay()!==6)d=addDays(d,-1);return d;};
+  let wfBOpen={},wfBMore={};
   renderWaterfall=function(){const box=document.getElementById("wfBody");if(!box)return;const pg=box.closest(".page");if(pg&&pg.hidden)return;
     const today=iso(new Date()),cur=sprintFor(sel>today?today:sel);let sp=sprints().find(p=>p.n===(wfSprint||cur.n))||cur;
     const week=wfView==="week",days=[];if(week){const w0=wfWk||wfSat(today);for(let i=0;i<7;i++)days.push(addDays(w0,i));sp=v3spOf(days[0])||sp;}else for(let d=sp.start;d<=sp.end;d=addDays(d,1))days.push(d);
-    const all=v3tk().filter(t=>(!t.parent||isBk(t.parent))&&t.date>=days[0]&&t.date<=days[days.length-1]);
-    const counts={};all.forEach(t=>{const s=taskStatus(t,today);counts[s]=(counts[s]||0)+1;});
-    const legacy=t=>t.archived&&(t.replacedBy||t.parkReason),ts=all.filter(t=>wfCut||!t.archived||legacy(t)).sort(wfGroup==="cat"?(a,b)=>(CAT_NAME[a.cat]||"").localeCompare(CAT_NAME[b.cat]||"")||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):wfGroup==="bucket"?(a,b)=>bkName(a.id).localeCompare(bkName(b.id))||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):(a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
+    const all=v3tk().filter(t=>(!t.parent||isBk(t.parent))&&!laterTask(t)&&t.date>=days[0]&&t.date<=days[days.length-1]);
+    const legacy=t=>t.archived&&(t.replacedBy||t.parkReason)&&sp.end<today,vis=all.filter(t=>wfCut||!t.archived||legacy(t));
+    const counts={};vis.forEach(t=>{const s=taskStatus(t,today);counts[s]=(counts[s]||0)+1;});
+    const ts=vis.sort(wfGroup==="cat"?(a,b)=>(CAT_NAME[a.cat]||"").localeCompare(CAT_NAME[b.cat]||"")||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):wfGroup==="bucket"?(a,b)=>bkName(a.id).localeCompare(bkName(b.id))||a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)):(a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b)));
     const ctrls=el("div",{class:"wf-ctrls"},
       el("div",{class:"seg",role:"group","aria-label":"Sprint"},...sprints().map(p=>el("button",{type:"button","aria-pressed":String(p.n===sp.n),text:"Sprint "+p.n,title:p.name,onclick:()=>{wfSprint=p.n;wfView="sprint";render();}}))),
       el("div",{class:"seg",role:"group","aria-label":"View"},el("button",{type:"button",class:"wf-v-sprint","aria-pressed":String(!week),text:"Sprint",onclick:()=>{wfView="sprint";render();}}),el("button",{type:"button",class:"wf-v-week","aria-pressed":String(week),text:"Week",onclick:()=>{wfView="week";if(!wfWk)wfWk=wfSat(today);render();}})),
@@ -162,8 +165,8 @@
     grid.append(el("div",{class:"wf-h wf-lbl",style:"grid-row:1;grid-column:1",text:"Task"}),...days.map((d,i)=>el("div",{class:"wf-h"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:1;grid-column:"+(i+2),title:fmt(d)+(rlBuffer(d)?" · buffer day":"")},el("span",{text:fmt(d,{weekday:"short"}).slice(0,2)}),el("b",{class:"num",text:String(parse(d).getDate())}))));
     if(!ts.length){r++;grid.append(el("div",{class:"wf-empty",style:"grid-row:"+r,text:"No tasks in this sprint yet."}));}
     let last=null;
-    ts.forEach(t=>{const st=legacy(t)&&t.done?"done":taskStatus(t,today),g=wfGroup==="cat"?(CAT_NAME[t.cat]||"Other"):wfGroup==="bucket"?bkName(t.id):fmt(t.date,{weekday:"long",day:"numeric",month:"short"});
-      if(g!==last){r++;grid.append(el("div",{class:"wf-grp",style:"grid-row:"+r,text:g}));last=g;}r++;
+    const rowFor=(t,g)=>{const st=legacy(t)&&t.done?"done":taskStatus(t,today);
+      if(g!==undefined&&g!==last){r++;grid.append(el("div",{class:"wf-grp",style:"grid-row:"+r,text:g}));last=g;}r++;
       const a=days.indexOf(t.date);let b=a;
       if(st==="done"&&t.doneAt&&t.doneAt>t.date)b=Math.max(a,days.indexOf(t.doneAt>sp.end?sp.end:t.doneAt));
       if((st==="late"||st==="doing")&&t.date<today)b=Math.max(a,days.indexOf(today>sp.end?sp.end:today));
@@ -173,7 +176,15 @@
         el("button",{type:"button",class:"wf-task v3-wft","aria-label":t.title+", "+WF_ST[st]+", "+v3dl(t.date)+". Open task.",onclick:()=>v3taskSheet(t.id)},el("span",{class:"wf-t",text:t.title}),v3chip(t),subs.length?el("span",{class:"hint num",text:sd+"/"+subs.length}):null),
         el("button",{type:"button",class:"mini v3-more","aria-label":"More for "+t.title,onclick:()=>v3taskMenu(t.id)},"\u22EF")));
       days.forEach((d,i)=>grid.append(el("div",{"data-d":d,"data-id":t.id,class:"wf-cell"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:"+r+";grid-column:"+(i+2)})));
-      grid.append(el("div",{"data-id":t.id,class:"wf-bar st-"+st,style:"grid-row:"+r+";grid-column:"+(a+2)+" / "+(b+3),"aria-hidden":"true",title:WF_ST[st]+(t.moved?" · moved "+t.moved+" time"+(t.moved>1?"s":""):"")+((t.spent||0)>0?" · "+dur(t.spent)+" tracked":"")}));});
+      grid.append(el("div",{"data-id":t.id,class:"wf-bar st-"+st,style:"grid-row:"+r+";grid-column:"+(a+2)+" / "+(b+3),"aria-hidden":"true",title:WF_ST[st]+(t.moved?" · moved "+t.moved+" time"+(t.moved>1?"s":""):"")+((t.spent||0)>0?" · "+dur(t.spent)+" tracked":"")}));};
+    if(wfGroup==="bucket"){const gs=[];ts.forEach(t=>{const k=bkName(t.id);let g=gs.find(x=>x.k===k);if(!g){g={k,id:bkOfId(t.id)||"none",ts:[]};gs.push(g);}g.ts.push(t);});
+      gs.forEach(g=>{const open=!!wfBOpen[g.id],dn=g.ts.filter(x=>x.done).length,idx=g.ts.map(x=>days.indexOf(x.date)).filter(i=>i>=0),a=Math.min(...idx),b=Math.max(...idx);r++;
+        grid.append(el("div",{class:"wf-lbl wf-bk","data-bk":g.id,style:"grid-row:"+r+";grid-column:1"},el("button",{type:"button",class:"wf-task wf-bkb","aria-expanded":String(open),"aria-label":g.k+", "+g.ts.length+" tasks, "+Math.round(dn/g.ts.length*100)+" percent done. "+(open?"Collapse":"Expand"),onclick:()=>{wfBOpen[g.id]=!open;render();}},el("span",{class:"wf-t",text:g.k}),el("span",{class:"hint num",text:g.ts.length+" · "+Math.round(dn/g.ts.length*100)+"%"}))));
+        days.forEach((d,i)=>grid.append(el("div",{"data-d":d,class:"wf-cell"+(d===today?" today":"")+(isFriday(d)?" fri":"")+(rlBuffer(d)?" buf":""),style:"grid-row:"+r+";grid-column:"+(i+2)})));
+        if(idx.length)grid.append(el("div",{class:"wf-bar wf-bkbar st-"+(dn===g.ts.length?"done":"doing"),style:"grid-row:"+r+";grid-column:"+(a+2)+" / "+(b+3),"aria-hidden":"true"}));
+        if(open){const lim=wfBMore[g.id]?g.ts.length:5;g.ts.slice(0,lim).forEach(t=>rowFor(t));
+          if(g.ts.length>5){r++;grid.append(el("div",{class:"wf-lbl wf-more",style:"grid-row:"+r+";grid-column:1"},el("button",{type:"button",class:"mini",onclick:()=>{wfBMore[g.id]=!wfBMore[g.id];render();}},wfBMore[g.id]?"Show less":(g.ts.length-5)+" more")));}}});}
+    else ts.forEach(t=>rowFor(t,wfGroup==="cat"?(CAT_NAME[t.cat]||"Other"):fmt(t.date,{weekday:"long",day:"numeric",month:"short"})));
     rc(box,ctrls,sum,el("div",{class:"wf-scroll"},grid));};
   // ---- sprint progress: every bar opens its own pop-up ----
   let v3stTab="todo",v3stAdd=false;
@@ -182,7 +193,7 @@
   function v3sprintSheet(k){k=k||"tasks";const today=iso(new Date()),sp=spViewOf(sprintFor(sel>today?today:sel));
     const T={tasks:"Tasks",posts:"LinkedIn posts",comments:"Comments",applications:"Applications",hours:"Hours this week"};
     psOpen("Sprint "+sp.n+" · "+T[k],re=>{
-      if(k==="tasks"){const all=v3tk().filter(t=>v3leaf(t)||(isLeaf(t)&&t.date&&t.archived&&(t.replacedBy||t.parkReason))),inSp=all.filter(t=>t.date>=sp.start&&t.date<=sp.end);
+      if(k==="tasks"){const all=v3tk().filter(t=>!laterTask(t)&&(v3leaf(t)||(isLeaf(t)&&t.date&&t.archived&&(t.replacedBy||t.parkReason)&&(sp.end<today||wfCut)))),inSp=all.filter(t=>t.date>=sp.start&&t.date<=sp.end);
         const todo=inSp.filter(t=>!t.done).sort((a,b)=>a.date.localeCompare(b.date)||(v3pos(a)-v3pos(b))),dn=all.filter(t=>t.done).sort((a,b)=>String(b.doneAt||b.date).localeCompare(String(a.doneAt||a.date)));
         const tabs=el("div",{class:"seg",role:"group"},...[["todo","Not done ("+todo.length+")"],["done","Done ("+dn.length+")"],["all","All ("+inSp.length+")"]].map(([x,n])=>el("button",{type:"button","aria-pressed":String(v3stTab===x),onclick:()=>{v3stTab=x;re();}},n)));
         let nt="",nd=today>=sp.start&&today<=sp.end?today:sp.start,nc=null;

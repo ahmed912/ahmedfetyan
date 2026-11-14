@@ -15,8 +15,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('step rows allow vertical pan',(await pg.locator(stepSel).first().evaluate(e=>getComputedStyle(e).touchAction))==='pan-y');
   await swipe(stepSel+':first-child',-200);
   ok('swipe left opens Reschedule step',(await pg.locator('.ps-sheet[aria-label="Reschedule"]').count())===1);
-  ok('chips present',(await pg.locator('.v3-rs').count())===3);
-  await pg.locator('.v3-rs:has-text("Tomorrow")').click();await run1(600);
+  ok('chips present',(await pg.locator('.ps-sheet .rs-pick').count())===3);
+  await pg.locator('.rs-pick:has-text("Tomorrow")').click();await run1(600);
   if(when.startsWith('2026-11-19')){
     const t1=(await T())[id];ok('Thursday + Tomorrow skips Friday to Saturday',t1.date==='2026-11-21',t0.date+' -> '+t1.date);
     ok('card updated: step no longer on the card',(await pg.locator('#cutStack .cs-card.cs-top [data-step="'+id+'"]').count())===0);
@@ -35,7 +35,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   if(!when.startsWith('2026-11-19')){
     const conf=await pg.locator('.v3-conf').innerText().catch(()=>'');ok('past sprint end asks with a warning',/Sprint 3/.test(conf),conf.replace(/\s+/g,' '));
     await pg.click('.v3-conf .btn.ghost').catch(()=>{});await run1(400);ok('cancel keeps the date',(await T())[id].date==='2026-11-25');
-    await pg.locator('.ps-sheet .v3-rs:has-text("Tomorrow")').click().catch(()=>{});await run1(400);
+    await pg.locator('.ps-sheet .rs-pick:has-text("Tomorrow")').click().catch(()=>{});await run1(400);
     await pg.click('.v3-conf .btn:not(.ghost)').catch(()=>{});await run1(600);const t5=(await T())[id];ok('confirmed move sets the new sprint number',t5.date>'2026-11-25'&&t5.sprint===3,t5.date+' sprint '+t5.sprint);
   }
   const er=pg.errs.filter(e=>!/Failed to load resource/.test(e));ok('no page errors',er.length===0,er.join('|').slice(0,300));
