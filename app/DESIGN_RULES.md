@@ -62,6 +62,13 @@ The ethos is to push hard and work as much as possible to build something. The a
 - If an action repeats on every row (for example Detach under each task in a chunk or parent), do not repeat the button. Put it once in the header and use selection: select the tasks (tap or hold to enter select mode, checkboxes appear), then one action bar acts on the selection: Detach, Group, Move, Reschedule, Archive.
 - The same rule applies everywhere: one action, one place; rows stay clean text plus a tiny tag.
 
+# ONE PROJECT AT A TIME; CLIENT PROJECTS RUN BESIDE PORTFOLIO (user, 14 Nov)
+- He works on one project at a time (one project per deep block). All current projects (HASM, Javelin, Mugassam and the rest) are PORTFOLIO projects, so exactly one portfolio project is active at a time; the next ones wait in an ordered "Up next" queue on the Later shelf.
+- The only exception is a CLIENT project, which runs in parallel with the active portfolio project. A client project can land at any time: he creates its own bucket and marks it as Client.
+- Client buckets are distinctive (a tiny quiet "Client" tag under the name, its own place on Today and in the waterfall), have a deadline and a delivery date, and follow the shared schedule: client work gets the first deep block (revenue and stakes come first), the active portfolio project keeps the remaining work blocks. If a client project lands, the portfolio project shrinks to the remaining blocks and resumes full blocks when the client project is delivered.
+- The bucket has a type: Portfolio (default) or Client. Creating or editing a bucket asks for the type in one tap. Starting a second portfolio project asks once: "One portfolio project at a time: pause X?" with Undo.
+- Both client and portfolio count as WORK (design), with client first when time is short.
+
 # Design rules (user standing order, 13 Nov)
 Every task and feature is judged by how Ahmed will actually use it. Applies to architect, builder and runner.
 
