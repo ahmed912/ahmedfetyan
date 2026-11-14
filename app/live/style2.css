@@ -490,3 +490,26 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .ur-row>.ur-tags{height:16px;min-height:16px;box-sizing:border-box}.ur-row .ur-go{line-height:16px;height:16px;padding:0}
 .v3-est-btn{all:unset;box-sizing:border-box;cursor:pointer;color:var(--muted);font-size:13px;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;padding:4px 0;display:inline-block}
 .v3-est-in{max-width:160px}
+/* 14 Nov WF2: waterfall v2 */
+.wf-bar{position:relative}
+.wf-bar.active{overflow:visible;box-shadow:0 0 0 2px color-mix(in oklab,var(--st,var(--ink)) 55%,transparent);z-index:4}
+.wf-hdl{position:absolute;top:-4px;bottom:-4px;width:16px;cursor:ew-resize;touch-action:none;z-index:5}
+.wf-hdl::after{content:"";position:absolute;top:50%;left:50%;width:4px;height:16px;margin:-8px 0 0 -2px;border-radius:2px;background:var(--ink)}
+.wf-hdl.l{left:-9px}.wf-hdl.r{right:-9px}
+.wf-bkbar{height:14px}
+.wf-lbl{position:sticky}
+.wf-grip{position:absolute;left:0;top:0;bottom:0;width:10px;cursor:grab;opacity:0;touch-action:none;background:radial-gradient(circle,var(--muted,#888) 1.1px,transparent 1.4px) 3px 50%/6px 6px repeat-y}
+@media (hover:hover){.wf-lbl:hover .wf-grip{opacity:.7}}
+@media (hover:none){.wf-grip{display:none}}
+.wf-bk{display:flex;align-items:center;gap:6px}.wf-bk .wf-bkb{flex:1;min-width:0}
+.wf-lbl.wf-armed,.wf-lift{box-shadow:0 2px 10px rgba(0,0,0,.14)}
+.wf-lift{z-index:8;background:var(--surface)}
+.wf-lift.wf-cell,.wf-lift.wf-bar{background-color:transparent}
+.wf-scroll{position:relative}
+.wf-drop{position:absolute;left:0;right:0;height:0;border-top:2px solid var(--ink);z-index:9;pointer-events:none}
+.wf-reordering{user-select:none;-webkit-user-select:none}
+.wf-ex{margin-left:auto;font-size:11px;font-weight:400;opacity:.8}
+.wf-nest{padding-left:22px;font-size:12px}.wf-nest .wf-t{opacity:.85}.wf-nest.done .wf-t{text-decoration:line-through;opacity:.55}
+.wf-nest .wf-nt{text-align:left}
+.wf-subbar{align-self:center;height:6px;margin:0 8px;border-radius:3px;background:color-mix(in oklab,var(--ink) 35%,var(--surface))}
+.wf-subbar.done{background:var(--good)}

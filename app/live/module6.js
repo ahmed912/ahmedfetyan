@@ -38,7 +38,7 @@ function bkForm(bid){const b=bid?state.tasks[bid]:null;const f={title:b?b.title:
       ns=el("input",{type:"checkbox","aria-label":"Outside sprints"});ns.checked=f.bNoSprint;
     const patch=o=>{Object.assign(f,o);if(b&&state.tasks[bid]){const p={};Object.keys(o).forEach(k=>{p[k]=o[k]===""?null:o[k];});if(p.title===null)return;bkSet(bid,p);bkNote("Changed "+(f.title||"bucket"));render();}};
     nm.onchange=()=>{const v=nm.value.trim();if(!v&&b){nm.value=b.title;return;}patch({title:v});};
-    s.onchange=()=>patch({bStart:s.value});e.onchange=()=>patch({bEnd:e.value});ns.onchange=()=>patch({bNoSprint:ns.checked});
+    s.onchange=()=>b?bkDateEdit(bid,{bStart:s.value||null},()=>patch({bStart:s.value})):patch({bStart:s.value});e.onchange=()=>b?bkDateEdit(bid,{bEnd:e.value||null},()=>patch({bEnd:e.value})):patch({bEnd:e.value});ns.onchange=()=>patch({bNoSprint:ns.checked});
     const sw=el("div",{class:"bk-sw",role:"group","aria-label":"Colour"},...BK_COL.map(c=>el("button",{type:"button",class:"bk-swb"+(f.bColor===c?" on":""),style:"background:"+c,"aria-label":"Colour "+c,"aria-pressed":String(f.bColor===c),onclick:()=>{patch({bColor:c});re();}})));
     const st=b?el("div",{class:"seg",role:"group","aria-label":"State"},...[["active","Active"],["paused","Paused"]].map(([v,n])=>el("button",{type:"button","aria-pressed":String((b.bState||"active")===v),text:n,onclick:()=>{bkSet(bid,{bState:v});bkNote(n+": "+b.title);render();re();}}))):null;
     return [nm,el("div",{class:"v3-row"},el("label",{class:"field"},el("span",{class:"label",text:"Start"}),s),el("label",{class:"field"},el("span",{class:"label",text:"End"}),e)),
@@ -49,6 +49,7 @@ function bkMenu(bid){const b=state.tasks[bid];if(!b)return;psOpen("Bucket",()=>{
   return [el("p",{class:"ps-sh-sum",text:b.title}),
     el("button",{type:"button",class:"btn ghost rn-menu",onclick:()=>{psClose(true);setTimeout(()=>rnStart(bid),60);}},"Rename"),
     el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkForm(bid);}},"Edit"),
+    el("button",{type:"button",class:"btn ghost bk-move-menu",onclick:()=>{psClose(true);setTimeout(()=>bkMoveBucket(bid),40);}},"Move bucket"),
     el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkSet(bid,{bState:paused?"active":"paused"});bkNote((paused?"Resumed ":"Paused ")+b.title);render();}},paused?"Resume":"Pause"),
     el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);bkArchive(bid,true);}},"Archive"),
     el("button",{type:"button",class:"btn ghost danger",onclick:()=>{psClose(true);bkDeleteAsk(bid);}},"Delete")];});}

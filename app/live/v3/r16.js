@@ -76,8 +76,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
     const nd=await pg.evaluate("(d=>{const x=new Date(d+'T12:00');x.setDate(x.getDate()+(x.getDay()===4?2:1));return x.toISOString().slice(0,10)})('"+t0.date+"')");const tc=pg.locator('#wfBody .wf-cell[data-id="'+lone+'"][data-d="'+nd+'"]');const tcd=await tc.getAttribute('data-d');const cb=await tc.boundingBox();
     await pg.mouse.move(bb.x+20,bb.y+bb.height/2);await pg.mouse.down();await pg.mouse.move(bb.x+20+10,bb.y+bb.height/2,{steps:2});await pg.mouse.move(cb.x+cb.width/2,cb.y+cb.height/2,{steps:6});await pg.mouse.up();await fin();
     t1=(await T())[lone];ok('drag moved bar to '+tcd,t1.date===tcd,t1.date);await shot(pg,'r16_drag_'+w);await undo();
-    // tap bar opens the same quick menu, hold on a row too
-    await vis(bar);{const q=await bar.boundingBox();await pg.mouse.click(q.x+20,q.y+q.height/2);}await R(400);ok('tap bar opens quick menu',(await pg.locator('.ps-sheet .btn:has-text("Reschedule")').count())===1&&(await pg.locator('.ps-sheet .btn:has-text("Archive")').count())===1);await pg.keyboard.press('Escape');await R(300);
+    // tap bar shows handles, hold on a row opens the quick menu
+    await vis(bar);{const q=await bar.boundingBox();await pg.mouse.click(q.x+20,q.y+q.height/2);}await R(400);ok('tap bar shows resize handles (WF2), the quick menu is on hold',(await pg.locator('#wfBody .wf-bar[data-id="'+lone+'"] .wf-hdl').count())===2);{const q=await bar.boundingBox();await pg.mouse.click(q.x+20,q.y+q.height/2);}await R(300);
     await hold(pg.locator('#wfBody .v3-wfrow[data-id="'+lone+'"]'));ok('hold on a waterfall row opens the quick menu',(await pg.locator('.ps-sheet .btn:has-text("Reschedule")').count())===1);await pg.keyboard.press('Escape');await R(300);
   }
   // 5 Projects
