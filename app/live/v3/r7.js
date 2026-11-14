@@ -55,6 +55,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);const pg=awai
   ok('sprint tasks bar counts leaves (10), not parents',/\b10\b/.test(bars)&&!/\b13\b/.test(bars),bars);
   await pg.locator('#bars .bar').nth(0).click();await W(600);await pg.locator('.ps-sheet .seg button:has-text("All")').click();await W(400);
   const na=await pg.locator('.ps-sheet .v3-trow').count();ok('All lists the 10 steps only',na===10,na);await esc();
+  await pg.locator('#wfBody button:has-text("By day")').click().catch(()=>{});await pg.clock.runFor(300);await W(400);
   const wf=await pg.locator('#wfBody .v3-wft').count();ok('waterfall still shows parents only',wf===3,wf);
   // habit
   await pg.click(w<700?'.m-tab:has-text("Today")':'.topnav :text("Today")').catch(()=>{});await pg.clock.runFor(300);
