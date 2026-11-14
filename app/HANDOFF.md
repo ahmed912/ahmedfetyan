@@ -68,3 +68,4 @@
 
 - [unpublished, built] Polish batch: wider fluid buckets, names clamped, counts fix (archived excluded), Later shelf focus (module16), Select mode (module15), Move sheets simplified (module17), steps bug fixed (q-row input width). Tests r31 to r36. Next: clean build pubbuild3 + full suite, publish, apply replan, WF2.
 - Published version 1794634486 (polish batch: counts fix, fluid buckets, Later shelf focus, Select mode, simpler Move sheets, steps text fix). 34 of 34 tests pass. Live data diet applied earlier. Replan not applied yet.
+- Published version 1794643132: unify (Subtasks only, no default subtask time), shared aligned row, Edit and Delete everywhere with Undo and Recently deleted, hold-drag reorder only, Waterfall v2 (Move bucket, drag reorder, nested subtasks, resize handles). 41 tests pass. Data NOT applied yet: replan and apply_unify.py need a fresh live export and backup first (live tasks changed after 04:44).
