@@ -586,3 +586,14 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .ph-gl-t{all:unset;cursor:pointer;font-size:15px}
 .ph-gl-w,.ph-gl-ex{display:block;font-size:13px;line-height:18px;opacity:.7}
 .ph-gl-ex{opacity:.55;margin-top:4px}
+.lr-help{margin:0 0 8px}
+.lr-more summary{font-size:13px;opacity:.75;cursor:pointer;padding:4px 0}
+.lr-more{display:grid;gap:6px;width:100%}
+.lr-list{list-style:none;margin:0;padding:0}
+.lr-row{display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(127,127,127,.15)}
+.lr-t,.lr-nt{flex:1 1 160px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:start;background:none;border:0;padding:8px 0;font:inherit;color:inherit;cursor:pointer}
+.lr-t b,.lr-nt b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lr-tag{font-size:12px;opacity:.7}
+.lr-next{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;margin-top:6px;border-top:1px solid rgba(127,127,127,.15)}
+.lr-acts{display:flex;gap:6px;flex-wrap:wrap}
+.lr-add select{display:block}
