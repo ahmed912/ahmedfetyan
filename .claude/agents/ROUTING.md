@@ -23,3 +23,5 @@ Long conversation history, reading whole large files, and repeated test logs. Ke
 - Main chat only coordinates: short briefs, 3 to 5 line replies, no file dumps.
 - Test only what changed plus the journey test; full suite once before each publish.
 - Google Drive is the shared store for handoff, plans and zips (see HANDOFF.md for the folder). Read plans from there or the scratchpad, not into chat.
+
+- Plans: the architect writes step-by-step plans with exact files, functions, copy and test assertions so the builder only executes (user rule). New features always go architect first, then builder.

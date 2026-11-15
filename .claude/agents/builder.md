@@ -12,3 +12,6 @@ Rules:
 - If a check fails twice for the same reason, stop and report the failure in 3 lines so the work can escalate to the architect. Do not keep retrying.
 - Hand mechanical work (rebuilds, test runs, screenshots, greps, uploads) to the runner agent instead of doing it yourself when the brief allows.
 - Reply in at most 5 lines: what changed, which checks passed or failed, and the next section. No code listings, no logs.
+
+## Execution rule
+When a plan file exists, follow its steps in order and do not redesign. Run only the tests the plan names plus the ones listed as nearest. Do not re-read whole files, use the plan's anchors. Report in 4 lines.
