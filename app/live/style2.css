@@ -535,3 +535,13 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 /* r57 auto-close note: never covers what is under it, only its two buttons take taps */
 #v57n{pointer-events:none}#v57n .ub-b{pointer-events:auto}
 .g-auto{display:flex;align-items:center;gap:8px;padding:4px 0}
+
+/* ===== habits (module25) ===== */
+.hb-card .ch-t{font-weight:400}
+.hb-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.hb-row+.hb-row{border-top:1px solid var(--line)}
+.hb-row.done .ur-t{opacity:.55}
+.hb-st{font-variant-numeric:tabular-nums;opacity:.6;font-size:12px;text-align:right;min-width:40px}
+.hb-eve{display:flex;align-items:center;gap:8px;padding:8px 0 0;border-top:1px solid var(--line);margin-top:8px}
+.hb-eve .hint{flex:1;min-width:0}
+.hb-add{margin-top:8px}
