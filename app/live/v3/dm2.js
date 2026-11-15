@@ -1,0 +1,34 @@
+// Diamonds round 2: derived data layer
+const {openp,run}=require('./h.js');const {load,seed2}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+run(async b=>{for(const w of [1300]){console.log('== width',w);
+  let pg=await openp(b,w,{sb:true,real:JSON.stringify(seed2(load()))});const W=ms=>pg.waitForTimeout(ms);
+  await pg.clock.runFor(1500);const E=x=>pg.evaluate(x);
+  const rec=id=>E(`__dm.winsAll().filter(r=>r.id==='${id}')`);
+  ok('fresh page: no wins collection',await E("!window.__data.wins||Object.keys(window.__data.wins).length===0"));
+  const wd=await E("__dm.winsDone('2026-11-07')");const d1=wd.find(r=>r.id==='t_d1');
+  ok('t_d1 75 done',d1&&d1.min===75&&d1.state==='done',JSON.stringify(d1));
+  const u1=await rec('t_u1');ok('t_u1 once progress 270, 3 sessions, 8 Nov',u1.length===1&&u1[0].state==='progress'&&u1[0].min===270&&u1[0].sessions===3&&u1[0].date==='2026-11-08',JSON.stringify(u1));
+  ok('no u2 record',(await rec('t_u2')).length===0);
+  const g=await rec('h_gym_2026-11-07');ok('gym once days 3',g.length===1&&g[0].days===3,JSON.stringify(g));
+  const l9=await rec('l_2026-11-09_war-block'),l8=await rec('l_2026-11-08_war-block');
+  ok('war labels',l9.length===1&&l9[0].min===50&&l8.length===1&&l8[0].min===40,JSON.stringify([l9,l8]));
+  const sh=await E("__dm.winsShipped().find(r=>r.id==='p_bS')");ok('p_bS 120 and 1 task',sh&&sh.min===120&&sh.tasks===1,JSON.stringify(sh));
+  await E("__dm.winPut('t_d1',{reflection:'Hard one'},false)");await pg.clock.runFor(300);
+  await E("sessionStorage.setItem('__mockdata',JSON.stringify(window.__data))");
+  await pg.reload();await pg.clock.runFor(3000);
+  ok('reflection survives reload',(await E("__dm.winsAll().find(r=>r.id==='t_d1').reflection"))==='Hard one');
+  await E("__dm.winHide('t_d1')");await pg.clock.runFor(300);
+  ok('hidden',!(await E("__dm.winsDone('2026-11-07').some(r=>r.id==='t_d1')")));
+  await pg.locator('#v3ut button').first().click();await pg.clock.runFor(300);
+  ok('undo hide',await E("__dm.winsDone('2026-11-07').some(r=>r.id==='t_d1')"));
+  await E("window.__u48.setDone('u1',true)");await pg.clock.runFor(400);
+  const u1b=await rec('t_u1');ok('u1 done, one record, min 270',u1b.length===1&&u1b[0].state==='done'&&u1b[0].min===270,JSON.stringify(u1b));
+  await E("__u.bkMenu('bA')");await pg.clock.runFor(500);
+  ok('menu has Mark shipped',(await pg.locator('.dm-ship').first().innerText()).trim()==='Mark shipped');
+  await pg.locator('.dm-ship').first().click();await pg.clock.runFor(500);
+  ok('shipped and archived',await E("__data.tasks.bA.shipped===true&&__data.tasks.bA.archived===true"));
+  await pg.locator('#v3ut button').first().click();await pg.clock.runFor(500);
+  ok('undo clears both',await E("!__data.tasks.bA.shipped&&!__data.tasks.bA.archived"));
+  console.log('errors',pg.errs.filter(e=>!e.includes('ERR_FAILED')).slice(0,4));await pg.context().close();}
+});
