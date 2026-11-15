@@ -105,7 +105,7 @@ function dmDoneSheet(){dmFrom="done";dmTipNow=!localStorage.getItem("sb-dm-tip")
         else{kids.push(el("ul",{class:"ps-sh-list dm-list"},...(ex?L:L.slice(0,4)).map(r=>dmRowEl(r,()=>dmRecSheet(r.id)))));
           if(L.length>4)kids.push(el("button",{type:"button",class:"mini ck-more",onclick:()=>{dmOpen[ws+"x"]=!ex;re();}},ex?"Show less":(L.length-4)+" more"));}}
       return el("section",{class:"lh-wk dm-wk"},...kids);});
-    return [el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost dm-add",onclick:()=>{if(typeof dmAddSheet==="function")dmAddSheet("done");}},"Add")),...secs];});}
+    return [el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost dm-add",onclick:()=>dmAddSheet("done")},"Add")),...secs];});}
 function dmFind(id){return winsAll().find(r=>r.id===id);}
 function dmRecMenu(id){const r=dmFind(id);if(!r)return;psOpen("Win options",()=>{const tid=r.ref&&r.ref.indexOf("tasks:")===0?r.ref.slice(6):null;
   return [el("p",{class:"ps-sh-sum",text:r.title}),
@@ -125,4 +125,45 @@ function dmRecSheet(id,edit){psOpen("Win",re=>{const r=dmFind(id);if(!r)return [
   if(r.kind==="manual")out.push(el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost dm-edit",onclick:()=>dmAddSheet(r.diamond,id)},"Edit"),el("button",{type:"button",class:"btn ghost danger dm-del",onclick:()=>{winDelete(id);psClose(true);}},"Delete")));
   return out;},{...dmBack});}
 
-window.__dm={refMin,refSessions,refLast,taskMin,bkMin,winsAll,winsDone,winsDoneCount,winsShipped,projectTaskEffort,winPut,winHide,winUnhide,winDelete,winRestore,WINS,dmDoneSheet};
+// ----- Shipped sheet, project record, manual items, recently deleted -----
+const dmShort=d=>fmt(d,{day:"numeric",month:"short"});
+function dmShippedSheet(){dmFrom="shipped";psOpen("Shipped",re=>{const L=winsShipped();
+  return [el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost dm-add",onclick:()=>dmAddSheet("shipped")},"Add")),
+    L.length?el("ul",{class:"ps-sh-list dm-list"},...L.map(r=>{const open=()=>{if(r.kind==="ship")dmProjectSheet(r.id);else dmRecSheet(r.id);};
+      const tag=r.kind==="ship"?[dmCatTxt(r)||"Project",r.tasks+" task"+(r.tasks===1?"":"s")].join(" · "):"manual";
+      const li=el("li",{class:"tr-row dm-r","data-id":r.id,tabindex:"0",role:"button","aria-label":r.title},el("span",{class:"dm-t",text:r.title}),el("span",{class:"hint dm-tag",text:tag}),
+        el("span",{class:"hint dm-d",text:(r.start?dmShort(r.start)+" to ":"")+dmShort(r.date)}),el("span",{class:"num dm-m",text:r.min>0?dur(r.min):""}));
+      li.onclick=open;li.onkeydown=e=>{if(e.key==="Enter")open();};return li;})):el("p",{class:"hint",text:"Nothing shipped yet. Mark a bucket shipped from its menu."})];});}
+function dmReflField(id,r){const ta=el("textarea",{class:"v3-in dm-refl",rows:"3",placeholder:"What did this take?","aria-label":"Reflection"});ta.value=r.reflection||"";
+  const sv=el("span",{class:"hint dm-saved",text:"Saved"});sv.hidden=!(Date.now()-dmSavedAt<1500);
+  ta.onblur=()=>{if(ta.value===(r.reflection||""))return;winPut(id,{reflection:ta.value},"Saved",true);dmSavedAt=Date.now();sv.hidden=false;setTimeout(()=>{sv.hidden=true;},1500);};
+  return el("label",{class:"field"},el("span",{class:"label",text:"Reflection"}),ta,sv);}
+const dmBackS={onClose:()=>setTimeout(()=>{if(!sheetStack.length&&Date.now()-(window.__psOutside||0)>400)dmShippedSheet();},260)};
+function dmProjectSheet(id){psOpen("Project record",re=>{const r=dmFind(id);if(!r)return [el("p",{class:"ps-sh-sum",text:"This project is gone."})];const bid=id.slice(2);
+  const E=projectTaskEffort(bid),ex=!!dmOpen.eff;
+  const pt=el("p",{class:"ps-sh-sum dm-pt",text:r.title});rsLong(pt,()=>psOpen("Project options",()=>[el("p",{class:"ps-sh-sum",text:r.title}),el("button",{type:"button",class:"btn ghost dm-unship",onclick:()=>{psClose(true);dmShipSet(bid,false);}},"Unship")],{...dmBackS}));
+  return [pt,el("p",{class:"hint",text:[(r.start?dmShort(r.start)+" to ":"")+dmShort(r.date),r.min>0?dur(r.min)+" logged":""].filter(Boolean).join(" · ")}),
+    E.length?el("ul",{class:"ps-sh-list dm-eff"},...(ex?E:E.slice(0,4)).map(x=>el("li",{class:"dm-ef"},el("span",{text:x.title}),el("span",{class:"num",text:x.min>0?dur(x.min):""})))):null,
+    E.length>4?el("button",{type:"button",class:"mini ck-more",onclick:()=>{dmOpen.eff=!ex;re();}},ex?"Show less":(E.length-4)+" more"):null,
+    dmReflField(id,r)];},{...dmBackS});}
+function dmAddSheet(diamond,editId){const r0=editId?dmFind(editId):null;let kind=(r0&&r0.diamond)||diamond;
+  psOpen(editId?"Edit win":"Add a win",re=>{
+    const ti=el("input",{type:"text",class:"v3-in dm-a-title",placeholder:"What did you finish?","aria-label":"Title"});ti.value=r0?r0.title:"";
+    const da=el("input",{type:"date",class:"tt-in dm-a-date","aria-label":"Date"});da.value=r0?r0.date:iso(new Date());
+    const mi=el("input",{type:"number",class:"v3-in dm-a-min",placeholder:"Minutes, optional",min:"0","aria-label":"Minutes"});if(r0&&r0.min)mi.value=String(r0.min);
+    const no=el("textarea",{class:"v3-in dm-a-note",rows:"2",placeholder:"Note","aria-label":"Note"});no.value=r0?(r0.note||""):"";
+    const rf=el("textarea",{class:"v3-in dm-a-refl",rows:"2",placeholder:"What did this take?","aria-label":"Reflection"});rf.value=r0?(r0.reflection||""):"";
+    const seg=el("div",{class:"seg"},...[["done","Done"],["shipped","Shipped"]].map(([k,l])=>{const bt=el("button",{type:"button","aria-pressed":String(kind===k),onclick:()=>{kind=k;seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===bt)));}},l);return bt;}));
+    return [el("label",{class:"field"},el("span",{class:"label",text:"Title"}),ti),el("label",{class:"field"},el("span",{class:"label",text:"Date"}),da),seg,mi,no,rf,
+      el("button",{type:"button",class:"btn dm-a-save",onclick:()=>{const t=ti.value.trim();if(!t){toast("Give it a title");return;}
+        const id=editId||"m_"+Date.now().toString(36);winPut(id,{kind:"manual",diamond:kind,title:t,date:da.value||iso(new Date()),min:Number(mi.value)||0,note:no.value.trim(),reflection:rf.value.trim()},editId?"Changed: "+t:"Added: "+t);
+        psClose(true);dmList();}},"Save")];});}
+PS_AFTER.push((title,body)=>{if(title!=="Recently deleted"||body.querySelector(".rd-win"))return;const D=Object.keys(WINS).filter(k=>WINS[k]&&WINS[k].kind==="manual"&&WINS[k].deleted);if(!D.length)return;
+  body.append(el("div",{class:"rd-win"},el("p",{class:"hint",text:"Wins"}),el("ul",{class:"ps-sh-list rd-list"},...D.map(k=>el("li",{class:"bk-arow rd-row","data-win":k},el("span",{class:"rd-t",text:WINS[k].title||"Win"}),el("button",{type:"button",class:"mini rd-restore",onclick:()=>winRestore(k)},"Restore"))))));});
+{const _ds28=v3deletedSec;v3deletedSec=function(){const e=_ds28(),n=Object.keys(WINS).filter(k=>WINS[k]&&WINS[k].kind==="manual"&&WINS[k].deleted).length;if(n){const b=e.querySelector(".rd-open"),m=b&&b.textContent.match(/\((\d+)\)$/);if(b)b.textContent="Recently deleted ("+((m?+m[1]:0)+n)+")";}return e;};}
+try{if(typeof PH_GLOSS!=="undefined"){
+  PH_GLOSS.push({id:"dm-done",g:"Records",t:"Done (diamonds)",w:"A quiet record of finished work, built from what you already did: done tasks, habit days and logged time. Nothing to log. Unfinished tasks with 30 min or more of effort show as in progress. Swipe a row left to hide it.",ex:"Done 7 this week, with the time under each."},
+    {id:"dm-shipped",g:"Records",t:"Shipped (diamonds)",w:"A bucket you finished and sent. Mark it shipped from the bucket menu; it moves off the active list and keeps its total time and a reflection. Shipped counts all time.",ex:"HASM shipped on 8 Nov, 120 h logged."},
+    {id:"dm-spent",g:"Time",t:"Time spent",w:"Total logged time on a task across all days, shown under the task, on the bucket header and in the task sheet. Overlapping entries count once.",ex:"Alpha: 3h 30m over 4 sessions."});
+}}catch(e){console.warn(e);}
+window.__dm={refMin,refSessions,refLast,taskMin,bkMin,winsAll,winsDone,winsDoneCount,winsShipped,projectTaskEffort,winPut,winHide,winUnhide,winDelete,winRestore,WINS,dmDoneSheet,dmShippedSheet};

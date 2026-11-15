@@ -621,3 +621,7 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .dm-tip,.dm-empty{padding:0 16px;margin:4px 0 8px}
 .dm-saved[hidden]{display:none}
 .dm-wk{margin-top:8px}
+.dm-eff{padding:0}
+.dm-ef{display:flex;justify-content:space-between;gap:12px;padding:6px 0}
+.dm-pt{margin-bottom:4px}
+.rd-win{margin-top:12px}
