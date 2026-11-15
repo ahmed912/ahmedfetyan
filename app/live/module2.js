@@ -281,7 +281,7 @@
     warPut(w);warSave(w);warRender();renderPopCards();v3wFab();};
   function warBreak(){const w=warGet();if(!w||w.pausedAt)return;if(w.phase==="break"){w.phase="focus";w.phase0=warActive(w);}else{w.phase="break";w.breakAt=Date.now();}warPut(w);warSave(w);warRender();}
   // target pool: a task (it first, then the rest of its category), a category, or a word
-  {const _wp=warPool;warPool=function(tg){if(tg&&tg.k==="task"){const t=state.tasks[tg.v];if(!t)return [];const rest=t.cat?_wp({k:"cat",v:t.cat}).filter(x=>x.id!==tg.v):[];return [{id:tg.v,...t}].concat(rest);}return _wp(tg);};}
+  {const _wp=warPool;warPool=function(tg){if(tg&&tg.k==="task"){const t=state.tasks[tg.v];if(!t)return [];try{const ss=subsOf(tg.v).filter(x=>!x.done);if(ss.length)return ss;}catch(e){}return [{id:tg.v,...t}];}return _wp(tg);};}
   warSetup=function(pre){let pick=null,mins=180,custom="",addMode=false;
     if(pre&&pre.task&&state.tasks[pre.task]){const t=state.tasks[pre.task];pick={k:"task",v:pre.task,label:t.title};}
     psOpen("War",re=>{const T=warTargets();
