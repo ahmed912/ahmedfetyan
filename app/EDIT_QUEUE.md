@@ -1,4 +1,5 @@
 # Edit queue policy (user rule, set 15 Nov 2026)
+Scope: applies only to edits asked AFTER this session. Everything he asked up to 15 Nov 2026 (items 1 to 5 below) is executed now, not delayed.
 Weekly usage limit resets Wednesday 18:00 (user's local time). Reserve tokens for his real work.
 - VITAL, do now: anything that loses or hides data or billable time, breaks sync, blocks him from working, or is a security problem.
 - NOT VITAL, queue only: new features, polish, refinements, anything that can wait. Record it below. Even if he asks "do it now", answer in one line that it is not vital and queued; he can only override by saying the word "vital".
