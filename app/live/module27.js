@@ -54,5 +54,21 @@ function lrSheet(area){psOpen(area==="english"?"English resources":lrAreaName(ar
   }else body=[el("p",{class:"ps-sh-sum",text:"Nothing planned yet. Paste a link above."})];
   return [el("p",{class:"hint lr-help",text:Object.values(LR_GLOSS).join(" ")}),form,...body,
     done.length?el("details",{class:"lr-donel"},el("summary",{text:"Done ("+done.length+")"}),el("ul",{},...done.map(x=>el("li",{class:"lr-drow"},el("span",{text:x.title}),el("button",{type:"button",class:"mini lr-restore",onclick:()=>{lrUpd(x.id,{done:false,doneAt:null});setTimeout(re,250);}},"Restore"))))):null];});}
-function lrStart(id){toast("Start comes in round 2");}
+function lrStart(id){const x=(state.resources||{})[id];if(!x)return;const T=lrT(x.type),eng=(x.area||"english")==="english";
+  if(x.url){try{window.open(x.url,"_blank","noopener");}catch(e){}}
+  pStartFor({what:eng?"eng:"+T[3]:"other-learning",label:lrAreaName(x.area||"english")+": "+x.title,minutes:Number(x.len)||T[2]});
+  const r2=pRun();if(r2)setPomo({...r2,res:id});lrUpd(id,{lastAt:Date.now()});
+  if(!x.url&&x.note)toast(x.note);}
+{const _pl=pLogFocus;pLogFocus=function(r,endAt){const m=_pl(r,endAt);try{const x=r&&r.res&&(state.resources||{})[r.res];if(m&&x&&x.lastRun!==r.startedAt)lrUpd(r.res,{spent:Math.round(((x.spent||0)+m)*10)/10,lastRun:r.startedAt});}catch(e){}return m;};}
+function lrLine(area,d,slot,cls){const x=lrNext(area,d,slot),box=el("div",{class:"lr-next "+cls});
+  if(x){box.append(el("span",{class:"label",text:"Next up"}),
+    el("button",{type:"button",class:"lr-nt",onclick:()=>lrSheet(area)},el("b",{text:x.title}),el("span",{class:"lr-tag",title:LR_GLOSS[x.type]||"",text:lrTag(x)})),
+    el("div",{class:"lr-acts"},el("button",{type:"button",class:"btn lr-go","aria-label":"Start "+x.title,onclick:()=>lrStart(x.id)},"Start"),
+      el("button",{type:"button",class:"mini ghost lr-done",onclick:()=>lrDone(x.id)},"Done"),
+      el("button",{type:"button",class:"mini ghost lr-skip",onclick:()=>lrSkip(x.id,d)},"Skip"),
+      el("button",{type:"button",class:"mini ghost lr-open",onclick:()=>lrSheet(area)},"All ("+lrOpen(area).length+")")));}
+  else box.append(el("span",{class:"hint lr-none",text:"No resource planned"}),el("button",{type:"button",class:"mini lr-open",onclick:()=>lrSheet(area)},"Plan one"));
+  return box;}
+{const _rcl=renderCutList;renderCutList=function(){_rcl();try{const c=document.querySelector('#cutStack .ch-card[data-ch="learn"]');if(c&&!c.querySelector(".lr-next"))c.append(lrLine("english",sel,"learn","lr-learn"));}catch(e){console.warn(e);}};}
+{const _rh=renderHabits;renderHabits=function(){_rh();try{const box=document.getElementById("habits");if(!box)return;HABITS.forEach((h,i)=>{const hb=box.children[i];if(!hb||hb.querySelector(".lr-next"))return;if(h.id!=="english"&&!lrAll(h.id).length)return;const row=hb.querySelector(".hrow");if(row)row.after(lrLine(h.id,sel,null,"lr-hab"));});}catch(e){console.warn(e);}};}
 window.__lr={sheet:lrSheet,next:lrNext,all:lrAll,start:id=>lrStart(id),gloss:LR_GLOSS};
