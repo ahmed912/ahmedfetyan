@@ -8,7 +8,7 @@ Weekly usage limit resets Wednesday 18:00 (user's local time). Reserve tokens fo
 - Planning cost stays small: architect plans may be written any time (cheap), builders and regressions wait for the window.
 
 ## Queue (in order)
-1. Bucket reorder by hold-drag, swipes (left Schedule; right Done+Archive), Archive in buckets, reflect everywhere (r56)  [builder a4c8ef94 already running; finish, then publish]
+1. Bucket reorder by hold-drag, swipes (left Schedule; right Done+Archive), Archive in buckets, reflect everywhere (r56)  [builder a4c8ef94 already running; finish, then publish] [PUBLISHED 1794726761]
 2. Forgotten sessions auto-close: gym 60 min, work 21:30, keep entry (r57)  [running with item 1]
 3. Habits = repeating tasks, on Today and in buckets (plan: plan/HABITS_PLAN.md)
 4. Side-panel option sheets + built-in help and glossary (plan: plan/PANEL_HELP_PLAN.md)
