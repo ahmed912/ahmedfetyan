@@ -232,6 +232,8 @@
       ts.length?list:el("p",{class:"tv-empty",text:"All done."}));
     rc(v,s);s.scrollTop=y;v3dragList(list,".cs-card",ids=>{const held=list.querySelector(".cs-card[data-dragged]");if(ids.join()===ts.map(x=>x.id).join()){if(held)setTimeout(()=>v3taskMenu(held.dataset.id),0);return;}v3reorder(ids);});};
   // press and hold, then drag: a generic reorder for any list of [data-id] rows
+  // a lifted row owns the touch: without this the browser pans the sheet on the first move and cancels the drag
+  document.addEventListener("touchmove",e=>{if(e.cancelable&&document.querySelector(".v3-lift"))e.preventDefault();},{passive:false,capture:true});
   function v3dragList(list,rowSel,onDrop){[...list.querySelectorAll(rowSel)].forEach(row=>{if(row.dataset.v3d)return;row.dataset.v3d="1";let t=null,y0=0,x0=0,on=false,before=null,pid=null,moved=false;
     row.addEventListener("pointerdown",e=>{if(e.button>0)return;const blk=e.target.closest("button,input,select,a,textarea");if(blk&&!blk.hasAttribute("data-dragok"))return;y0=e.clientY;x0=e.clientX;pid=e.pointerId;
       t=setTimeout(()=>{on=true;v3holdOn();row.classList.add("v3-lift");try{row.setPointerCapture(pid);}catch(_){}try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}moved=false;},400);});
