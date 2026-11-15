@@ -123,3 +123,96 @@ function phPop(anchor,h){document.querySelectorAll(".ph-pop").forEach(x=>x.remov
   const sh=document.querySelector(".ps-sheet");if(sh)sh.addEventListener("scroll",()=>p.remove(),{once:true,passive:true});}
 document.addEventListener("keydown",e=>{const p=document.querySelector(".ph-pop");if(e.key==="Escape"&&p){p.remove();e.stopPropagation();}},true);
 window.__ph={key:phKey,help:PH_HELP,pop:phPop};
+const PH_HINTS={
+ "Task":"Details holds the day, length, bucket and priority. When it feels heavy, Start for 5 minutes.",
+ "More":"Everything you can do with this task. Hold any task to get here.",
+ "Reschedule":"A date is a plan, not a verdict. Pick a day, nothing is lost.",
+ "Bucket":"Rename, move, pause, archive or delete this project.",
+ "Bucket sheet":"One project: its tasks, dates and time logged. Hold and drag tasks to reorder.",
+ "Capacity":"Baseline is the standard, stretch is the extra. Work is protected first.",
+ "Plan the week":"Set the week's targets once. Days re-flow when plans change.",
+ "Time logged":"Every tracked minute, by week. Tap a row to fix it.",
+ "War":"One task, one timer, nothing else. Pick the task and start.",
+ "Rollover":"What did not happen moves forward, and the history stays.",
+ "Habit":"One tap marks it. Swipe left to skip or move it. A skip never breaks the streak.",
+ "Done":"Finished work lands here by itself. Nothing to log.",
+ "Sprint":"A sprint is 10 working days plus buffer. Dates are plans, not verdicts."
+};
+const PH_GLOSS=[
+ {id:"today",g:"Day",t:"Today",w:"The day as a few chunks: work blocks, learning, the shallow batch. The next one to three things are open, the rest is folded.",ex:"Block 1 HASM, then Learning, then replies in the shallow batch."},
+ {id:"chunks",g:"Day",t:"Chunks",w:"Similar tasks are grouped so they get finished together. A deep block holds one project; small tasks go to the shallow batch.",ex:"All LinkedIn comments in one 45 min batch."},
+ {id:"work",g:"Day",t:"Work target",w:"Design hours for the day: the baseline is the standard, the stretch is the extra. Only portfolio and client work count.",ex:"Work 6.5 of 8 h. Stretch 10 h."},
+ {id:"learning",g:"Day",t:"Learning block",w:"A protected daily block, not counted as work. A day with work but no learning is not complete.",ex:"Learning 20 of 30 min."},
+ {id:"recovery",g:"Day",t:"Recovery",w:"Sleep minimum, Friday rest and buffer days are part of the system. Work past the sleep time is shown as a fact.",ex:"Sleep from 23:30, 7 h minimum."},
+ {id:"capacity",g:"Day",t:"Capacity",w:"Checks that the planned minutes fit the day. When it overflows, the chunk says so plainly.",ex:"Block 2 is 40 min over."},
+ {id:"five",g:"Focus",t:"Start for 5 minutes",w:"The smallest possible start. Stop after 5 minutes if you want; usually you will not.",ex:"Open the file and name the layers."},
+ {id:"war",g:"Focus",t:"War",w:"One task, one timer, no distractions, in 50 and 10 minute rounds. Time lands on the task by itself.",ex:"War on Javelin hero slide, round 2 of 4."},
+ {id:"pomodoro",g:"Focus",t:"Rounds",w:"Work is counted in 50 minute rounds with a 10 minute break.",ex:"9 rounds is 7.5 h of focus."},
+ {id:"plan",g:"Plan",t:"Plan the week",w:"The weekly management meeting: targets per department, then the days fill from the buckets.",ex:"Portfolio 30 h, client 10 h, learning 3.5 h."},
+ {id:"pva",g:"Plan",t:"Plan vs actual",w:"What was planned next to what happened, in neutral numbers.",ex:"Planned 40 h, worked 34 h."},
+ {id:"sprints",g:"Plan",t:"Sprints",w:"Blocks of 10 working days plus buffer days. Moving work past a sprint end asks first.",ex:"Sprint 2: 10 to 23 Nov."},
+ {id:"gates",g:"Plan",t:"Gates",w:"Company milestones with a date, always visible as a fact with the days left.",ex:"Gate 1: 30 Nov, 15 days."},
+ {id:"resched",g:"Plan",t:"Reschedule",w:"Move a task to another day. A date is a plan, not a verdict.",ex:"Swipe left, pick Saturday."},
+ {id:"rollover",g:"Plan",t:"Rollover",w:"Unfinished tasks move to the next working day, together with their chunk. The history stays visible.",ex:"3 tasks moved from Monday."},
+ {id:"decide",g:"Plan",t:"Decide",w:"After 3 postpones a task asks for a decision: do it now, shrink it, split it or drop it.",ex:"Case study intro, moved 3 times."},
+ {id:"waiting",g:"Plan",t:"Waiting",w:"Tasks blocked by someone else, kept out of the day until they move.",ex:"Waiting for client logo files."},
+ {id:"due",g:"Plan",t:"Due and priority",w:"A due date is a delivery date shown as a fact; High goes first when time is short.",ex:"Due 20 Nov, High."},
+ {id:"buckets",g:"Projects",t:"Buckets",w:"A bucket is one project with dates and its own tasks. Its tasks keep together on Today.",ex:"HASM, 1 to 30 Nov, 4 of 12 done."},
+ {id:"oneproject",g:"Projects",t:"One portfolio project at a time",w:"Exactly one portfolio project is active; the next ones wait in Up next on the Later shelf.",ex:"HASM active, Javelin and Mugassam up next."},
+ {id:"client",g:"Projects",t:"Client buckets",w:"Client work runs beside the active portfolio project and gets the first deep block.",ex:"Client deck gets Block 1 until delivery."},
+ {id:"later",g:"Projects",t:"Later shelf and Up next",w:"Paused and future projects wait here in order, out of sight of the day.",ex:"Up next: Javelin, then Mugassam."},
+ {id:"waterfall",g:"Projects",t:"Waterfall",w:"Projects on a timeline. Drag to move, hold and drag to reorder.",ex:"Move Javelin a week later."},
+ {id:"subtasks",g:"Projects",t:"Subtasks",w:"Small steps inside a task. Counts are shown for projects, never for tiny steps.",ex:"Sketch, layout, export."},
+ {id:"select",g:"Projects",t:"Select",w:"Tick several tasks, then one action acts on all of them.",ex:"Select three, Reschedule to Saturday."},
+ {id:"inbox",g:"Projects",t:"Capture and inbox",w:"Type one line to capture. Organise later.",ex:"Call the printer about the deck."},
+ {id:"time",g:"Time",t:"Time logged",w:"Every tracked minute, from timers, War and by hand. Overlaps count once.",ex:"Week of 9 Nov: 31 h."},
+ {id:"byhand",g:"Time",t:"Add time by hand",w:"Log time you forgot to track, against a task or a label.",ex:"Client call, 2:00 PM to 3:00 PM."},
+ {id:"spent",g:"Time",t:"Time spent",w:"Each task shows the time logged on it; a bucket shows the total of its tasks.",ex:"Hero slide 3h 20m. HASM 24h logged."},
+ {id:"habits",g:"Habits",t:"Habits",w:"Things you repeat, shown once on Today as Habits 2 of 5. One tap marks one; swipe left to skip or move it.",ex:"Gym 3x a week, English on weekdays."},
+ {id:"streak",g:"Habits",t:"Streak",w:"Due days done in a row. A day that is not due, or skipped, never breaks it.",ex:"Read: 12 d, best 20."},
+ {id:"guard",g:"Habits",t:"Self-mastery",w:"Bad habits tracked quietly: slips, urges overcome, clean days.",ex:"Clean 9 of 10 days."},
+ {id:"diamonds",g:"Records",t:"Done and Shipped",w:"A quiet record of finished tasks, habit days, logged effort and delivered projects. Nothing to log.",ex:"Done 7 this week. Shipped 2."},
+ {id:"review",g:"Records",t:"Review and insights",w:"The week in facts: hours, tasks carried over, patterns.",ex:"Best day this week: Tuesday, 9 h."},
+ {id:"linkedin",g:"Records",t:"LinkedIn day pages",w:"Each day has a post page: hook, format, pillar and status.",ex:"Hook: Most decks fail on slide 2."},
+ {id:"media",g:"Records",t:"Intentional media",w:"A chosen queue of talks and podcasts, instead of the feed.",ex:"Up next: a pitching talk."},
+ {id:"money",g:"Money",t:"Finance",w:"Payments due, budget, things to buy and accounts. A due payment shows on Today three days ahead.",ex:"Rent due in 2 days."},
+ {id:"undo",g:"Safety",t:"Undo",w:"Every change shows Undo on the bar for a few seconds.",ex:"Moved to Saturday. Undo."},
+ {id:"archive",g:"Safety",t:"Archive",w:"Hide something without losing it. Restore any time.",ex:"Archived buckets (2)."},
+ {id:"deleted",g:"Safety",t:"Recently deleted",w:"Deleted tasks, habits and time entries wait in Settings to be restored.",ex:"Restore a deleted task."},
+ {id:"sync",g:"Safety",t:"Sync",w:"Changes save as you make them and show on your other devices.",ex:"Tick on the phone, see it on the desk."},
+ {id:"swipe",g:"Gestures",t:"Swipe",w:"Swipe right for done, swipe left to reschedule or skip.",ex:"Swipe a task right: Done."},
+ {id:"hold",g:"Gestures",t:"Hold",w:"Hold to open the quick menu; hold and drag to reorder any list.",ex:"Hold a habit, drag it to the top."},
+ {id:"edit",g:"Gestures",t:"Edit anything",w:"Every name, date, bucket and sprint can be changed in the app.",ex:"Rename Sprint 3."},
+ {id:"panel",g:"Help",t:"Side panel",w:"On a wide screen options open on the right while the day stays live. Esc or a tap outside closes it.",ex:"Tap another task to swap the panel."},
+ {id:"help",g:"Help",t:"Option help",w:"Every option has one line saying what it does. Hold a label for an example.",ex:"Hold Stretch (h)."}
+];
+function phCfg(){return {seen:{},shown:{},off:false,...((state.settings||{}).help||{})};}
+function phWrite(next){state.settings={...(state.settings||{}),help:{...next,at:Date.now()}};try{store.set("settings/help",state.settings.help);}catch(e){console.warn(e);}}
+function phHint(k,body,first){const c=phCfg();if(c.off||c.seen[k]||!PH_HINTS[k])return;
+  if(first){const seen={...c.seen},shown={...c.shown};shown[k]=(shown[k]||0)+1;if(shown[k]>=4){seen[k]=Date.now();phWrite({...c,seen,shown});return;}phWrite({...c,seen,shown});}
+  if(body.querySelector(".ph-hint"))return;
+  const d=el("div",{class:"ph-hint"},el("span",{text:PH_HINTS[k]}),el("button",{type:"button",class:"mini ph-hint-ok",onclick:()=>{const c2=phCfg();phWrite({...c2,seen:{...c2.seen,[k]:Date.now()}});d.remove();}},"Got it"));
+  body.prepend(d);}
+PS_AFTER.push((title,body,panel,first)=>phHint(phTitle(title,body),body,first));
+const PH_GROUPS=["Day","Focus","Plan","Projects","Time","Habits","Records","Money","Safety","Gestures","Help"];
+function phGlossary(focusId){let q="",open={},scrolled=false;if(focusId){open[focusId]=true;const f=PH_GLOSS.find(x=>x.id===focusId);if(f)open["g:"+f.g]=true;}
+  psOpen("How it works",re=>{
+    const search=el("input",{type:"search",class:"v3-in ph-gl-q",placeholder:"Search, like rollover or stretch","aria-label":"Search How it works",value:q});
+    search.oninput=()=>{q=search.value;const p=search.selectionStart;re();setTimeout(()=>{const x=document.querySelector(".ps-sheet .ph-gl-q");if(x){x.focus();try{x.setSelectionRange(p,p);}catch(e){}}},0);};
+    const off=phCfg().off;
+    const set=el("div",{class:"v3-row ph-gl-set"},el("span",{class:"hint",text:"First-use hints"}),
+      el("div",{class:"seg"},...[["On",false],["Off",true]].map(([n,v])=>el("button",{type:"button","aria-pressed":String(off===v),onclick:()=>{phWrite({...phCfg(),off:v});re();}},n))),
+      el("button",{type:"button",class:"mini ph-gl-reset",onclick:()=>{phWrite({...phCfg(),seen:{},shown:{}});toast("Hints will show again");}},"Show hints again"));
+    const qq=q.trim().toLowerCase(),L=PH_GLOSS.filter(x=>!qq||(x.t+" "+x.w+" "+x.ex).toLowerCase().includes(qq));
+    const secs=PH_GROUPS.map(g=>{const rows=L.filter(x=>x.g===g);if(!rows.length)return null;
+      const showAll=!!qq||open["g:"+g]||rows.length<=4,vis=showAll?rows:rows.slice(0,4);
+      return el("section",{class:"ph-gl-sec"},el("h3",{class:"ph-gl-h",text:g}),
+        el("ul",{class:"ph-gl-list"},...vis.map(x=>{const ex=!!qq||open[x.id];
+          return el("li",{class:"ph-gl-row","data-id":x.id},el("button",{type:"button",class:"ph-gl-t","aria-expanded":String(!!open[x.id]),onclick:()=>{open[x.id]=!open[x.id];re();}},x.t),el("span",{class:"ph-gl-w",text:x.w}),ex?el("span",{class:"ph-gl-ex",text:"Example: "+x.ex}):null);})),
+        !qq&&rows.length>4&&!showAll?el("button",{type:"button",class:"mini ck-more",onclick:()=>{open["g:"+g]=true;re();}},(rows.length-4)+" more"):null);}).filter(Boolean);
+    setTimeout(()=>{if(focusId&&!scrolled){const r=document.querySelector('.ps-sheet .ph-gl-row[data-id="'+focusId+'"]');if(r){scrolled=true;r.scrollIntoView({block:"center"});}}},0);
+    return [search,set,...(secs.length?secs:[el("p",{class:"hint ph-gl-none",text:"Nothing matches. Try another word."})])];});}
+function phRow(){const rows=document.querySelector('.page[data-page="settings"] .set-rows');if(!rows||document.getElementById("howRow"))return;
+  rows.append(el("div",{class:"set-row",id:"howRow"},el("div",{},el("b",{text:"How it works"}),el("span",{class:"hint",text:"Every feature in one or two lines, with an example"})),el("button",{type:"button",class:"btn ghost",id:"howBtn",onclick:()=>phGlossary()},"Open")));}
+{const _r26=render;render=function(){_r26();try{phRow();}catch(e){console.warn(e);}};}
+window.__ph.glossary=phGlossary;window.__ph.cfg=phCfg;window.__ph.write=phWrite;window.__ph.gloss=PH_GLOSS;window.__ph.hints=PH_HINTS;

@@ -1,0 +1,54 @@
+// Panel round 3: first-use hints stored in settings, Settings > How it works
+const fs=require('fs');const {openp,run,shot}=require('./h.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const base=()=>{const d=JSON.parse(fs.readFileSync(process.env.MOCKDATA,'utf8'));d.tasks=d.tasks||{};if(d.settings)delete d.settings.help;
+  d.tasks.bkP={title:'Panel test',bucket:true,bState:'active',cat:'portfolio',bStart:'2026-11-01',bEnd:'2026-11-30',done:false,order:1};
+  d.tasks.pa={title:'Alpha ph1',parent:'bkP',date:'2026-11-09',cat:'portfolio',done:false,order:1};
+  d.tasks.pb={title:'Beta ph1',parent:'bkP',date:'2026-11-09',cat:'portfolio',done:false,order:2};return d;};
+run(async b=>{const errs=[];for(const w of [390,1300]){console.log('== width',w);
+  const pg=await openp(b,w,{sb:true,real:JSON.stringify(base())});await pg.clock.runFor(1500);const W=ms=>pg.waitForTimeout(ms);
+  const openT=async()=>{await pg.evaluate("__u.v3taskSheet('pa')");await pg.clock.runFor(500);await W(250);};
+  const closeT=async()=>{await pg.evaluate("__u.psClose(true)");await pg.clock.runFor(300);await W(100);};
+  const hint=()=>pg.locator('.ps-sheet .ph-hint').count();
+  await openT();ok('hint shown with Task copy',(await hint())===1&&/Details holds the day/.test(await pg.locator('.ps-hint, .ph-hint').first().innerText()));
+  await shot(pg,'ph3-hint-'+w);
+  await closeT();await openT();ok('2nd open shows',(await hint())===1);await closeT();await openT();ok('3rd open shows',(await hint())===1);await closeT();await openT();
+  ok('4th open not shown, seen stored',(await hint())===0&&typeof await pg.evaluate("window.__data.settings.help.seen.Task")==='number');await closeT();
+  await pg.evaluate("__ph.write({seen:{},shown:{},off:false})");await openT();ok('shown again after reset',(await hint())===1);
+  await pg.locator('.ps-sheet .ph-hint-ok').click();await pg.clock.runFor(300);await W(150);
+  ok('Got it removes and stores',(await hint())===0&&typeof await pg.evaluate("window.__data.settings.help.seen.Task")==='number');
+  await pg.evaluate("sessionStorage.setItem('__mockdata',JSON.stringify({settings:window.__data.settings,tasks:window.__data.tasks}))");
+  await pg.reload();await pg.clock.runFor(2500);await W(300);await openT();ok('no hint after reload',(await hint())===0);await closeT();
+  await pg.evaluate("__r2.setPage('settings')");await pg.clock.runFor(600);await W(200);
+  ok('How it works row',(await pg.locator('#howRow b').innerText())==='How it works');
+  await pg.locator('#howBtn').click();await pg.clock.runFor(500);await W(300);
+  ok('glossary open',(await pg.locator('.ps-sheet[aria-label="How it works"]').count())===1);
+  ok('11 groups',(await pg.locator('.ph-gl-sec').count())===11);
+  ok('<=4 rows per group + more',await pg.evaluate("[...document.querySelectorAll('.ph-gl-sec')].every(s=>s.querySelectorAll('.ph-gl-row').length<=4)&&document.querySelectorAll('.ph-gl-sec .ck-more').length>0"));
+  if(w===1300)ok('wide panel',(await pg.locator('.ps-sheet-wrap').boundingBox()).width>=560);
+  await shot(pg,'ph3-gloss-'+w);
+  const q=pg.locator('.ph-gl-q');await q.click();let act=true;
+  for(const ch of 'roll'){await pg.keyboard.type(ch);await pg.clock.runFor(100);await W(50);act=act&&await pg.evaluate("document.activeElement.classList.contains('ph-gl-q')");}
+  ok('focus kept while typing',act);
+  ok('Rollover with example',(await pg.locator('.ph-gl-row[data-id="rollover"] .ph-gl-ex').innerText())==='Example: 3 tasks moved from Monday.');
+  await shot(pg,'ph3-search-'+w);
+  await q.fill('zzzz');await pg.clock.runFor(100);await W(100);
+  ok('none text',(await pg.locator('.ph-gl-none').innerText())==='Nothing matches. Try another word.');
+  await q.fill('');await pg.clock.runFor(100);
+  await pg.locator('.ph-gl-set button:text-is("Off")').click();await pg.clock.runFor(200);
+  ok('off stored',await pg.evaluate("window.__data.settings.help.off===true"));
+  await pg.evaluate("__ph.write({...__ph.cfg(),seen:{},shown:{}})");await closeT();await openT();ok('off: no hint',(await hint())===0);
+  await pg.evaluate("__ph.glossary()");await pg.clock.runFor(400);await W(200);
+  await pg.locator('.ph-gl-set button:text-is("On")').click();await pg.clock.runFor(200);
+  await pg.locator('.ph-gl-reset').click();await pg.clock.runFor(200);
+  ok('reset empties seen',await pg.evaluate("Object.keys(window.__data.settings.help.seen).length===0"));
+  // popover link
+  await pg.evaluate("__u.capSheet()");await pg.clock.runFor(500);await W(250);
+  const lab=pg.locator('.ps-sheet p.label',{hasText:'Shallow batch'}).first();await lab.scrollIntoViewIfNeeded();await W(150);const bx=await lab.boundingBox();
+  await pg.mouse.move(bx.x+10,bx.y+bx.height/2);await pg.mouse.down();await pg.clock.runFor(700);await pg.mouse.up();await W(150);
+  await pg.locator('.ph-pop-go').click();await pg.clock.runFor(500);await W(300);
+  ok('How it works opens on chunks',await pg.locator('.ph-gl-row[data-id="chunks"] .ph-gl-ex').isVisible());
+  ok('no em dash in copy',!(await pg.evaluate("JSON.stringify([__ph.gloss,__ph.hints,__ph.help]).includes('—')")));
+  errs.push(...pg.errs);await pg.context().close();}
+  console.log('errors',errs.filter(e=>!e.includes('ERR_FAILED')).slice(0,4));
+});
