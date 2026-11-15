@@ -66,3 +66,4 @@ window.__u21={warAnswer,surf:v21surf};
   const busy=()=>F.some(k=>st[k]);
   F.forEach(k=>{st[k]=!!window[k];Object.defineProperty(window,k,{configurable:true,get:()=>st[k],set:v=>{const was=st[k];st[k]=!!v;if(was&&!v&&pend)setTimeout(()=>{if(pend&&!busy()){pend=false;render();}},0);}});});
   const _r=render;render=function(){if(busy()){pend=true;return;}pend=false;_r();};})();
+window.__u48={patchTask:(i,p)=>patchTask(i,p),setDone:(i,o)=>setDone(i,o)};
