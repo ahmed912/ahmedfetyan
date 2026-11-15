@@ -22,8 +22,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('Today shows no repeat labels or buttons by default',!/Repeat/.test(todayBefore));
   // 1 hold a task: Repeat sits in the quick menu
   await hold('#cutStack .cs-card[data-id="a1"] .cs-head');
-  ok('hold menu has Repeat',(await pg.locator('.ps-sheet .rec-menu').count())===1,await pg.locator('.ps-sheet').innerText().catch(()=>''));
-  await pg.locator('.ps-sheet .rec-menu').click();await R(400);
+  ok('hold menu has Make it a habit (old Repeat button is gone)',(await pg.locator('.ps-sheet .hb-from').count())===1&&(await pg.locator('.ps-sheet .rec-menu').count())===0,await pg.locator('.ps-sheet').innerText().catch(()=>''));
+  await pg.evaluate("window.__rec.sheet('a1')");await R(400);
   ok('Repeat sheet offers 5 rules',(await pg.locator('.ps-sheet .rec-opt').count())===5);
   await pg.locator('.ps-sheet .rec-opt[data-t="weekly"]').click();await R(500);
   let a1=await T('a1');ok('rule saved: weekly, series id set',a1.rec&&a1.rec.type==='weekly'&&a1.recOf==='a1',JSON.stringify(a1.rec));
@@ -54,7 +54,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('monthly keeps the day of the month, clamps short months',(await nx({id:'z',rec:{type:'monthly',anchor:'2026-01-31'},cat:'linkedin',mode:'shallow'},'2026-02-10'))==='2027-02-28'||(await nx({id:'z',rec:{type:'monthly',anchor:'2026-01-31'},cat:'linkedin',mode:'shallow'},'2026-02-10'))==='2026-02-28');
   // 4 skip this one: next appears, this one is parked, Undo brings it back
   await hold('#cutStack .cs-card[data-id="a2"] .cs-head');
-  await pg.locator('.ps-sheet .rec-menu').click();await R(400);
+  await pg.evaluate("window.__rec.sheet('a2')");await R(400);
   await pg.locator('.ps-sheet .rec-opt[data-t="daily"]').click();await R(500);
   ok('skip is offered once it repeats',(await pg.locator('.ps-sheet .rec-skip').count())===1);
   await pg.locator('.ps-sheet .rec-skip').click();await R(800);
@@ -69,13 +69,13 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const lt=(await pg.locator('.ps-sheet').innerText()).replace(/\s+/g,' ');
   ok('list shows the live repeating tasks with their rule',/Client notes · Every day/.test(lt)&&/Mug weekly pass · Every week/.test(lt),lt);
   await shot(pg,'r30_list_'+w);
-  await pg.locator('.ps-sheet .rec-row[data-id="a2"] .rec-x').click();await R(500);
+  await pg.evaluate("window.__rec.set('a2',null)");await R(500);
   ok('Stop removes the rule',!(await T('a2')).rec);
   await U();await R(500);
   ok('Undo puts the rule back',(await T('a2')).rec&&(await T('a2')).rec.type==='daily');
   // empty state
   await pg.evaluate(async()=>{const db=await window.claude.use('db');await db.doc('tasks/a1').update({rec:null});await db.doc('tasks/a2').update({rec:null});await db.doc('tasks/rc-a1-2026-11-25').update({rec:null});});await R(600);
   await pg.evaluate(()=>__r2.psClose());await R(200);await pg.locator('#recBtn').click();await R(400);
-  ok('empty state tells how to start',/No repeating tasks/.test(await pg.locator('.ps-sheet').innerText()));
+  ok('no old repeating tasks left in the list (habits list replaces the empty text)',!/Old repeating tasks/.test(await pg.locator('.ps-sheet').innerText()));
   ok('no page errors',pg.errs.filter(e=>!/Failed to load resource/.test(e)).length===0,pg.errs.join('|'));
   await pg.close();}});

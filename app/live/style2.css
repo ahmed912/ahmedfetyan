@@ -556,3 +556,21 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .hb-bk-head{all:unset;cursor:pointer;font-size:13px;opacity:.75}
 .hb-row.hb-nodue .ur-c{visibility:hidden}
 .hb-facts{font-variant-numeric:tabular-nums}
+
+/* ===== docked panel and help (module26) ===== */
+:root{--ps-w:clamp(360px,34vw,440px);--ps-ww:clamp(560px,50vw,720px)}
+.ps-sheet-wrap:not(.in){pointer-events:none}
+@media (max-width:767px){.ps-sheet{max-height:60vh;max-height:60dvh}}
+@media (min-width:768px){
+  .ps-sheet-wrap{inset:0 0 0 auto;width:var(--ps-w);background:transparent!important;align-items:stretch;justify-content:stretch;transition:none}
+  .ps-sheet-wrap.ps-wide{width:var(--ps-ww)}
+  .ps-sheet{max-width:none!important;width:100%;height:100%;max-height:none;border-radius:0;border-left:1px solid var(--line);box-shadow:none;transform:translateX(12px);opacity:0;transition:transform .16s ease-out,opacity .16s}
+  .ps-sheet-wrap.in .ps-sheet{transform:none;opacity:1}
+  .ps-sh-grab{display:none}
+  body.ps-sheet-open{overflow:auto}
+  body.ps-docked{padding-right:var(--ps-w)}
+  body.ps-docked.ps-wide-open{padding-right:var(--ps-ww)}
+  body.ps-docked .undo-bar{left:calc((100vw - var(--ps-w))/2)}
+  body.ps-docked.ps-wide-open .undo-bar{left:calc((100vw - var(--ps-ww))/2)}
+}
+:root[data-motion="reduce"] .ps-sheet{transition:none}

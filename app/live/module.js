@@ -572,21 +572,27 @@
     if(!box){box=el("div",{id:"finDue",class:"fin-due"});wb.after(box);}
     rc(box,...soon.slice(0,3).map(x=>el("button",{type:"button",class:"fin-due-i"+(x.d<0?" late":""),onclick:()=>setPage("finance")},el("b",{text:x.name}),el("span",{text:" "+(x.d<0?Math.abs(x.d)+" days overdue":x.d===0?"due today":x.d===1?"due tomorrow":"due in "+x.d+" days")+" · "+money(x.amount,x.cur)}))));}
   // ---------- shared ps-sheet (pop-up page), usable on any page ----------
-  const PS_AFTER=[];
+  const PS_AFTER=[];                       // hooks: f(title, body, panel, first) after every build
+  const PS_WIDE=new Set(["Plan the week","Time logged","Insights","Habits report","How it works"]);
+  const psDocked=()=>matchMedia("(min-width:768px)").matches;
   let sheetStack=[];
+  function psDockSync(){const on=!!sheetStack.length&&psDocked(),s=sheetStack[sheetStack.length-1];document.body.classList.toggle("ps-docked",on);document.body.classList.toggle("ps-wide-open",on&&!!s&&PS_WIDE.has(s.title));if(s){const p=s.wrap.querySelector(".ps-sheet");if(p)p.setAttribute("aria-modal",on?"false":"true");}}
   function psOpen(title,build,opt){opt=opt||{};psClose(true);
     const body=el("div",{class:"ps-sh-body"});
     const panel=el("div",{class:"ps-sheet",role:"dialog","aria-modal":"true","aria-label":title},
       el("div",{class:"ps-sh-grab","aria-hidden":"true"}),
       el("div",{class:"ps-sh-head"},el("h2",{text:title}),el("button",{type:"button",class:"ps-sh-x","aria-label":"Close",onclick:()=>psClose()},xico("x"))),body);
     const wrap=el("div",{class:"ps-sheet-wrap",onclick:e=>{if(e.target===wrap)psClose();}},panel);
-    document.body.append(wrap);document.body.classList.add("ps-sheet-open");
+    if(PS_WIDE.has(title))wrap.classList.add("ps-wide");document.body.append(wrap);document.body.classList.add("ps-sheet-open");
     let first=true;const re=()=>{try{rc(body,...[].concat(build(re)).filter(Boolean));}catch(e){console.warn(e);}PS_AFTER.forEach(f=>{try{f(title,body,panel,first);}catch(e){console.warn(e);}});first=false;};re();
-    sheetStack=[{wrap,re,title,onClose:opt.onClose}];requestAnimationFrame(()=>wrap.classList.add("in"));
+    sheetStack=[{wrap,re,title,onClose:opt.onClose}];psDockSync();requestAnimationFrame(()=>wrap.classList.add("in"));
     const f=panel.querySelector("input,select,button:not(.ps-sh-x)");if(f&&opt.focus)f.focus();return re;}
-  function psClose(now){const s=sheetStack.pop();if(!s)return;try{s.onClose&&s.onClose();}catch(e){}document.body.classList.remove("ps-sheet-open");if(now){s.wrap.remove();return;}s.wrap.classList.remove("in");setTimeout(()=>s.wrap.remove(),220);}
+  function psClose(now){const s=sheetStack.pop();if(!s)return;try{s.onClose&&s.onClose();}catch(e){}psDockSync();document.body.classList.remove("ps-sheet-open");if(now){s.wrap.remove();return;}s.wrap.classList.remove("in");setTimeout(()=>s.wrap.remove(),220);}
   function sheetRefresh(){const s=sheetStack[sheetStack.length-1];if(s)s.re();}
   addEventListener("keydown",e=>{if(e.key==="Escape"&&sheetStack.length)psClose();});
+  matchMedia("(min-width:768px)").addEventListener("change",psDockSync);
+  document.addEventListener("pointerdown",e=>{if(!sheetStack.length||!psDocked())return;const t=e.target;
+    if(t.closest&&t.closest(".ps-sheet-wrap,.undo-bar,#v3ut,#v3Conf,.ph-pop,.toast,#toast"))return;window.__psOutside=Date.now();psClose();},true);
   if(!XI.x)XI.x='<path d="M6 6l12 12M18 6L6 18"/>';
   if(!XI.plus)XI.plus='<path d="M12 5v14M5 12h14"/>';
   // ---------- Finance, minimal: budget chart on top, option cards, everything else in sheets ----------

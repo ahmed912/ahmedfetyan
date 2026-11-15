@@ -492,4 +492,4 @@
   try{v3loadHabits();render();}catch(e){}
   // sub-sheets return to the sheet they came from when closed (Habits, Capture, Time)
   const v3backFor={"Streaks":"hab","Clean days":"hab","Urges overcome":"hab","Slips":"hab","Habits report":"hab","Add a habit":"hab","Review notes":"cap","Time logged":"ent","Edit entry":"ent","Add time by hand":"ent"};
-  {const _po=psOpen;psOpen=function(title,build,opt){opt=opt||{};const k=v3backFor[title];if(k&&!opt.onClose)opt.onClose=()=>setTimeout(()=>{if(!sheetStack.length)openPop(k);},260);return _po(title,build,opt);};}
+  {const _po=psOpen;psOpen=function(title,build,opt){opt=opt||{};const k=v3backFor[title];if(k&&!opt.onClose)opt.onClose=()=>setTimeout(()=>{if(!sheetStack.length&&Date.now()-(window.__psOutside||0)>400)openPop(k);},260);return _po(title,build,opt);};}

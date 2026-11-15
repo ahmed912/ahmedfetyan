@@ -1,0 +1,54 @@
+// Panel round 1: docked right panel at 768+, bottom sheet max 60 percent on phone
+const fs=require('fs');const {openp,run,shot}=require('./h.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const base=()=>{const d=JSON.parse(fs.readFileSync(process.env.MOCKDATA,'utf8'));d.tasks=d.tasks||{};
+  d.tasks.bkP={title:'Panel test',bucket:true,bState:'active',cat:'portfolio',bStart:'2026-11-01',bEnd:'2026-11-30',done:false,order:1};
+  d.tasks.pa={title:'Alpha ph1',parent:'bkP',date:'2026-11-09',cat:'portfolio',done:false,order:1};
+  d.tasks.pb={title:'Beta ph1',parent:'bkP',date:'2026-11-09',cat:'portfolio',done:false,order:2};return d;};
+const open=async(w)=>{const pg=await openp(await global.__b,w,{sb:true,real:JSON.stringify(base())});await pg.clock.runFor(1500);return pg;};
+run(async b=>{global.__b=b;const errs=[];
+  {const pg=await open(1300),W=ms=>pg.waitForTimeout(ms);
+   const cnt=()=>pg.locator('.ps-sheet-wrap').count(),tv=()=>pg.locator('[aria-label="Task name"]').inputValue();
+   await pg.evaluate("__r2.setPage('projects')");await pg.clock.runFor(600);await W(200);
+   await pg.locator('[data-bk="bkP"] .bk-row[data-id="pa"] .ur-t').first().click();await pg.clock.runFor(400);await W(300);
+   ok('one wrap',(await cnt())===1);
+   const bb=await pg.locator('.ps-sheet-wrap').boundingBox();ok('docked right',bb.x>=1300-440-1&&bb.width<=441,JSON.stringify(bb));
+   ok('transparent',(await pg.evaluate("getComputedStyle(document.querySelector('.ps-sheet-wrap')).backgroundColor"))==='rgba(0, 0, 0, 0)');
+   ok('ps-docked + aria-modal false',await pg.evaluate("document.body.classList.contains('ps-docked')&&document.querySelector('.ps-sheet').getAttribute('aria-modal')==='false'"));
+   ok('main live',await pg.evaluate("!document.elementFromPoint(100,300).closest('.ps-sheet-wrap')"));
+   ok('name Alpha',(await tv())==='Alpha ph1',await tv());
+   await pg.locator('.bk-row[data-id="pb"] .ur-t').first().click();await pg.clock.runFor(600);await W(400);
+   ok('swap',(await cnt())===1&&(await tv())==='Beta ph1');
+   await shot(pg,'ph1-1300');
+   await pg.keyboard.press('Escape');await pg.clock.runFor(400);await W(300);
+   ok('esc closes',(await cnt())===0&&!(await pg.evaluate("document.body.classList.contains('ps-docked')")));
+   await pg.locator('.bk-row[data-id="pa"] .ur-t').first().click();await pg.clock.runFor(400);await W(300);
+   await pg.mouse.click(20,880);await pg.clock.runFor(600);await W(600);
+   ok('outside click closes for good',(await cnt())===0);
+   await pg.evaluate("__u.v3taskSheet('pa')");await pg.clock.runFor(400);await W(300);
+   await pg.mouse.move(300,400);await pg.mouse.wheel(0,400);await pg.clock.runFor(300);await W(300);
+   ok('scroll not locked',(await pg.evaluate("window.scrollY"))>0);
+   await pg.keyboard.press('Escape');await pg.clock.runFor(400);
+   await pg.evaluate("__r2.setPage('today')");await pg.clock.runFor(600);
+   await pg.evaluate("__u.openPop('ent')").catch(()=>{});await pg.clock.runFor(500);
+   await pg.evaluate("(()=>{const b=[...document.querySelectorAll('button')].find(x=>/Time logged/.test(x.textContent));if(b)b.click();})()");await pg.clock.runFor(500);await W(300);
+   const had=await cnt();
+   await pg.mouse.click(20,880);await pg.clock.runFor(700);await W(600);
+   ok('time pop was open',had===1);ok('time pop no reopen',(await cnt())===0,'had '+had+' now '+await cnt());
+   await pg.evaluate("__r2.setPage('today')");await pg.clock.runFor(300);
+   await pg.evaluate("__u.psOpen('Plan the week',()=>[])");await pg.clock.runFor(400);await W(300);
+   ok('wide >=560',(await pg.locator('.ps-sheet-wrap').boundingBox()).width>=560);
+   errs.push(...pg.errs);await pg.context().close();}
+  for(const w of [768,767]){const pg=await open(w);
+   await pg.evaluate("__u.v3taskSheet('pa')");await pg.clock.runFor(400);await pg.waitForTimeout(300);
+   const d=await pg.evaluate("document.body.classList.contains('ps-docked')");ok('docked at '+w,d===(w===768));await pg.context().close();}
+  {const pg=await open(390),W=ms=>pg.waitForTimeout(ms);
+   await pg.evaluate("__u.v3taskSheet('pa')");await pg.clock.runFor(400);await W(300);
+   const bb=await pg.locator('.ps-sheet').boundingBox();ok('phone <=60%',bb.height<=0.6*900+1,bb.height);
+   ok('dim kept',(await pg.evaluate("getComputedStyle(document.querySelector('.ps-sheet-wrap')).backgroundColor"))!=='rgba(0, 0, 0, 0)');
+   await shot(pg,'ph1-390');
+   await pg.mouse.click(195,60);await pg.clock.runFor(500);await W(300);
+   ok('dim tap closes',(await pg.locator('.ps-sheet-wrap').count())===0);
+   errs.push(...pg.errs);await pg.context().close();}
+  console.log('errors',errs.filter(e=>!e.includes('ERR_FAILED')).slice(0,4));
+});
