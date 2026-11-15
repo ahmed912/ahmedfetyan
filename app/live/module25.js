@@ -200,3 +200,38 @@ function hbBucketSec(bid){const list=hbList().filter(h=>h.bucket===bid);if(!list
 let hbSheetBid=null;
 {const _bs25=bkSheet;bkSheet=function(bid){hbSheetBid=bid;return _bs25(bid);};}
 PS_AFTER.push((title,body)=>{if(!hbSheetBid||!body.querySelector(".bks-sum")||body.querySelector(".hb-bk"))return;const s=hbBucketSec(hbSheetBid);const l=body.querySelector(".bks-list");if(s&&l)l.after(s);});
+// ---------- Round 4: repeating tasks become habits in the app ----------
+function hbFromTask(id,silent){const t=state.tasks[id];if(!t)return;
+  const root=t.recOf||id,hid="hb-"+root,ty=t.rec&&t.rec.type;
+  const archive=()=>rlWrite({[id]:{archived:true,cut:true,habitOf:hid,rec:null,recNext:null}});
+  if(state.habits[hid]){const old=archive();render();v3undoToast("Now a habit: "+t.title,()=>rlRestore(old));return hid;}
+  let rec;
+  if(!ty||ty==="daily")rec={type:"daily"};else if(ty==="weekdays")rec={type:"weekdays"};
+  else if(ty==="weekly")rec={type:"weekly",days:[parse(t.rec.anchor||t.date||iso(new Date())).getDay()]};
+  else{toast("Every 2 weeks and monthly stay as repeating tasks");return;}
+  hbSave(hid,{name:t.title,custom:true,rec,tod:"any",bucket:bkOfId(id),order:Date.now(),created:Date.now(),from:"tasks:"+root},false);
+  const old=archive();render();
+  v3undoToast("Now a habit: "+t.title,()=>{rlRestore(old);const c={...state.habits};delete c[hid];state.habits=c;try{store.del("habits/"+hid);}catch(e){}render();});
+  if(!silent)hbSheet(hid);
+  return hid;}
+{const _tm25=v3taskMenu;v3taskMenu=function(id){_tm25(id);try{const t=state.tasks[id];if(!t||t.bucket||t.archived||!isLeaf({...t,id}))return;const sh=document.querySelector(".ps-sheet");if(!sh||sh.querySelector(".hb-from"))return;
+  const rm=sh.querySelector(".rec-menu");if(rm)rm.remove();
+  const b=el("button",{type:"button",class:"btn ghost hb-from",onclick:()=>{psClose(true);setTimeout(()=>hbFromTask(id),60);}},"Make it a habit"),
+    anchor=[...sh.querySelectorAll("button")].find(x=>/^Edit$/.test(x.textContent));if(anchor)anchor.after(b);else sh.append(b);}catch(e){console.warn(e);}};}
+function hbListSheet(){psOpen("Habits and routines",re=>{
+  const L=hbList(),A=hbList(true).filter(h=>h.archived&&!h.deleted),R=typeof recList==="function"?recList():[],out=[];
+  if(!L.length&&!A.length&&!R.length)return [el("p",{class:"hint",text:"No habits yet. Add one from the Habits row on Today."})];
+  const line=h=>h.name+" · "+hbRecName(h.rec)+(h.tod!=="any"?" · "+(HB_TOD.find(x=>x[0]===h.tod)||[])[1]:"")+(h.bucket&&hbBkTitle(h.bucket)?" · "+hbBkTitle(h.bucket):"");
+  if(L.length){const ul=el("ul",{class:"ps-sh-list hb-all-list"},...L.map(h=>el("li",{class:"ps-sh-hrow hb-lrow","data-id":h.id},el("button",{type:"button",class:"ps-sh-row hb-lr","data-dragok":"",onclick:()=>hbSheet(h.id)},line(h)))));
+    v3dragList(ul,".hb-lrow",ids=>{if(ids.join()===L.map(x=>x.id).join())return;hbOrderWrite(ids,L.map(x=>x.id));setTimeout(re,200);});out.push(ul);}
+  if(A.length)out.push(el("details",{class:"hb-arch"},el("summary",{text:"Archived ("+A.length+")"}),...A.map(h=>el("div",{class:"bk-arow"},el("span",{text:h.name}),el("button",{type:"button",class:"mini",onclick:()=>{hbSave(h.id,{archived:null},"Restored: "+h.name);setTimeout(re,150);}},"Restore")))));
+  if(R.length){out.push(el("p",{class:"label",text:"Old repeating tasks"}),el("ul",{class:"ps-sh-list hb-old"},...R.map(t=>{const ty=t.rec&&t.rec.type,can=["daily","weekdays","weekly"].includes(ty);
+    return el("li",{class:"ps-sh-hrow","data-id":t.id},el("span",{text:t.title+" · "+recName(t.rec)}),can?el("button",{type:"button",class:"mini hb-conv","aria-label":"Convert: "+t.title,onclick:()=>{hbFromTask(t.id,true);setTimeout(re,200);}},"Convert"):el("span",{class:"hint",text:"stays a repeating task"}));})));}
+  return out;});}
+{const _rr25=recRow;recRow=function(){_rr25();const r=document.getElementById("recRow");if(!r)return;const b=r.querySelector("b"),h=r.querySelector(".hint"),bt=document.getElementById("recBtn");
+  if(b)b.textContent="Habits and routines";if(h)h.textContent="Every habit and routine, its days and its streak";if(bt)bt.onclick=hbListSheet;};}
+PS_AFTER.push((title,body)=>{if(title!=="Recently deleted"||body.querySelector(".rd-hab"))return;const D=hbList(true).filter(h=>h.deleted);if(!D.length)return;
+  body.append(el("div",{class:"rd-hab"},el("p",{class:"hint",text:"Habits"}),el("ul",{class:"ps-sh-list rd-list"},...D.map(h=>el("li",{class:"bk-arow rd-row","data-hab":h.id},el("span",{class:"rd-t",text:h.name}),el("button",{type:"button",class:"mini rd-restore",onclick:()=>{hbSave(h.id,{deleted:null},"Restored: "+h.name);setTimeout(()=>{try{sheetRefresh();}catch(e){}},200);}},"Restore"))))));});
+{const _ds25=v3deletedSec;v3deletedSec=function(){const e=_ds25(),n=hbList(true).filter(h=>h.deleted).length;if(n){const b=e.querySelector(".rd-open"),m=b&&b.textContent.match(/\((\d+)\)$/);if(b)b.textContent="Recently deleted ("+((m?+m[1]:0)+n)+")";}return e;};}
+window.__hb.fromTask=hbFromTask;window.__hb.listSheet=hbListSheet;window.__hb.menu=hbMenu;
+try{if(window.__u){window.__u.v3taskMenu=v3taskMenu;window.__u.v3deletedSheet=v3deletedSheet;}}catch(e){}
