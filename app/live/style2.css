@@ -601,3 +601,23 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 /* ===== diamonds and time spent (module28) ===== */
 .tm-spent{font-variant-numeric:tabular-nums;opacity:.6;font-size:12px;margin-left:8px}
 .tm-line{margin:0;font-variant-numeric:tabular-nums}
+.dm-row{display:flex;gap:16px;align-items:center;margin-top:8px}
+.dm-row[hidden]{display:none}
+.dm-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:13px;opacity:.85}
+.dm-ic{width:8px;height:8px;border:1px solid currentColor;transform:rotate(45deg);position:relative;display:inline-block}
+.dm-ic.on{background:color-mix(in oklab,currentColor 30%,transparent)}
+.dm-ic.ship::after{content:"";position:absolute;inset:2px;border:1px solid currentColor}
+.dm-n{font-variant-numeric:tabular-nums}
+.dm-list .dm-r,li.tr-row.dm-r{display:grid;grid-template-columns:1fr auto auto;column-gap:12px;align-items:baseline;padding:8px 0}
+.dm-r+.dm-r{border-top:1px solid var(--line)}
+.dm-tag{grid-column:1;grid-row:2;font-size:12px}
+.dm-t{grid-column:1;grid-row:1}
+.dm-d{grid-column:2;grid-row:1;font-size:12px}
+.dm-m{grid-column:3;grid-row:1;text-align:right;min-width:56px;font-variant-numeric:tabular-nums}
+.dm-wh{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 16px;cursor:pointer}
+.dm-wh .lh-wh{all:unset;font-weight:600}
+.dm-wt{text-align:right;min-width:56px}
+.dm-list{padding:0 16px}
+.dm-tip,.dm-empty{padding:0 16px;margin:4px 0 8px}
+.dm-saved[hidden]{display:none}
+.dm-wk{margin-top:8px}

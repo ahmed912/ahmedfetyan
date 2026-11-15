@@ -63,12 +63,66 @@ function winHide(id){winPut(id,{hidden:Date.now()},"Hidden from Done");}
 function winUnhide(id){winPut(id,{hidden:null},false);}
 function winDelete(id){const w=WINS[id];winPut(id,{deleted:Date.now()},"Deleted: "+((w&&w.title)||"win"));}
 function winRestore(id){const w=WINS[id];winPut(id,{deleted:null},"Restored: "+((w&&w.title)||"win"));}
+function dmShipSet(bid,on){const b=state.tasks[bid];if(!b)return;const refr=()=>{render();try{sheetRefresh();}catch(e){}};
+  if(on){const old={shipped:!!b.shipped,shippedAt:b.shippedAt||null};bkSet(bid,{shipped:true,shippedAt:iso(new Date())});bkArchive(bid,true);refr();v3undoToast("Shipped: "+b.title,()=>{bkArchive(bid,false);bkSet(bid,old);refr();});}
+  else{const old={shipped:true,shippedAt:b.shippedAt||null};bkSet(bid,{shipped:false});bkArchive(bid,false);refr();v3undoToast("Back on the active list: "+b.title,()=>{bkSet(bid,old);bkArchive(bid,true);refr();});}}
 {const _bm24=bkMenu;bkMenu=function(bid){_bm24(bid);try{const b=state.tasks[bid],sh=document.querySelector(".ps-sheet");if(!b||!sh||sh.querySelector(".dm-ship"))return;
   const un=b.shipped===true;
-  const btn=el("button",{type:"button",class:"btn ghost dm-ship",onclick:()=>{psClose(true);
-    if(!un){const old={shipped:!!b.shipped,shippedAt:b.shippedAt||null};bkSet(bid,{shipped:true,shippedAt:iso(new Date())});bkArchive(bid,true);render();v3undoToast("Shipped: "+b.title,()=>{bkArchive(bid,false);bkSet(bid,old);render();});}
-    else{const old={shipped:true,shippedAt:b.shippedAt||null};bkSet(bid,{shipped:false});bkArchive(bid,false);render();v3undoToast("Back on the active list: "+b.title,()=>{bkSet(bid,old);bkArchive(bid,true);render();});}}},un?"Unship":"Mark shipped");
+  const btn=el("button",{type:"button",class:"btn ghost dm-ship",onclick:()=>{psClose(true);dmShipSet(bid,!un);}},un?"Unship":"Mark shipped");
   const a=[...sh.querySelectorAll("button")].find(x=>/^Archive$/.test(x.textContent));a?a.before(btn):sh.querySelector(".ps-sh-body")?sh.querySelector(".ps-sh-body").append(btn):sh.append(btn);}catch(e){console.warn(e);}};
   try{if(window.__u)window.__u.bkMenu=bkMenu;}catch(e){}}
 
-window.__dm={refMin,refSessions,refLast,taskMin,bkMin,winsAll,winsDone,winsDoneCount,winsShipped,projectTaskEffort,winPut,winHide,winUnhide,winDelete,winRestore,WINS};
+// ----- Today row and the Done sheet -----
+let dmOpen={},dmSavedAt=0,dmTipNow=false;
+const dmWk=()=>v3wkStart(iso(new Date()));
+function dmRowUpdate(){try{const pc=document.getElementById("popCards");if(!pc)return;let row=document.getElementById("dmRow");
+  if(!row)row=el("div",{class:"dm-row",id:"dmRow","aria-label":"Done and shipped"},...[["done","Done"],["shipped","Shipped"]].map(([k,l])=>el("button",{type:"button",class:"dm-btn","data-dm":k,onclick:()=>{if(k==="done")dmDoneSheet();else if(typeof dmShippedSheet==="function")dmShippedSheet();}},
+    el("span",{class:"dm-ic"+(k==="shipped"?" ship":"")}),el("span",{class:"dm-w",text:l}),el("span",{class:"dm-n num"}))));
+  if(pc.nextElementSibling!==row)pc.after(row);
+  row.hidden=!!warGet();if(row.hidden)return;
+  [["done",winsDoneCount(dmWk()),"Done this week: "],["shipped",winsShipped().length,"Shipped: "]].forEach(([k,n,a])=>{const b=row.querySelector('[data-dm="'+k+'"]');if(!b)return;
+    const nn=b.querySelector(".dm-n");if(nn.textContent!==String(n))nn.textContent=String(n);b.querySelector(".dm-ic").classList.toggle("on",n>0);b.setAttribute("aria-label",a+n);});}catch(e){console.warn(e);}}
+{const _rp24=renderPopCards;renderPopCards=function(){_rp24();dmRowUpdate();};}
+{const _r24=render;render=function(){_r24();dmRowUpdate();};}
+let dmFrom="done";
+const dmList=()=>{if(dmFrom==="shipped"&&typeof dmShippedSheet==="function")dmShippedSheet();else dmDoneSheet();};
+const dmBack={onClose:()=>setTimeout(()=>{if(!sheetStack.length&&Date.now()-(window.__psOutside||0)>400)dmList();},260)};
+const dmCatTxt=r=>CAT_NAME[r.cat]||(r.cat?String(r.cat):"");
+function dmTag(r){let t;if(r.state==="progress")t="in progress, "+dur(r.min)+" so far";else if(r.kind==="habit")t="habit · "+r.days+" day"+(r.days===1?"":"s");else if(r.kind==="label")t="time";else if(r.kind==="manual")t="manual";else t=CAT_NAME[r.cat]||"task";
+  if(r.sessions>1)t+=" · "+r.sessions+" sessions";return t;}
+function dmRowEl(r,open){const li=el("li",{class:"tr-row dm-r","data-id":r.id,tabindex:"0",role:"button","aria-label":r.title},
+  el("span",{class:"dm-t",text:r.title}),el("span",{class:"hint dm-tag",text:dmTag(r)}),el("span",{class:"hint dm-d",text:fmt(r.date,{weekday:"short",day:"numeric"})}),el("span",{class:"num dm-m",text:r.min>0?dur(r.min):""}));
+  li.onkeydown=e=>{if(e.key==="Enter")open();};
+  swipeable(li,null,()=>winHide(r.id),open,{direct:true});rsLong(li,()=>dmRecMenu(r.id));return li;}
+function dmDoneSheet(){dmFrom="done";dmTipNow=!localStorage.getItem("sb-dm-tip");try{localStorage.setItem("sb-dm-tip","1");}catch(e){}
+  psOpen("Done",re=>{const cur=dmWk(),by={};winsAll().filter(r=>r.diamond==="done").forEach(r=>{const ws=v3wkStart(r.date);(by[ws]=by[ws]||[]).push(r);});by[cur]=by[cur]||[];
+    const wks=Object.keys(by).sort().reverse();
+    const secs=wks.map((ws,wi)=>{const L=by[ws],open=dmOpen[ws]===undefined?ws===cur:dmOpen[ws],n=L.filter(r=>r.state==="done").length,sum=L.reduce((a,r)=>a+(r.min||0),0),ex=!!dmOpen[ws+"x"];
+      const kids=[el("button",{type:"button",class:"dm-wh","aria-expanded":String(open),onclick:()=>{dmOpen[ws]=!open;re();}},
+        el("span",{class:"lh-wh",text:"Week of "+fmt(ws,{day:"numeric",month:"short"})}),el("span",{class:"lh-wn num",text:String(n)}),el("span",{class:"num dm-wt",text:sum>0?dur(sum):""}))];
+      if(wi===0&&dmTipNow)kids.push(el("p",{class:"hint dm-tip",text:"Swipe left to hide, hold for more."}));
+      if(open){if(!L.length)kids.push(el("p",{class:"hint dm-empty",text:"Nothing here yet this week. Finished tasks, habit days and logged effort land here by themselves."}));
+        else{kids.push(el("ul",{class:"ps-sh-list dm-list"},...(ex?L:L.slice(0,4)).map(r=>dmRowEl(r,()=>dmRecSheet(r.id)))));
+          if(L.length>4)kids.push(el("button",{type:"button",class:"mini ck-more",onclick:()=>{dmOpen[ws+"x"]=!ex;re();}},ex?"Show less":(L.length-4)+" more"));}}
+      return el("section",{class:"lh-wk dm-wk"},...kids);});
+    return [el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost dm-add",onclick:()=>{if(typeof dmAddSheet==="function")dmAddSheet("done");}},"Add")),...secs];});}
+function dmFind(id){return winsAll().find(r=>r.id===id);}
+function dmRecMenu(id){const r=dmFind(id);if(!r)return;psOpen("Win options",()=>{const tid=r.ref&&r.ref.indexOf("tasks:")===0?r.ref.slice(6):null;
+  return [el("p",{class:"ps-sh-sum",text:r.title}),
+    el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);dmRecSheet(id,true);}},"Edit title and date"),
+    el("button",{type:"button",class:"btn ghost",onclick:()=>{winHide(id);psClose(true);}},"Hide"),
+    tid&&state.tasks[tid]&&!state.tasks[tid].bucket?el("button",{type:"button",class:"btn ghost",onclick:()=>{psClose(true);setTimeout(()=>v3taskSheet(tid),60);}},"Open task"):null];},{...dmBack});}
+function dmRecSheet(id,edit){psOpen("Win",re=>{const r=dmFind(id);if(!r)return [el("p",{class:"ps-sh-sum",text:"This win is gone."})];
+  const out=[el("p",{class:"ps-sh-sum",text:r.title}),el("p",{class:"hint",text:[fmt(r.date,{weekday:"long",day:"numeric",month:"long"}),r.min>0?dur(r.min):"",dmCatTxt(r)].filter(Boolean).join(" · ")})];
+  if(r.note)out.push(el("p",{class:"hint dm-note",text:r.note}));
+  if(edit){const ti=el("input",{type:"text",class:"v3-in dm-title","aria-label":"Title"});ti.value=r.title;ti.onchange=()=>{const v=ti.value.trim();if(v&&v!==r.title)winPut(id,{title:v},false);};
+    const da=el("input",{type:"date",class:"tt-in dm-date","aria-label":"Date"});da.value=r.date;da.onchange=()=>{if(da.value&&da.value!==r.date)winPut(id,{date:da.value},false);};
+    out.push(el("label",{class:"field"},el("span",{class:"label",text:"Title"}),ti),el("label",{class:"field"},el("span",{class:"label",text:"Date"}),da));}
+  const ta=el("textarea",{class:"v3-in dm-refl",rows:"3",placeholder:"What did this take?","aria-label":"Reflection"});ta.value=r.reflection||"";
+  const sv=el("span",{class:"hint dm-saved",text:"Saved"});sv.hidden=!(Date.now()-dmSavedAt<1500);
+  ta.onblur=()=>{if(ta.value===(r.reflection||""))return;winPut(id,{reflection:ta.value},"Saved",true);dmSavedAt=Date.now();sv.hidden=false;setTimeout(()=>{sv.hidden=true;},1500);};
+  out.push(el("label",{class:"field"},el("span",{class:"label",text:"Reflection"}),ta,sv));
+  if(r.kind==="manual")out.push(el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost dm-edit",onclick:()=>dmAddSheet(r.diamond,id)},"Edit"),el("button",{type:"button",class:"btn ghost danger dm-del",onclick:()=>{winDelete(id);psClose(true);}},"Delete")));
+  return out;},{...dmBack});}
+
+window.__dm={refMin,refSessions,refLast,taskMin,bkMin,winsAll,winsDone,winsDoneCount,winsShipped,projectTaskEffort,winPut,winHide,winUnhide,winDelete,winRestore,WINS,dmDoneSheet};

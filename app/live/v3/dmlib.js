@@ -16,4 +16,9 @@ function seed2(d){
   d.tasks.c1={title:'Child dm2',parent:'bS',done:true,doneAt:'2026-11-05'};addE(d,'2026-11-05',item('2026-11-05','s1','tasks:c1','Child dm2',9,0,120));
   d.tasks.bA={title:'Active dm2',bucket:true,bState:'active',cat:'portfolio',done:false,order:2};
   return d;}
-module.exports={item,addE,load,seed2};
+// reload keeping the mock data (sessionStorage is sometimes empty after a file:// reload, so retry)
+async function reloadKeep(pg){const j=await pg.evaluate("JSON.stringify(window.__data)");
+  for(let i=0;i<4;i++){await pg.evaluate("sessionStorage.setItem('__mockdata',"+JSON.stringify(j)+")");await pg.reload();
+    if(await pg.evaluate("!!window.__restore&&Object.keys(window.__restore).length>0"))break;}
+  await pg.clock.runFor(3000);}
+module.exports={reloadKeep,item,addE,load,seed2};

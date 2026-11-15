@@ -1,5 +1,5 @@
 // Diamonds round 2: derived data layer
-const {openp,run}=require('./h.js');const {load,seed2}=require('./dmlib.js');
+const {openp,run}=require('./h.js');const {load,seed2,reloadKeep}=require('./dmlib.js');
 const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
 run(async b=>{for(const w of [1300]){console.log('== width',w);
   let pg=await openp(b,w,{sb:true,real:JSON.stringify(seed2(load()))});const W=ms=>pg.waitForTimeout(ms);
@@ -15,8 +15,7 @@ run(async b=>{for(const w of [1300]){console.log('== width',w);
   ok('war labels',l9.length===1&&l9[0].min===50&&l8.length===1&&l8[0].min===40,JSON.stringify([l9,l8]));
   const sh=await E("__dm.winsShipped().find(r=>r.id==='p_bS')");ok('p_bS 120 and 1 task',sh&&sh.min===120&&sh.tasks===1,JSON.stringify(sh));
   await E("__dm.winPut('t_d1',{reflection:'Hard one'},false)");await pg.clock.runFor(300);
-  await E("sessionStorage.setItem('__mockdata',JSON.stringify(window.__data))");
-  await pg.reload();await pg.clock.runFor(3000);
+  await reloadKeep(pg);
   ok('reflection survives reload',(await E("__dm.winsAll().find(r=>r.id==='t_d1').reflection"))==='Hard one');
   await E("__dm.winHide('t_d1')");await pg.clock.runFor(300);
   ok('hidden',!(await E("__dm.winsDone('2026-11-07').some(r=>r.id==='t_d1')")));
