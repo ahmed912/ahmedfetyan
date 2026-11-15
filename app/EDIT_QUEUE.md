@@ -12,5 +12,6 @@ Weekly usage limit resets Wednesday 18:00 (user's local time). Reserve tokens fo
 2. Forgotten sessions auto-close: gym 60 min, work 21:30, keep entry (r57)  [running with item 1]
 3. Habits = repeating tasks, on Today and in buckets (plan: plan/HABITS_PLAN.md)
 4. Side-panel option sheets + built-in help and glossary (plan: plan/PANEL_HELP_PLAN.md)
-5. Time spent under tasks and project total effort, then Diamonds Done and Shipped (plan: plan/DIAMONDS.md)
-6. Live data, only on his "go": replan, apply_unify.py, apply_habits.py, real hours 9 and 12 Nov; drop apply_docs_tmp
+5. English resources, planned links to shadow/listen/read (plan: plan/ENGLISH_RESOURCES_PLAN.md, after habits)
+6. Time spent under tasks and project total effort, then Diamonds Done and Shipped (plan: plan/DIAMONDS.md)
+7. Live data, only on his "go": replan, apply_unify.py, apply_habits.py, real hours 9 and 12 Nov; drop apply_docs_tmp
