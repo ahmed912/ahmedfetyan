@@ -592,7 +592,7 @@
   addEventListener("keydown",e=>{if(e.key==="Escape"&&sheetStack.length)psClose();});
   matchMedia("(min-width:768px)").addEventListener("change",psDockSync);
   document.addEventListener("pointerdown",e=>{if(!sheetStack.length||!psDocked())return;const t=e.target;
-    if(t.closest&&t.closest(".ps-sheet-wrap,.undo-bar,#v3ut,#v3Conf,.ph-pop,.toast,#toast"))return;window.__psOutside=Date.now();psClose();},true);
+    if(t.closest&&t.closest(".ps-sheet-wrap,#selBar,.undo-bar,#v3ut,#v3Conf,.ph-pop,.toast,#toast"))return;window.__psOutside=Date.now();psClose();},true);
   if(!XI.x)XI.x='<path d="M6 6l12 12M18 6L6 18"/>';
   if(!XI.plus)XI.plus='<path d="M12 5v14M5 12h14"/>';
   // ---------- Finance, minimal: budget chart on top, option cards, everything else in sheets ----------

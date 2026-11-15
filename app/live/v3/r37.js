@@ -36,7 +36,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('added subtask is a sub doc without estimate',await pg.evaluate(()=>{const s=Object.values(__u.state.tasks).find(t=>t.title==='Review with a friend');return !!s&&s.sub===true&&s.parent==='p1'&&s.mins==null;}));
   ok('Subtasks (0 of 5)',/Subtasks \(0 of 5\)/.test(await pg.locator('.ps-sheet').innerText()));
   // hold-drag reorder: drag the first row below the third
-  const rows=pg.locator('.ps-sheet .ck-row[data-id]');const a=await rows.nth(0).boundingBox(),c=await rows.nth(2).boundingBox();
+  const rows=pg.locator('.ps-sheet .ck-row[data-id]');await rows.nth(0).evaluate(e=>e.scrollIntoView({block:'center'}));await R(200);const a=await rows.nth(0).boundingBox(),c=await rows.nth(2).boundingBox();
   await pg.mouse.move(a.x+a.width/2,a.y+a.height/2);await pg.mouse.down();await pg.clock.runFor(600);await pg.mouse.move(a.x+a.width/2,c.y+c.height-4,{steps:6});await pg.mouse.up();await R(600);
   const ord=await pg.evaluate(()=>['s0','s1','s2','s3'].map(i=>__u.state.tasks[i].order));
   ok('hold then drag reorders subtasks (first row moved down)',ord[0]>ord[1],JSON.stringify(ord));
