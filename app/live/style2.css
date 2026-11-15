@@ -525,3 +525,10 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 @keyframes v3glassIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes v3fade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.toast,.rem-banner,.v3-conf,.v3-conf-wrap{animation:none;transition:none}}
+
+/* r56 bucket rows: swipe hints, archived row */
+.bk-row{position:relative}
+.bk-row .bk-hint{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;opacity:0;pointer-events:none;color:var(--muted)}
+.bk-row .bk-hr{left:8px}.bk-row .bk-hl{right:8px}
+.bk-row[data-dir="r"] .bk-hr,.bk-row[data-dir="l"] .bk-hl{opacity:1}
+.bk-arch{margin-top:4px}.bk-arch-l{list-style:none;margin:4px 0 0;padding:0}.bk-arch-t{color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

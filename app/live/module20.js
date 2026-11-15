@@ -80,8 +80,8 @@ function bkSheet(bid){const b0=state.tasks[bid];if(!b0)return;
     inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const v=inp.value;inp.value="";bkAddTask(bid,v).then(()=>setTimeout(re,200));}});
     return [el("p",{class:"ps-sh-sum bks-sum",text:dates+" · "+(kids.length?done+" of "+kids.length+" done":"No tasks yet")+(b.bState==="paused"?" · Paused":"")}),
       kids.length?el("div",{class:"bk-prog"},el("span",{class:"bk-bar","aria-hidden":"true"},el("i",{style:"width:"+Math.round(done/kids.length*100)+"%"}))):null,
-      el("ul",{class:"bk-list bks-list"},...open.map((t,i)=>bkRow(t,false,{}))),
-      done?el("p",{class:"hint",text:done+" done"}):null,
+      (ul=>{bkWire(ul,open,re);return ul;})(el("ul",{class:"bk-list bks-list"},...open.map((t,i)=>bkRow(t,false,{})))),
+      done?el("p",{class:"hint",text:done+" done"}):null,bkArchRow(bid,re),
       el("div",{class:"bk-add"},inp),
       el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost bks-sel",onclick:()=>selStart(null,re)},"Select"),el("button",{type:"button",class:"btn ghost bks-edit",onclick:()=>{psClose(true);bkForm(bid);}},"Edit bucket"))];});}
 {const _bc=bkCard;bkCard=function(b){const c=_bc(b);if(b){const t=c.querySelector(".bk-title");if(t)t.onclick=()=>bkSheet(b.id);}return c;};}

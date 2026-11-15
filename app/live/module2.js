@@ -47,14 +47,14 @@
   swipeable=function(card,onRight,onLeft,onTap,labels){labels=labels||{};let x0=null,y0=0,dx=0,dy=0,pid=null,mode=null;
     card.style.touchAction="pan-y";
     const reset=()=>{card.style.transition="transform .2s ease";card.style.transform="";card.dataset.dir="";};
-    card.addEventListener("pointerdown",e=>{if(e.button>0||e.target.closest("button,a,input,select,textarea,.cat-chip"))return;x0=e.clientX;y0=e.clientY;dx=dy=0;mode=null;pid=e.pointerId;card.style.transition="none";v3holdOn();});
+    card.addEventListener("pointerdown",e=>{const bb=e.target.closest("button,a,input,select,textarea,.cat-chip");if(e.button>0||(bb&&!bb.hasAttribute("data-dragok")))return;x0=e.clientX;y0=e.clientY;dx=dy=0;mode=null;pid=e.pointerId;card.style.transition="none";v3holdOn();});
     card.addEventListener("pointermove",e=>{if(x0===null)return;dx=e.clientX-x0;dy=e.clientY-y0;
       if(!mode){if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.2){mode="x";try{card.setPointerCapture(pid);}catch(_){}}else if(Math.abs(dy)>10)mode="y";}
       if(mode!=="x")return;e.preventDefault();card.style.transform="translateX("+dx+"px) rotate("+(dx/30)+"deg)";card.dataset.dir=dx>50?"r":dx<-50?"l":"";});
     const end=()=>{if(x0===null)return;x0=null;const m=mode;mode=null;v3holdOff();
       if(m!=="x"){reset();if(m===null&&Math.abs(dx)<6&&Math.abs(dy)<6&&onTap)onTap();return;}
       if(Math.abs(dx)<90){reset();return;}
-      const r=dx>0;if(!r&&labels.direct){reset();onLeft();return;}card.style.transition="transform .2s ease";card.style.transform="translateX("+(r?1:-1)*Math.min(innerWidth,520)*0.45+"px) rotate("+(r?6:-6)+"deg)";
+      const r=dx>0;if(r?labels.directR:labels.direct){reset();(r?onRight:onLeft)();return;}card.style.transition="transform .2s ease";card.style.transform="translateX("+(r?1:-1)*Math.min(innerWidth,520)*0.45+"px) rotate("+(r?6:-6)+"deg)";
       const title=card.getAttribute("aria-label")||"this task";
       v3confirm((r?(labels.r||"Mark as done"):(labels.l||"Move to tomorrow"))+": "+title+"?",r?(labels.rb||"Done"):(labels.lb||"Move"),()=>{r?onRight():onLeft();},reset);};
     card.addEventListener("pointerup",end);card.addEventListener("pointercancel",()=>{if(x0===null)return;x0=null;mode=null;v3holdOff();reset();});};

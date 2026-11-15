@@ -6,7 +6,7 @@ function bkOfId(id){let cur=state.tasks&&state.tasks[id],g=0;while(cur&&g++<6){i
 function bkName(id){const b=bkOfId(id);return b&&state.tasks[b]?state.tasks[b].title||"Bucket":"Unbucketed";}
 function bkKids(bid){return Object.entries(state.tasks||{}).filter(([i,t])=>t&&t.parent===bid&&!t.bucket&&!t.cut&&!t.inbox&&!t.archived&&t.title).map(([id,t])=>({id,...t}));}
 function bkLoose(){return Object.entries(state.tasks||{}).filter(([i,t])=>t&&!t.bucket&&!t.parent&&!t.cut&&!t.inbox&&!t.archived&&t.title).map(([id,t])=>({id,...t}));}
-const bkSort=(a,b)=>(a.date?0:1)-(b.date?0:1)||String(a.date||"").localeCompare(String(b.date||""))||(a.order||0)-(b.order||0);
+const bkSort=(a,b)=>{const pa=a.pos!=null,pb=b.pos!=null;if(pa&&pb&&a.pos!==b.pos)return a.pos-b.pos;if(pa!==pb)return pa?-1:1;return (a.date?0:1)-(b.date?0:1)||String(a.date||"").localeCompare(String(b.date||""))||(a.order||0)-(b.order||0);};
 function bkSprintLabel(b){if(b.bNoSprint)return "Outside sprints";const s=b.bStart||b.bEnd,e=b.bEnd||b.bStart;if(!s)return "";const hit=sprints().filter(p=>p.start<=e&&p.end>=s).map(p=>"S"+p.n);return hit.length?hit.join(", "):"Outside sprints";}
 function bkDescendants(bid){const out=[];const all=Object.entries(state.tasks||{});const seen=new Set([bid]);let grew=true;while(grew){grew=false;for(const [i,t] of all){if(t&&t.parent&&seen.has(t.parent)&&!seen.has(i)){seen.add(i);out.push(i);grew=true;}}}return out;}
 function bkNote(msg){try{const b=undoBar();b.querySelector(".ub-t").textContent=msg;}catch(e){}}
@@ -72,14 +72,14 @@ function urTags(t){const o=[];if(t.cat)o.push(CAT_NAME[t.cat]||t.cat);if(Number(
 function bkActiveId(){const L=bkList().filter(b=>!b.archived&&b.bState==="active"&&(b.cat==="portfolio"||b.cat==="client"||b.kind==="portfolio"||b.kind==="client"));L.sort((a,b)=>(Number(a.queue)||0)-(Number(b.queue)||0)||(a.order||0)-(b.order||0));return L[0]?L[0].id:null;}
 function bkRow(t,first,opts){opts=opts||{};const li=el("li",{class:"bk-row ur-row"+(opts.inbox?" pl-row":"")+(t.done?" done":""),"data-id":t.id,draggable:"true","aria-label":t.title});
   const cb=el("input",{type:"checkbox",class:"ur-c","aria-label":"Done: "+t.title});cb.checked=!!t.done;cb.onchange=()=>{setDone(t.id,cb.checked);render();};
-  const tt=el("button",{type:"button",class:"bk-t ur-t",text:t.title,onclick:()=>opts.inbox?plSheet(t.id):v3taskSheet(t.id)});
+  const tt=el("button",{type:"button",class:"bk-t ur-t","data-dragok":opts.inbox?null:"",text:t.title,onclick:()=>opts.inbox?plSheet(t.id):v3taskSheet(t.id)});
   const dc=el("button",{type:"button",class:"bk-d ur-d"+(t.date?"":" none"),"aria-label":(t.date?"Reschedule from "+bkShort(t.date):"Pick a date")+": "+t.title,text:t.date?bkShort(t.date):"No date",onclick:()=>v3rs(t.id,"task")});
   const tg=el("span",{class:"hint ur-tags",text:urTags({...t})});
   li.append(cb,tt,dc,tg);
   if(first&&!t.done&&opts.go)li.classList.add("has-go"),tg.append(el("button",{type:"button",class:"ur-go bk-go","aria-label":"Start now: "+t.title,onclick:()=>v3five(t.id)},"Start for 5 minutes"));
-  li.addEventListener("dragstart",e=>{bkDrag=t.id;try{e.dataTransfer.setData("text/plain",t.id);e.dataTransfer.effectAllowed="move";}catch(_){}li.classList.add("drag");document.body.classList.add("bk-dragging");});
+  li.addEventListener("dragstart",e=>{if(e.defaultPrevented)return;bkDrag=t.id;try{e.dataTransfer.setData("text/plain",t.id);e.dataTransfer.effectAllowed="move";}catch(_){}li.classList.add("drag");document.body.classList.add("bk-dragging");});
   li.addEventListener("dragend",()=>{bkDrag=null;li.classList.remove("drag");document.body.classList.remove("bk-dragging");document.querySelectorAll(".bk-over").forEach(x=>x.classList.remove("bk-over"));});
-  if(!t.done){swipeable(li,()=>{setDone(t.id,true);render();},()=>v3rs(t.id,"task"),null,{r:"Mark as done",rb:"Done",direct:true});rsLong(li,()=>v3taskMenu(t.id));}
+  if(!t.done){if(opts.inbox){swipeable(li,()=>{setDone(t.id,true);render();},()=>v3rs(t.id,"task"),null,{r:"Mark as done",rb:"Done",direct:true});rsLong(li,()=>v3taskMenu(t.id));}else{swipeable(li,()=>bkPair(t.id),()=>bkSchedule(t.id),null,{direct:true,directR:true});bkHints(li);bkGuard(li);}}
   return li;}
 function bkCard(b){const none=!b,id=b?b.id:"none",kids=(none?bkLoose():bkKids(b.id)).sort(bkSort),open=kids.filter(k=>!k.done),done=kids.length-open.length,paused=!none&&b.bState==="paused",ex=!!bkExp[id],shown=ex?open:open.slice(0,3);
   const card=el("section",{class:"bk-card"+(paused?" paused":"")+(none?" none":""),"data-bk":id,"aria-label":none?"Unbucketed":b.title,style:none?"":"--bk:"+(b.bColor||BK_COL[0])});
