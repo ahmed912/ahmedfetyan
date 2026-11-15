@@ -1,0 +1,47 @@
+// Diamonds round 1: time spent under tasks, bucket header, bucket sheet, task sheet
+const {openp,run,shot}=require('./h.js');const {item,addE,load}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const base=()=>{const d=load();
+  d.tasks.bkT={title:'Time test',bucket:true,bState:'active',cat:'portfolio',bStart:'2026-11-01',bEnd:'2026-11-30',done:false,order:1};
+  d.tasks.ta={title:'Alpha dm1',parent:'bkT',date:'2026-11-09',cat:'portfolio',done:false,order:1};
+  d.tasks.tb={title:'Beta dm1',parent:'bkT',date:'2026-11-09',cat:'portfolio',done:false,order:2};
+  d.tasks.ts={title:'Step dm1',parent:'ta',sub:true,done:false};
+  d.tasks.tn={title:'None dm1',parent:'bkT',date:'2026-11-09',cat:'portfolio',done:false,order:3};
+  addE(d,'2026-11-07',item('2026-11-07','x1','tasks:ta','Alpha',9,0,90));
+  addE(d,'2026-11-08',item('2026-11-08','x2','tasks:ta','Alpha',9,0,60));addE(d,'2026-11-08',item('2026-11-08','x3','tasks:ta','Alpha',9,30,60));
+  addE(d,'2026-11-09',item('2026-11-09','x4','tasks:ts','Step',8,0,30));addE(d,'2026-11-09',item('2026-11-09','x5','tasks:tb','Beta',9,0,20));addE(d,'2026-11-09',item('2026-11-09','x6',null,'Probe',10,0,60));
+  return d;};
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const pg=await openp(b,w,{sb:true,real:JSON.stringify(base())});const W=ms=>pg.waitForTimeout(ms);
+  await pg.clock.runFor(1500);const E=x=>pg.evaluate(x);
+  ok('refMin ta 180',(await E("__dm.refMin('tasks:ta')"))===180,await E("__dm.refMin('tasks:ta')"));
+  ok('taskMin ta 210',(await E("__dm.taskMin('ta')"))===210);
+  ok('bkMin 230',(await E("__dm.bkMin('bkT')"))===230,await E("__dm.bkMin('bkT')"));
+  await E("__r2.setPage('projects')");await pg.clock.runFor(800);await W(200);
+  const T=async s=>(await pg.locator(s).first().evaluate(n=>{let t='';n.childNodes.forEach(c=>{if(c.nodeType===3)t+=c.textContent;});return t||n.innerText;})).replace(/\s+/g,' ').trim();
+  ok('header total',(await T('[data-bk="bkT"] .bk-sub')).endsWith('3h 50m logged'),await T('[data-bk="bkT"] .bk-sub'));
+  const rowOk=async()=>true;
+  const ex=await pg.locator('[data-bk="bkT"] .bk-row').count();
+  if(!ex){await pg.locator('[data-bk="bkT"] .bk-head, [data-bk="bkT"] .bk-chev, [data-bk="bkT"] .bk-toggle').first().click({timeout:1500}).catch(()=>{});await pg.clock.runFor(400);}
+  ok('ta tags end 3h 30m',(await T('.bk-row[data-id="ta"] .ur-tags')).endsWith('3h 30m'),await T('.bk-row[data-id="ta"] .ur-tags').catch(e=>'none'));
+  ok('tb tags end 20m',(await T('.bk-row[data-id="tb"] .ur-tags')).endsWith('20m'));
+  const tn=(await pg.locator('.bk-row[data-id="tn"] .ur-tags').count())?await T('.bk-row[data-id="tn"] .ur-tags'):'';
+  ok('tn tags no 0m',!/\b0m/.test(tn),tn);
+  await pg.locator('[data-bk="bkT"] .bk-title').first().click();await pg.clock.runFor(600);await W(200);
+  const cnt=async()=>((await pg.locator('.ps-sheet .bks-sum').first().innerText()).match(/3h 50m logged/g)||[]).length;
+  ok('sheet total once',(await cnt())===1,await pg.locator('.ps-sheet .bks-sum').first().innerText());
+  await pg.locator('.ps-sheet .bk-add input').first().fill('x dm1');await pg.keyboard.press('Enter');await pg.clock.runFor(600);await W(200);
+  ok('sheet total still once',(await cnt())===1);
+  await pg.keyboard.press('Escape');await pg.clock.runFor(500);
+  const ts=async id=>{await E(`__u.v3taskSheet('${id}')`);await pg.clock.runFor(500);await W(150);const t=(await pg.locator('.ps-sheet .tm-line').first().innerText()).trim();await pg.keyboard.press('Escape');await pg.clock.runFor(500);return t;};
+  ok('task sheet ta',(await ts('ta'))==='Time spent 3h 30m · 4 sessions');
+  ok('task sheet tb',(await ts('tb'))==='Time spent 20m · 1 session');
+  ok('task sheet tn',(await ts('tn'))==='No time logged yet');
+  await E("__r2.setPage('today')");await pg.clock.runFor(800);await W(200);
+  const card=async t=>pg.locator('.cs-card, .card').filter({hasText:t});
+  const ca=(await card('Alpha dm1')).first(),cn=(await card('None dm1'));
+  ok('today ta spent',(await ca.locator('.tm-spent').first().innerText()).trim()==='3h 30m');
+  ok('today tn no spent',(await cn.first().locator('.tm-spent').count())===0);
+  await shot(pg,'dm1-'+w);
+  console.log('errors',pg.errs.filter(e=>!e.includes('ERR_FAILED')).slice(0,4));await pg.context().close();}
+});
