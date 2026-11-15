@@ -11,7 +11,7 @@
   function v3typed(inp){if(!inp||inp.dataset.tt)return inp;inp.dataset.tt="1";const v=v3VD.get.call(inp);
     inp.type="text";inp.setAttribute("inputmode","text");inp.setAttribute("autocomplete","off");if(!inp.placeholder)inp.placeholder="8:30 AM";inp.classList.add("tt-in");
     v3VD.set.call(inp,v&&/^\d{2}:\d{2}/.test(v)?t12(v.slice(0,5)):"");
-    Object.defineProperty(inp,"value",{configurable:true,get(){return v3parse(v3VD.get.call(inp))||"";},set(x){v3VD.set.call(inp,x&&/^\d{1,2}:\d{2}/.test(String(x))?t12(String(x).slice(0,5)):(x||""));}});
+    Object.defineProperty(inp,"value",{configurable:true,get(){return v3parse(v3VD.get.call(inp))||"";},set(x){const p=x&&v3parse(String(x));v3VD.set.call(inp,p?t12(p):(x||""));}});
     inp.addEventListener("blur",()=>{const p=v3parse(v3VD.get.call(inp));if(p)v3VD.set.call(inp,t12(p));});
     inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();inp.blur();}});
     return inp;}
@@ -30,6 +30,14 @@
       el("div",{class:"v3-conf"},el("p",{class:"v3-conf-t",text:msg}),
         el("div",{class:"v3-conf-b"},el("button",{type:"button",class:"btn ghost",onclick:()=>done(onNo)},"Cancel"),el("button",{type:"button",class:"btn",onclick:()=>done(onYes)},yesTxt||"Yes"))));
     document.body.append(w);setTimeout(()=>{const b=w.querySelector(".btn:not(.ghost)");if(b)b.focus();},30);}
+  function v3ask(msg,yes){return new Promise(res=>v3confirm(msg,yes,()=>res(true),()=>res(false)));}
+  function v3askText(msg,yes,onYes){const old=document.getElementById("v3Conf");if(old)old.remove();
+    const inp=el("input",{type:"text",class:"v3-in","aria-label":msg}),done=fn=>{w.remove();fn&&fn();};
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();done(()=>onYes(inp.value.trim()));}});
+    const w=el("div",{id:"v3Conf",class:"v3-conf-wrap",role:"dialog","aria-modal":"true","aria-label":msg,onclick:e=>{if(e.target===w)done();}},
+      el("div",{class:"v3-conf"},el("p",{class:"v3-conf-t",text:msg}),inp,
+        el("div",{class:"v3-conf-b"},el("button",{type:"button",class:"btn ghost",onclick:()=>done()},"Cancel"),el("button",{type:"button",class:"btn",onclick:()=>done(()=>onYes(inp.value.trim()))},yes||"Save"))));
+    document.body.append(w);setTimeout(()=>inp.focus(),30);}
   // ---------- gestures are never interrupted by a redraw: changes that arrive mid-swipe wait for it to end ----------
   let v3hold=0,v3pend=false;
   {const _r=render;render=function(){if(v3hold>0){v3pend=true;return;}_r();};}
@@ -139,7 +147,7 @@
   function v3openDay(d){const o=sel;psClose(true);v3tOrigin=o;sel=clampDate(d);render();setTimeout(()=>{openPop("ent");},50);}
   // edit an entry after logging it: name, task, category, each session's start and end, or delete
   function entryEdit(d,id){psOpen("Edit entry",re=>{const items=entriesOn(d).map(x=>({...x,sessions:sessionsOf(x)})),x=items.find(y=>y.id===id);if(!x)return [el("p",{text:"This entry is gone."})];
-    const save=(msg)=>{x.minutes=Math.round(x.sessions.reduce((a,s)=>a+Number(s.minutes||0),0)*10)/10;delete x.start;delete x.end;saveEntries(d,items);if(msg)toast(msg);setTimeout(re,300);};
+    const save=(msg)=>{x.minutes=Math.round(x.sessions.reduce((a,s)=>a+Number(s.minutes||0),0)*10)/10;delete x.start;delete x.end;saveEntries(d,items);if(msg)toast(msg);setTimeout(re,80);};
     const name=el("input",{type:"text",class:"v3-in","aria-label":"Name",value:x.name||x.label||""});name.onchange=()=>{const n=name.value.trim();if(n&&n!==x.label)x.name=n;else delete x.name;save("Renamed");};
     const ts=v3taskChoices();const tsel=el("select",{class:"v3-in","aria-label":"Task"},el("option",{value:"",text:"No task"}),...ts.map(t=>el("option",{value:t.id,text:t.title})));
     tsel.value=String(x.ref||"").startsWith("tasks:")?x.ref.slice(6):"";tsel.onchange=()=>{const t=state.tasks[tsel.value];if(t){x.ref="tasks:"+tsel.value;x.label=t.title;if(!x.cat&&t.cat)x.cat=t.cat;}else{x.ref="other";}save("Task updated");};

@@ -61,3 +61,8 @@ window.__v21trim=v21trim;window.__v21edit=(d,id)=>entryEdit(d,id);
 function v21surf(d){const it=entriesOn(d).filter(x=>!isEstimate(x)&&x.kind!=="event"&&x.kind!=="break");
   return {today:workedMin(d),time:unionMin(it),review:v3workMin(d),sum:Math.round(it.reduce((a,x)=>a+Number(x.minutes||0),0)*10)/10};}
 window.__u21={warAnswer,surf:v21surf};
+// r48: one shared repaint. A render asked for while an inline edit, drag or swipe is active is remembered and runs the moment that ends, so every saved edit shows at once.
+(function(){const F=["__sbDragging","__sbEditing","__sbSwiping"],st={};let pend=false;
+  const busy=()=>F.some(k=>st[k]);
+  F.forEach(k=>{st[k]=!!window[k];Object.defineProperty(window,k,{configurable:true,get:()=>st[k],set:v=>{const was=st[k];st[k]=!!v;if(was&&!v&&pend)setTimeout(()=>{if(pend&&!busy()){pend=false;render();}},0);}});});
+  const _r=render;render=function(){if(busy()){pend=true;return;}pend=false;_r();};})();

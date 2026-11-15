@@ -3718,11 +3718,11 @@ body.pfull-on{overflow:hidden}
       const list=el("ul",{class:"slp-list"});
       let autos=[];try{autos=await B.list();}catch(e){}
       autos.forEach(a=>list.append(el("li",{class:"slp-row"},el("span",{text:"·"}),el("span",{class:"ent-what"},el("span",{text:when(a.created_at)}),el("span",{class:"hint",text:a.kind==="nightly"?"Nightly copy (2:00 am)":a.kind==="auto"?"Automatic weekly copy":a.kind==="safety"?"Safety copy, saved before a restore":"Saved by you"})),el("span"),
-        el("button",{class:"mini",type:"button",text:"Restore","aria-label":"Restore the backup from "+when(a.created_at),onclick:async()=>{if(!confirm("Replace everything on your board with the copy from "+when(a.created_at)+"? A safety copy of your current board is saved first."))return;try{await B.restore(a.id);toast("Restored. Reloading");setTimeout(()=>location.reload(),900);}catch(e){showNotice("Restore failed: "+(e.message||e));}}}))));
+        el("button",{class:"mini",type:"button",text:"Restore","aria-label":"Restore the backup from "+when(a.created_at),onclick:async()=>{if(!await v3ask("Replace everything on your board with the copy from "+when(a.created_at)+"? A safety copy of your current board is saved first.","Replace"))return;try{await B.restore(a.id);toast("Restored. Reloading");setTimeout(()=>location.reload(),900);}catch(e){showNotice("Restore failed: "+(e.message||e));}}}))));
       const file=el("input",{type:"file",accept:"application/json,.json",hidden:"","aria-label":"Backup file"});
       file.onchange=async()=>{const f=file.files[0];if(!f)return;let j;try{j=JSON.parse(await f.text());}catch(e){showNotice("That file isn't a Sprint Board backup.");return;}
         if(!j||!j.data||typeof j.data!=="object"){showNotice("That file isn't a Sprint Board backup.");return;}
-        if(!confirm("Replace everything on your board with this file from "+(j.exportedAt?when(j.exportedAt):"an unknown date")+"? A safety copy of your current board is saved first."))return;
+        if(!await v3ask("Replace everything on your board with this file from "+(j.exportedAt?when(j.exportedAt):"an unknown date")+"? A safety copy of your current board is saved first.","Replace"))return;
         try{await B.restoreData(j.data);toast("Restored. Reloading");setTimeout(()=>location.reload(),900);}catch(e){showNotice("Restore failed: "+(e.message||e));}};
       rc(box,
         el("div",{class:"slp-btns"},
@@ -4508,7 +4508,7 @@ body.pfull-on{overflow:hidden}
     let review=null;
     if(brReview){const x=due[0];
       if(!x){brReview=false;}else{
-        const acts=x.type==="decision"?[["Outcome was good: archive",()=>{const o=prompt("How did it turn out? (optional)");brUpd(x.id,{status:"done",doneAt:today,...(o?{outcome:o}:{})});}],["Check again in a month",()=>brKeep(x,30)],["Turn into a task",()=>brToTask(x,"today")]]
+        const acts=x.type==="decision"?[["Outcome was good: archive",()=>{v3askText("How did it turn out? (optional)","Archive",o=>{brUpd(x.id,{status:"done",doneAt:today,...(o?{outcome:o}:{})});});}],["Check again in a month",()=>brKeep(x,30)],["Turn into a task",()=>brToTask(x,"today")]]
           :x.type==="learning"?[["I remember it: show me later",()=>brKeep(x)],["Apply it: make a task",()=>brToTask(x,"tomorrow")],["Archive",()=>brUpd(x.id,{status:"done",doneAt:today})]]
           :[["Do it: task for tomorrow",()=>brToTask(x,"tomorrow")],["Keep: next week",()=>brKeep(x,7)],["Someday: in 3 months",()=>brKeep(x,90)],["Let it go",()=>brUpd(x.id,{status:"done",doneAt:today,as:"dropped"})]];
         review=el("section",{class:"panel br-rev"},el("div",{class:"br-rhead"},el("span",{class:"hint",text:"Review · "+due.length+" left"}),el("button",{type:"button",class:"mini",text:"Stop review",onclick:()=>{brReview=false;renderBrain();}})),

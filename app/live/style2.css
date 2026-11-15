@@ -513,3 +513,15 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .wf-nest .wf-nt{text-align:left}
 .wf-subbar{align-self:center;height:6px;margin:0 8px;border-radius:3px;background:color-mix(in oklab,var(--ink) 35%,var(--surface))}
 .wf-subbar.done{background:var(--good)}
+/* calm glass pop-ups (r48): toast, undo bar, reminder banners, notice, confirm sheet */
+.toast,.undo-bar,.rem-banner,.notice{background:color-mix(in oklab,var(--surface) 72%,transparent)!important;color:var(--ink)!important;border:1px solid color-mix(in oklab,var(--ink) 10%,transparent)!important;-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border-radius:16px!important;box-shadow:0 6px 24px rgba(0,0,0,.10)!important;font-size:13px!important;font-weight:400!important;letter-spacing:0}
+.toast{padding:8px 16px;transform:translate(-50%,6px);transition:opacity .25s ease,transform .25s ease}
+.toast.show{transform:translate(-50%,0)}
+.rem-banner{padding:10px 14px;animation:v3glassIn .25s ease both}
+.rem-banner .btn,.undo-bar .ub-b{font-size:13px;font-weight:400}
+.v3-conf-wrap{background:color-mix(in oklab,var(--ink) 16%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:v3fade .2s ease both}
+.v3-conf{background:color-mix(in oklab,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);border:1px solid color-mix(in oklab,var(--ink) 10%,transparent);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.12);animation:v3glassIn .25s ease both}
+.v3-conf-t{font-size:15px;font-weight:400}
+@keyframes v3glassIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes v3fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.toast,.rem-banner,.v3-conf,.v3-conf-wrap{animation:none;transition:none}}
