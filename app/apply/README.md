@@ -49,3 +49,14 @@ python3 rollback_diet.py unified.json restored.json unify-<ts>                 #
 - `rollback_diet.py` now restores removed fields at their old position (`pos` in the record), so the rollback is byte-for-byte.
 - `test_unify.py` runs on a copy of `final.json` and `mock_final.json` (also with synthetic old subtasks): backup, rollback byte-for-byte, Sprint counts unchanged (no subtask counted), parents' estimates unchanged, auto-default detection, drift stop, idempotent.
 - App side: the app also converts any leftover `check` list the first time a task is opened, so an unconverted task never loses its list.
+
+## Habits and repeating tasks are one thing (15 Nov), round 5
+`apply_habits.py`: scripts only, not run on live yet.
+```
+python3 apply_habits.py export.json habits.json [--baseline PATH] [--force]
+python3 test_habits.py  [export.json]                                  # fixture test; with an export it only prints the summary
+python3 rollback_diet.py habits.json restored.json habits-<ts>         # byte-for-byte
+```
+- Built-in english and gym, and custom habits without `rec`, get a preset (`rec`, `tod`, `order`); `min`/`max` are never touched.
+- Each repeating chain (daily, weekdays, weekly) becomes one habit `hb-<root>` with its done copies as marks in `logs`; copies lose `rec` and `recNext`, get `habitOf`, and the live copy is archived and cut. Biweekly and monthly stay repeating tasks and are listed in the summary.
+- Drift against `--baseline` exits 2; the run is idempotent.
