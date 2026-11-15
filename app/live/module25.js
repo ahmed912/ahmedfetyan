@@ -74,9 +74,10 @@ function hbSet(d,id,st,msg){const old=hbSnap(d,id),n=addDays(d,1),oldN=st==="mov
   hbLog(d,L=>{delete L[id];if(st)L.hbs[id]=st;else delete L.hbs[id];});
   if(st==="moved")hbLog(n,L=>{L.hbs[id]="due";});
   v3undoToast(msg||"Saved",()=>{hbRestoreSnap(d,id,old);if(oldN)hbRestoreSnap(n,id,oldN);});}
-window.__hb={list:hbList,due:hbDue,day:hbDay,todayList:hbTodayList,count:hbCount,streak:hbStreak,recName:hbRecName,save:hbSave,add:hbAdd,mark:hbMark,set:hbSet};
+window.__hb={addSheet:()=>hbSheet(null),sheet:id=>hbSheet(id),list:hbList,due:hbDue,day:hbDay,todayList:hbTodayList,count:hbCount,streak:hbStreak,recName:hbRecName,save:hbSave,add:hbAdd,mark:hbMark,set:hbSet};
 // ---------- Round 2: Today row, one-tap check, swipe skip or later, evening row ----------
 let hbOpen={};
+const hbRef=()=>{render();try{sheetRefresh();}catch(e){}};
 const hbBkTitle=id=>{const t=state.tasks&&state.tasks[id];return t&&t.bucket?t.title:null;};
 function hbRow(h,d,ctx){
   const st=hbDay(d,h.id),li=el("li",{class:"hb-row ur-row"+(st==="done"?" done":""),"data-id":h.id,"aria-label":h.name});
@@ -90,6 +91,7 @@ function hbRow(h,d,ctx){
   if(h.rec.type==="xweek")tags.push(hbWeekDone(h,d)+" of "+(h.rec.n||3)+" this week");
   if(st==="later")tags.push("later");
   li.append(cb,tt,stEl,el("span",{class:"hint ur-tags",text:tags.filter(Boolean).join(" · ")}));
+  if(ctx==="bucket"&&st!=="done"&&!hbDue(h,d)){li.classList.add("hb-nodue");cb.disabled=true;}
   swipeable(li,()=>hbMark(d,h.id,true),()=>hbNotToday(h.id,d),null,{direct:true,directR:true});
   return li;}
 function hbNotToday(id,d){const h=hbList(true).find(x=>x.id===id);if(!h)return;const today=iso(new Date());
@@ -106,7 +108,7 @@ function hbList4(ul,list,d,ctx,key){
   const ex=!!hbOpen[key+"x"],show=ex?list:list.slice(0,4);
   rc(ul,...show.map(h=>hbRow(h,d,ctx)));
   const wrap=el("div",{class:"hb-wrap"},ul);
-  if(list.length>4)wrap.append(el("button",{type:"button",class:"mini ck-more hb-more",onclick:()=>{hbOpen[key+"x"]=!ex;render();}},ex?"Show less":(list.length-4)+" more"));
+  if(list.length>4)wrap.append(el("button",{type:"button",class:"mini ck-more hb-more",onclick:()=>{hbOpen[key+"x"]=!ex;hbRef();}},ex?"Show less":(list.length-4)+" more"));
   if(show.length>1)v3dragList(ul,".hb-row",ids=>{const held=ul.querySelector(".hb-row[data-dragged]");
     ul.querySelectorAll(".hb-row").forEach(r=>{try{r.dispatchEvent(new PointerEvent("pointercancel"));}catch(e){}});
     if(ids.join()===show.map(x=>x.id).join()){if(held)setTimeout(()=>hbMenu(held.dataset.id),0);return;}
@@ -142,3 +144,59 @@ function hbToday(){
 // chRender (module7) repaints #cutStack on its own too, so the habits row hangs on it
 {const _ch25=chRender;chRender=function(){_ch25();try{hbToday();}catch(e){console.warn(e);}};}
 setInterval(()=>{if(new Date().getHours()===HB_EVE&&new Date().getMinutes()===0)try{renderCutList();}catch(e){}},60000);
+// ---------- Round 3: habit sheet and bucket rows ----------
+function hbStrip(h,re){const today=iso(new Date()),ws=v3wkStart(today);
+  const wk=el("div",{class:"hb-wk",role:"group","aria-label":"This week"});
+  HB_WD.forEach((wd,i)=>{const x=addDays(ws,i),st=hbDay(x,h.id);
+    const cls=x>today?"fut":st==="done"?"on":(st==="skip"||st==="moved")?"skip":!hbDue(h,x)?"off":"open";
+    const lab=fmt(x,{weekday:"long",day:"numeric",month:"short"})+": "+(cls==="on"?"done":cls==="skip"?"skipped":cls==="fut"?"coming up":cls==="off"?"not due":"open");
+    const b=el("button",{type:"button",class:"hb-wd "+cls+(x===today?" today":""),"aria-label":lab,disabled:cls==="fut"?"":null,text:HB_WL[i],onclick:()=>{hbMark(x,h.id,st!=="done");setTimeout(re,150);}});
+    wk.append(b);});
+  return wk;}
+function hbSheet(id){
+  const today=iso(new Date());
+  const draft={name:"",rec:{type:"daily"},tod:"any",bucket:null};
+  if(id&&!hbList(true).find(x=>x.id===id))return;
+  return psOpen("Habit",re=>{
+    const cur=id?hbList(true).find(x=>x.id===id):{id:null,...draft,builtin:false};
+    if(!cur)return [el("p",{class:"hint",text:"This habit is gone."})];
+    const r=cur.rec,name0=cur.name;
+    const apply=patch=>{if(id){hbSave(id,patch,"Changed: "+name0);setTimeout(re,150);}else{Object.assign(draft,patch);re();}};
+    const nIn=el("input",{type:"text",class:"v3-in hb-name","aria-label":"Habit name",placeholder:"Habit name, like Read 10 pages",value:id?name0:draft.name});
+    if(id)nIn.onchange=()=>{const v=nIn.value.trim();if(!v){nIn.value=name0;return;}hbSave(id,{name:v},"Renamed");setTimeout(re,150);};else nIn.oninput=()=>{draft.name=nIn.value;};
+    const out=[el("label",{class:"field"},el("span",{class:"label",text:"Name"}),nIn)];
+    const chip=(cls,data,text,on,fn)=>el("button",{type:"button",class:"cat-chip "+cls+(on?" on":""),"aria-pressed":String(!!on),...data,onclick:fn},text);
+    out.push(el("div",{class:"field"},el("span",{class:"label",text:"Repeat"}),el("div",{class:"v3-cats"},...HB_REC.map(([k,t])=>chip("hb-rec",{"data-r":k},k==="xweek"?(r.n||3)+"x a week":t,r.type===k,()=>{
+      const wd=parse(today).getDay();let nr;
+      if(k==="daily"||k==="weekdays")nr={type:k};else if(k==="xweek")nr={type:"xweek",n:r.n||3};else if(k==="weekly")nr={type:"weekly",days:[wd]};else nr={type:"days",days:(r.days&&r.days.length)?r.days:[wd]};
+      if(k===r.type)return;apply({rec:nr});})))));
+    if(r.type==="xweek")out.push(el("div",{class:"field"},el("span",{class:"label",text:"Times a week"}),el("div",{class:"v3-cats"},...[2,3,4,5,6].map(n=>chip("hb-n",{"data-n":String(n)},String(n),(r.n||3)===n,()=>apply({rec:{type:"xweek",n}}))))));
+    if(r.type==="weekly"||r.type==="days")out.push(el("div",{class:"field"},el("span",{class:"label",text:"Days"}),el("div",{class:"v3-cats"},...HB_WD.map(d=>{const ds=r.days||[],on=ds.includes(d);
+      return chip("hb-day",{"data-d":String(d)},HB_WN[d],on,()=>{if(r.type==="weekly"){apply({rec:{type:"weekly",days:[d]}});return;}
+        let nd=on?ds.filter(x=>x!==d):ds.concat(d);if(!nd.length){toast("Keep at least one day");return;}apply({rec:{type:"days",days:nd}});});}))));
+    out.push(el("div",{class:"field"},el("span",{class:"label",text:"Time of day"}),el("div",{class:"v3-cats"},...HB_TOD.map(([k,t])=>chip("hb-tod",{"data-t":k},t,cur.tod===k,()=>apply({tod:k}))))));
+    const sel2=el("select",{class:"v3-in hb-bk","aria-label":"Bucket"},el("option",{value:"",text:"No bucket"}),...bkList().filter(b=>!b.archived).map(b=>el("option",{value:b.id,text:b.title})));
+    sel2.value=cur.bucket||"";sel2.onchange=()=>apply({bucket:sel2.value||null});
+    out.push(el("label",{class:"field"},el("span",{class:"label",text:"Bucket"}),sel2));
+    if(id){const ws=v3wkStart(today);let n=0,m=0;for(let i=0;i<7;i++){const x=addDays(ws,i);if(hbDay(x,id)==="done")n++;if(r.type==="xweek"?false:(hbDue(cur,x)&&!["skip","moved"].includes(hbDay(x,id))))m++;}
+      if(r.type==="xweek")m=r.n||3;
+      out.push(el("div",{class:"field"},el("span",{class:"label",text:"This week"}),hbStrip(cur,re),el("span",{class:"hint hb-wkn",text:n+" of "+m+" this week"})));
+      const s=hbStreak(cur),parts=[];if(s.cur>0)parts.push("Streak "+s.cur+(r.type==="xweek"?" wk":" d"));if(s.best>0)parts.push("best "+s.best);parts.push(s.total+" total");if(s.skips30>0)parts.push(s.skips30+" skipped in 30 days");
+      out.push(el("p",{class:"hint hb-facts",text:parts.join(" · ")}));
+      out.push(el("div",{class:"v3-row"},el("button",{type:"button",class:"btn ghost hb-arch",onclick:()=>{psClose(true);hbSave(id,{archived:Date.now()},"Archived: "+name0);}},"Archive"),
+        cur.builtin?null:el("button",{type:"button",class:"btn ghost danger hb-del",onclick:()=>{psClose(true);hbSave(id,{deleted:Date.now()},"Deleted: "+name0);}},"Delete")));
+    }else out.push(el("button",{type:"button",class:"btn hb-save",onclick:()=>{const nid=hbAdd(nIn.value||draft.name,draft.bucket);if(!nid)return;hbSave(nid,{rec:draft.rec,tod:draft.tod},false);psClose(true);}},"Add habit"));
+    return out;},{focus:!id});}
+addHabitSheet=function(){hbSheet(null);};
+function hbBucketSec(bid){const list=hbList().filter(h=>h.bucket===bid);if(!list.length)return null;
+  const today=iso(new Date()),due=list.filter(h=>hbDue(h,today)&&!["skip","moved"].includes(hbDay(today,h.id))),c=hbCount(due,today),open=!!hbOpen["bk"+bid];
+  const head=el("button",{type:"button",class:"hb-bk-head mini","aria-expanded":String(open),onclick:()=>{hbOpen["bk"+bid]=!open;hbRef();}},due.length?"Habits "+c.done+" of "+due.length:"Habits · none due today");
+  const box=el("div",{class:"hb-bk","data-bk-hab":bid},head);
+  if(open){const inp=el("input",{type:"text",class:"v3-in","aria-label":"Add a habit",placeholder:"Add habit"});
+    inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();const v=inp.value;inp.value="";hbAdd(v,bid);}});
+    box.append(hbList4(el("ul",{class:"hb-list"}),list,today,"bucket","bk"+bid),el("div",{class:"hb-add bk-add"},inp));}
+  return box;}
+{const _bc25=bkCard;bkCard=function(b){const c=_bc25(b);try{if(b){const s=hbBucketSec(b.id);const add=c.querySelector(".bk-add");if(s)add?add.before(s):c.append(s);}}catch(e){console.warn(e);}return c;};}
+let hbSheetBid=null;
+{const _bs25=bkSheet;bkSheet=function(bid){hbSheetBid=bid;return _bs25(bid);};}
+PS_AFTER.push((title,body)=>{if(!hbSheetBid||!body.querySelector(".bks-sum")||body.querySelector(".hb-bk"))return;const s=hbBucketSec(hbSheetBid);const l=body.querySelector(".bks-list");if(s&&l)l.after(s);});

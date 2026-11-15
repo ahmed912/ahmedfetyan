@@ -545,3 +545,14 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .hb-eve{display:flex;align-items:center;gap:8px;padding:8px 0 0;border-top:1px solid var(--line);margin-top:8px}
 .hb-eve .hint{flex:1;min-width:0}
 .hb-add{margin-top:8px}
+.hb-wk{display:grid;grid-template-columns:repeat(7,32px);gap:8px}
+.hb-wd{all:unset;box-sizing:border-box;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:12px;border:1px solid var(--line);cursor:pointer}
+.hb-wd.on{background:color-mix(in oklab,var(--ink) 14%,transparent);border-color:transparent}
+.hb-wd.skip{border-style:dashed;opacity:.6}
+.hb-wd.off{opacity:.3}
+.hb-wd.fut{opacity:.3;cursor:default}
+.hb-wd.today{box-shadow:inset 0 -2px 0 var(--ink)}
+.hb-bk{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.hb-bk-head{all:unset;cursor:pointer;font-size:13px;opacity:.75}
+.hb-row.hb-nodue .ur-c{visibility:hidden}
+.hb-facts{font-variant-numeric:tabular-nums}
