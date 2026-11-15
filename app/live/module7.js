@@ -135,7 +135,7 @@ function chCards(tasks,d){const groups=new Map();
     .sort((a,b)=>{const pa=a.pos!=null,pb=b.pos!=null;if(pa&&pb)return a.pos-b.pos;if(pa!==pb)return pa?-1:1;return (a.rank-b.rank)||((a.order||0)-(b.order||0));});}
 let chWar=null;
 {const _wp=warPool;warPool=function(tg){if(chWar&&Date.now()-chWar.at<300000&&tg&&tg.k==="task"&&tg.v===chWar.v){return chWar.ids.map(id=>({id,...state.tasks[id]})).filter(x=>x.title);}return _wp(tg);};}
-function chStart(cards){const first=cards[0];if(!first)return;const ids=[];cards.forEach(c=>{(c.steps?c.steps.filter(s=>!s.done):[c]).forEach(s=>ids.push(s.id));});chWar={v:first.id,ids,at:Date.now()};v3start(first.id);}
+function chStart(cards){const first=cards[0];if(!first)return;const ids=[];[first].forEach(c=>{(c.steps?c.steps.filter(s=>!s.done):[c]).forEach(s=>ids.push(s.id));});chWar={v:first.id,ids,at:Date.now()};v3start(first.id);}
 let chBuild=false;{const _sw=swipeable;swipeable=function(c,r,l,tap,...rest){return _sw.call(this,c,r,l,chBuild?null:tap,...rest);};}
 let chTog={},chExp={};
 const chH=h=>(Math.round(h*10)/10)+" h";
