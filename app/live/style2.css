@@ -532,3 +532,6 @@ body.cut1 #bars,#bars{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!i
 .bk-row .bk-hr{left:8px}.bk-row .bk-hl{right:8px}
 .bk-row[data-dir="r"] .bk-hr,.bk-row[data-dir="l"] .bk-hl{opacity:1}
 .bk-arch{margin-top:4px}.bk-arch-l{list-style:none;margin:4px 0 0;padding:0}.bk-arch-t{color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* r57 auto-close note: never covers what is under it, only its two buttons take taps */
+#v57n{pointer-events:none}#v57n .ub-b{pointer-events:auto}
+.g-auto{display:flex;align-items:center;gap:8px;padding:4px 0}
