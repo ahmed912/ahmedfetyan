@@ -36,6 +36,13 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // a second run (another device) does not close twice
   await pg.evaluate("window.__u57.run()");await R(1000);d=await D();const E2=((d.entries[today]||{}).items)||[];
   ok('closing again does nothing',E2.length===2&&d.logs[today].workOut===at(today,21,30));
+  // started after 21:30: 2 h at most
+  await pg.evaluate("window.__sbWar.put({k:'cat',v:'portfolio',label:'Late',ids:[],done:[],start:"+at(today,22,0)+",dur:480,phase:'focus',phase0:0})");
+  await pg.clock.fastForward(30*60000);await R(35000);d=await D();
+  ok('late War still running before 2 h',!!(await pg.evaluate("window.__sbWar.get()")));
+  await pg.clock.fastForward(130*60000);await R(35000);d=await D();
+  const late=(((d.entries[today]||{}).items)||[]).find(x=>/War on Late/.test(x.label||''));
+  ok('War started at 22:00 closes 2 h later with 120 min and the note',!!late&&late.minutes===120&&/auto-closed/.test(late.note||''),JSON.stringify(late&&{m:late.minutes,n:late.note}));
   // one tap Edit
   const bar=pg.locator('#v57n');ok('a quiet note with Edit is shown',await bar.isVisible()&&(await pg.locator('#v57n .v57-edit').count())===1);
   await pg.locator('#v57n .v57-edit').click();await R(800);

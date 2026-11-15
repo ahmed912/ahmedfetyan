@@ -1,7 +1,10 @@
 // ===== Round 57: forgotten sessions. A Gym session left running ends 60 min after its start at most. A work day, War or work timer left running closes at 21:30 local unless it was closed before. Nothing is deleted and no time is dropped: the entry keeps the time up to the cap (billable), carries the note "auto-closed at 21:30", and a one-tap Edit corrects it. Runs on open and while open. Entry ids come from the session start, so two devices closing the same session write the same entry once. =====
 const V57_CAPT="21:30",V57_GYM=60*60000,V57_K="sb-v57";
 // the first 21:30 local after a start
-function v57cap(startMs){const d=new Date(startMs);d.setHours(21,30,0,0);if(d.getTime()<=startMs)d.setDate(d.getDate()+1);return d.getTime();}
+function v57cap(startMs){const d=new Date(startMs);d.setHours(21,30,0,0);if(d.getTime()>startMs)return d.getTime();
+  // started at or after 21:30: 2 h at most, never later than 03:00 local
+  const e=new Date(startMs);e.setHours(3,0,0,0);if(e.getTime()<=startMs)e.setDate(e.getDate()+1);return Math.min(startMs+2*3600000,e.getTime());}
+const v57lbl=cap=>{const d=new Date(cap);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");};
 function v57notes(){try{return JSON.parse(localStorage.getItem(V57_K)||"[]");}catch(e){return [];}}
 function v57put(a){try{localStorage.setItem(V57_K,JSON.stringify(a.slice(-6)));}catch(e){}}
 function v57note(n){const a=v57notes().filter(x=>x.id!==n.id);a.push(n);v57put(a);v57bar();}
@@ -14,38 +17,38 @@ function v57bar(){let b=document.getElementById("v57n");const a=v57notes();
   b.querySelector(".v57-x").onclick=()=>{v57put(v57notes().filter(x=>x.id!==n.id));v57bar();};b.hidden=false;}
 function v57edit(n){if(n.k==="gym"){v57gymEdit(n.sid);return;}if(n.k==="day"){try{loginHistory();}catch(e){}return;}try{entryEdit(n.d,n.id);}catch(e){console.warn(e);}}
 // annotate a time entry: keeps its minutes, adds the note
-function v57annotate(d,id){const items=(itemsRaw(d)||[]).map(x=>x.id===id&&!String(x.note||"").includes("auto-closed at "+V57_CAPT)?{...x,note:(x.note?x.note+" · ":"")+"auto-closed at "+V57_CAPT}:x);saveEntries(d,items);}
+function v57annotate(d,id,cap){const items=(itemsRaw(d)||[]).map(x=>x.id===id&&!String(x.note||"").includes("auto-closed at ")?{...x,note:(x.note?x.note+" · ":"")+"auto-closed at "+v57lbl(cap)}:x);saveEntries(d,items);}
 const v57r1=x=>Math.round(x*10)/10;
 // ---- work day ----
 function v57day(){if(!state.loaded||!state.loaded.logs)return;const now=Date.now(),from=addDays(iso(new Date()),-2);   // today and the last two days; older history is left as it is
   Object.keys(state.logs||{}).forEach(d=>{const L=state.logs[d];if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||d<from||!L||!L.workIn||L.workOut)return;const cap=v57cap(L.workIn);if(now<cap)return;
-    setLogPatch(d,{workOut:cap,workNote:"auto-closed at "+V57_CAPT});
-    v57note({id:"day"+d,k:"day",d,txt:"Work day "+fmt(d,{day:"numeric",month:"short"})+" closed at "+t12(V57_CAPT)+". Edit if you finished earlier."});});}
+    setLogPatch(d,{workOut:cap,workNote:"auto-closed at "+v57lbl(cap)});
+    v57note({id:"day"+d,k:"day",d,txt:"Work day "+fmt(d,{day:"numeric",month:"short"})+" closed at "+t12(v57lbl(cap))+". Edit if you finished earlier."});});}
 // ---- War ----
 function v57war(){if(!state.loaded||!state.loaded.timers)return;const w=warGet();if(!w||!w.start)return;const cap=v57cap(w.start);if(Date.now()<cap)return;
   w.segs=(w.segs||[]).map(s=>({start:s.start,end:Math.min(s.end,cap)})).filter(s=>s.end>s.start);
   if(!w.pausedAt){w.segs.push({start:w.segStart||w.start,end:cap});w.pausedAt=cap;}else if(w.pausedAt>cap)w.pausedAt=cap;
-  w.autoEnd=true;w.autoCap=V57_CAPT;const d=iso(new Date(w.start));
-  warSave(w,true);if(w.eid)v57annotate(d,w.eid);
+  w.autoEnd=true;w.autoCap=v57lbl(cap);const d=iso(new Date(w.start));
+  warSave(w,true);if(w.eid)v57annotate(d,w.eid,cap);
   const mins=Math.floor(warLogged(w)/60000);
   warPut(null);try{warClose();}catch(e){}
-  v57note({id:w.eid||"war"+w.start,k:"war",d,txt:"War on "+w.label+" closed at "+t12(V57_CAPT)+": "+dur(mins)+" kept. Edit if you finished earlier."});}
+  v57note({id:w.eid||"war"+w.start,k:"war",d,txt:"War on "+w.label+" closed at "+t12(v57lbl(cap))+": "+dur(mins)+" kept. Edit if you finished earlier."});}
 // ---- block timer and task timer ----
 function v57block(){if(!state.loaded||!state.loaded.timers)return;const t=activeTimer();if(!t||!t.startedAt)return;const cap=v57cap(t.startedAt);if(Date.now()<cap)return;
   const end=t.pausedAt&&t.pausedAt<cap?t.pausedAt:cap,minutes=Math.max(0,(end-t.startedAt-(t.pausedTotal||0))/60000),id="auto"+t.startedAt.toString(36),name=(BLOCKS.find(b=>b.id===t.block)||{}).name||"Block";
   setTimerDoc({block:null});if(minutes<1)return;
   if((itemsRaw(t.date)||[]).some(x=>x.id===id))return;
   addBlockMinutes(t.date,t.block,minutes);
-  saveEntries(t.date,(itemsRaw(t.date)||[]).concat([{id,kind:"block",ref:t.block,label:name,note:"auto-closed at "+V57_CAPT,minutes:v57r1(minutes),sessions:[{start:t.startedAt,end,minutes:v57r1(minutes),paused:v57r1((t.pausedTotal||0)/60000)}]}]));
-  v57note({id,k:"block",d:t.date,txt:name+" timer closed at "+t12(V57_CAPT)+": "+dur(minutes)+" kept. Edit if you finished earlier."});}
+  saveEntries(t.date,(itemsRaw(t.date)||[]).concat([{id,kind:"block",ref:t.block,label:name,note:"auto-closed at "+v57lbl(cap),minutes:v57r1(minutes),sessions:[{start:t.startedAt,end,minutes:v57r1(minutes),paused:v57r1((t.pausedTotal||0)/60000)}]}]));
+  v57note({id,k:"block",d:t.date,txt:name+" timer closed at "+t12(v57lbl(cap))+": "+dur(minutes)+" kept. Edit if you finished earlier."});}
 function v57task(){if(!state.loaded||!state.loaded.timers)return;const k=taskTimer();if(!k||!k.startedAt)return;const cap=v57cap(k.startedAt);if(Date.now()<cap)return;
   const end=k.pausedAt&&k.pausedAt<cap?k.pausedAt:cap;let ms=Math.max(0,end-k.startedAt-(k.pausedTotal||0));if(k.mode==="down")ms=Math.min(ms,k.durationMs||ms);const minutes=ms/60000,id="auto"+k.startedAt.toString(36);
   setTaskDoc({ref:null,project:null});if(minutes<1)return;
   if((itemsRaw(k.date)||[]).some(x=>x.id===id))return;
   const owner=k.src==="tasks"?null:state[k.src]&&state[k.src][k.ref],label=k.src==="tasks"?k.text:((owner?owner.name+": ":"")+k.text);
-  saveEntries(k.date,(itemsRaw(k.date)||[]).concat([{id,kind:"task",ref:k.src==="projects"?k.ref:k.src+":"+k.ref,todoId:k.todoId,label,mode:k.mode,note:"auto-closed at "+V57_CAPT,minutes:v57r1(minutes),sessions:[{start:k.startedAt,end,minutes:v57r1(minutes),paused:v57r1((k.pausedTotal||0)/60000)}]}]));
+  saveEntries(k.date,(itemsRaw(k.date)||[]).concat([{id,kind:"task",ref:k.src==="projects"?k.ref:k.src+":"+k.ref,todoId:k.todoId,label,mode:k.mode,note:"auto-closed at "+v57lbl(cap),minutes:v57r1(minutes),sessions:[{start:k.startedAt,end,minutes:v57r1(minutes),paused:v57r1((k.pausedTotal||0)/60000)}]}]));
   if(k.src==="tasks"){const t=state.tasks[k.ref];if(t){const spent=Math.round(((t.spent||0)+minutes)*10)/10;state.tasks[k.ref]={...t,spent};try{store.update("tasks/"+k.ref,{spent});}catch(e){}}}
-  v57note({id,k:"task",d:k.date,txt:label+" timer closed at "+t12(V57_CAPT)+": "+dur(minutes)+" kept. Edit if you finished earlier."});}
+  v57note({id,k:"task",d:k.date,txt:label+" timer closed at "+t12(v57lbl(cap))+": "+dur(minutes)+" kept. Edit if you finished earlier."});}
 // ---- Gym: 60 minutes at most ----
 async function v57gym(){if(!state.loaded||!state.loaded.gym)return;const a=gActive();if(!a)return;const cap=a.startedAt+V57_GYM;if(Date.now()<cap)return;
   const d=a.day,sid="s_"+a.id;
