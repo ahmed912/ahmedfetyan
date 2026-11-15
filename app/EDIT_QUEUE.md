@@ -15,3 +15,4 @@ Weekly usage limit resets Wednesday 18:00 (user's local time). Reserve tokens fo
 5. English resources, planned links to shadow/listen/read (plan: plan/ENGLISH_RESOURCES_PLAN.md, after habits)
 6. Time spent under tasks and project total effort, then Diamonds Done and Shipped (plan: plan/DIAMONDS.md)
 7. Live data, only on his "go": replan, apply_unify.py, apply_habits.py, real hours 9 and 12 Nov; drop apply_docs_tmp
+8. War mode, starting a task from Today: the current-task card must show only that task's own subtasks (here 2), but it lists every waiting task in the sprint under "Up next". Fix: "Up next" shows the started task's remaining subtasks only; other sprint tasks stay out unless he adds them. Add a test.  [queued 15 Nov, not vital: he can still work]
