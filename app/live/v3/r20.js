@@ -17,7 +17,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await seed(pg);
   // move the view to D: today is D by the clock
   await R(800);
-  const cards=()=>pg.evaluate(()=>[...document.querySelectorAll('#cutStack .ch-card')].map(c=>({k:c.dataset.ch,open:c.classList.contains('open'),t:c.querySelector('.ch-t').innerText,txt:c.innerText})));
+  // the habits row (data-ch=hab, habits round 2) is not a time chunk: it hangs under the cards
+  const cards=()=>pg.evaluate(()=>[...document.querySelectorAll('#cutStack .ch-card:not(.hb-card)')].map(c=>({k:c.dataset.ch,open:c.classList.contains('open'),t:c.querySelector('.ch-t').innerText,txt:c.innerText})));
   let C=await cards();
   ok('4 cards in time order',C.map(c=>c.k).join()==='b1,b2,learn,shallow',C.map(c=>c.k).join());
   ok('Block 1 titled with its project',/^Block 1 · Mugassam · 4 h/.test(C[0].t)&&/^Block 2 · HASM · 4 h/.test(C[1].t),C.map(c=>c.t).join('|'));

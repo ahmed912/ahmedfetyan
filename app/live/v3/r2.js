@@ -15,6 +15,8 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   await esc();
   await pg.click('.snd-card:has-text("Queue")');await W(600);await shot(pg,'r2_queue_'+w);
   const rows=await pg.locator('.q-row').count();ok('queue rows',rows>=1,rows);
+  // r57 note bar (work day auto-closed in the mock data) sits over the lower rows; dismiss it like a user would
+  if(await pg.locator('#v57n .v57-x:visible').count()){await pg.locator('#v57n .v57-x').click();await W(300);}
   if(rows>1){const first=await pg.locator('.q-row').nth(0).getAttribute('data-id');
     const bb=await pg.locator('.q-row').nth(1).boundingBox();const b0=await pg.locator('.q-row').nth(0).boundingBox();
     await pg.mouse.move(b0.x+b0.width/2,b0.y+b0.height/2);await pg.mouse.down();await pg.clock.runFor(500);await pg.mouse.move(b0.x+b0.width/2,bb.y+bb.height+10,{steps:6});await pg.mouse.up();await pg.clock.runFor(400);await W(500);
@@ -37,6 +39,8 @@ run(async b=>{for(const w of [390]){const pg=await openp(b,w);const W=ms=>pg.wai
   await pg.fill('.ps-sheet input[aria-label="Habit name"]','Read 10 pages');await pg.click('.ps-sheet .btn:has-text("Add habit")');await pg.clock.runFor(800);await W(900);
   ok('habit added',await pg.evaluate("JSON.stringify(window.__data.habits)").then(s=>s.includes('Read 10 pages')),'');
   ok('habit visible',await pg.evaluate("document.getElementById('habits').textContent.includes('Read 10 pages')"));
+  // habit round 3: the shared habit sheet closes after saving, so reopen Habits
+  await pg.click('.pop-card:has-text("Habits")');await W(700);
   await pg.click('.v3-habbar .btn:has-text("Report")');await W(700);await shot(pg,'r2_rep_'+w);
   const tabs=await pg.locator('.v3-tabs .cat-chip').allTextContents();ok('report tabs',tabs.length>=3,tabs.join('|'));
   await pg.locator('.v3-tabs .cat-chip').nth(2).click();await W(400);await shot(pg,'r2_rep3_'+w);
