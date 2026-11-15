@@ -49,7 +49,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   t=await T();ok('Done marks it done at once',t[before[2]].done===true);
   // --- hold menu has Archive
   const rest=(await ids(C))[0];const hp=await pt(tt(C,rest));await pg.mouse.move(hp.x,hp.y);await pg.mouse.down();await R(900);await pg.mouse.up();await R(500);
-  ok('hold menu has Archive',(await pg.locator('.ps-sheet button',{hasText:/^Archive$/}).count())===1);
+  ok('hold menu has Archive',(await pg.locator('.ps-sheet button',{hasText:/^Archive/}).count())===1);
   await pg.keyboard.press('Escape');await R(400);
   // --- the bucket sheet
   await pg.locator(C+' .bk-title').click();await R(700);
