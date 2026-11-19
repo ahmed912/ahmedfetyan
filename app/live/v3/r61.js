@@ -53,6 +53,12 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('hand tick',(await pg.isChecked(cell('5|0')+' .mx-ck'))&&(await plan())['mx-2026-11-14'].cells['5|0'].done===true);
   await pg.click('#v3ut .ub-b');await R(400);
   ok('undo tick',!(await pg.isChecked(cell('5|0')+' .mx-ck'))&&(await plan())['mx-2026-11-14'].cells['5|0'].done==null);
+  // 6b: tick adds block hours at once, untick drops
+  {const w=await pg.evaluate("(()=>{const v=__mx.calc('2026-11-14');for(let i=0;i<7;i++)for(let b=0;b<4;b++){const c=v.doc.cells[i+'|'+b];if(c&&c.t==='w'&&!v.cm[i+'|'+b]&&c.done==null&&!c.ref&&i!==4&&i!==5)return {k:i+'|'+b,h:v.H[b],ach:v.ach};}})()");
+  await pg.click(cell(w.k)+' .mx-ck');await R(400);
+  const a1=parseFloat(await tv('ach'));ok('tick adds block hours',Math.abs(a1-(w.ach/60+w.h))<0.06,a1+'|'+JSON.stringify(w));
+  await pg.click(cell(w.k)+' .mx-ck');await R(400);
+  ok('untick drops',Math.abs(parseFloat(await tv('ach'))-w.ach/60)<0.06,await tv('ach'));}
   // 7
   await swipe(cell('5|1'),-130);
   ok('empty swipe no change',(await pg.textContent(cell('5|1')+' .mx-cn'))==='');
@@ -100,5 +106,10 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('narrow class',lay.n===(w===390),JSON.stringify(lay));
   // 15
   ok('no errors',pg.errs.filter(e=>!e.includes('ERR_FAILED')).length===0,JSON.stringify(pg.errs.slice(0,3)));
-  await pg.context().close();}
+  await pg.context().close();
+  {const d2=load();addE(d2,'2026-11-16',item('2026-11-16','w9','other','War block',9,0,120));
+  const p2=await openp(b,w,{when:today+'T11:00:00',real:JSON.stringify(d2)});
+  const r=await p2.evaluate("(()=>{const v=__mx.calc('2026-11-14');return {ach:v.ach,cm:['2|0','2|1','2|2','2|3'].map(k=>v.cm[k])}})()");
+  ok('other (War) entry counts',r.ach===120&&r.cm.reduce((x,y)=>x+y,0)===120,JSON.stringify(r));
+  await p2.context().close();}}
 });

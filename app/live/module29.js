@@ -28,10 +28,10 @@ function mxCalc(w0){const key=[w0,iso(new Date())].join();if(mxMemo&&mxMemo.key=
       if(c.t==="w"){alloc+=H[b];dayW[i]+=H[b];blW[b]+=H[b];}else if(c.t==="b"){buf+=H[b];dayB[i]+=H[b];}else off+=H[b];
       if(c.ref&&c.t!=="o")(by[c.ref]=by[c.ref]||[]).push(b);}
     {let m=workedMin(d);const order=[0,1,2,3].filter(b=>(doc.cells[i+"|"+b]||{t:"o"}).t==="w").concat([0,1,2,3].filter(b=>(doc.cells[i+"|"+b]||{t:"o"}).t==="b"));
-      ach+=m;order.forEach((b,j)=>{const give=j===order.length-1?m:Math.min(m,H[b]*60);m-=give;cm[i+"|"+b]=give;blA[b]+=give;});if(!order.length&&m>0){blA[0]+=m;}}}
+      order.forEach((b,j)=>{const c=doc.cells[i+"|"+b]||{},give=j===order.length-1?m:Math.min(m,H[b]*60);m-=give;const f=c.done===true?H[b]*60:c.done===false?0:give;cm[i+"|"+b]=f;blA[b]+=f;ach+=f;});if(!order.length&&m>0){blA[0]+=m;ach+=m;}}}
   const v={doc,H,cm,dayW,dayB,blW,blA,alloc,buf,off,ach,pct:alloc>0?Math.round(ach/60/alloc*100):0};
   mxMemo={key,p:state.plans,e:state.entries,t:state.tasks,v};return v;}
-const mxShown=(c,m,h)=>c.done===true||(c.done!==false&&!!c.ref&&m>=h*60);
+const mxShown=(c,m,h)=>c.done===true||(c.done!==false&&m>0&&m>=h*60);
 const mxHs=h=>(Math.round(h*10)/10)+" h";
 const mxMs=m=>mxHs(m/60);
 function mxRefName(ref){const t=ref&&state.tasks[ref.slice(6)];return t?t.title:"";}
