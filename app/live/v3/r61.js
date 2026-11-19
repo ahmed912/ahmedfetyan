@@ -23,12 +23,12 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate("__r2.setPage('projects')");await R(800);
   ok('plan row visible',await vis('#planMatrix'));
   const sum=await pg.textContent('.mx-sum');
-  ok('row text',sum.includes('Week 47')&&sum.includes('0 h of 68 h'),sum);
+  ok('row text',sum.includes('Week 47')&&sum.includes('6.5 h of 68 h'),sum);
   ok('lazy: no doc written',(await plan())['mx-2026-11-14']===undefined);
   // 2
   await pg.click('#planMatrix .mx-open');await R(600);
   ok('board sheet open',await vis('.ps-sheet[aria-label="Week matrix"]'));
-  ok('tiles initial',(await tv('alloc'))==='68 h'&&(await tv('ach'))==='0 h'&&(await tv('pct'))==='0%'&&(await tv('buf'))==='13 h'&&(await tv('off'))==='24 h',[await tv('alloc'),await tv('ach'),await tv('pct'),await tv('buf'),await tv('off')].join('|'));
+  ok('tiles initial',(await tv('alloc'))==='68 h'&&(await tv('ach'))==='6.5 h'&&(await tv('pct'))==='10%'&&(await tv('buf'))==='13 h'&&(await tv('off'))==='24 h',[await tv('alloc'),await tv('ach'),await tv('pct'),await tv('buf'),await tv('off')].join('|'));
   ok('label/week/dates',(await pg.inputValue('.mx-label'))==='Week 47'&&(await pg.inputValue('.mx-wk'))===W0&&(await pg.textContent('.mx-dates')).trim()==='14 Nov to 20 Nov');
   // 3
   const cnt=s=>pg.locator(s).count();
@@ -41,7 +41,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('back on board',await vis('.ps-sheet[aria-label="Week matrix"]'));
   ok('cell name',(await pg.textContent(cell('5|0')+' .mx-cn'))==='R61 Alpha');
   ok('toast pick',(await pg.textContent('#v3ut')).includes('Thu Block 1: R61 Alpha'));
-  ok('ach 1.5 h',(await tv('ach'))==='1.5 h',await tv('ach'));
+  ok('ach unchanged by pick',(await tv('ach'))==='6.5 h',await tv('ach'));
   ok('not checked',!(await pg.isChecked(cell('5|0')+' .mx-ck')));
   // 5
   await pg.evaluate("__mx.pick('2026-11-14','4|0','tasks:r61b',true);__mx.pick('2026-11-14','4|1','tasks:r61b',true)");await R(400);
@@ -84,7 +84,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await hold();
   ok('options sheet',await vis('.ps-sheet[aria-label="Week options"]'));
   await pg.click('.mx-del');await R(500);
-  ok('deleted',(await tv('ach'))==='0 h'&&(await tv('buf'))==='13 h'&&!!(await plan())['mx-2026-11-14'].deleted,await tv('ach')+'|'+await tv('buf'));
+  ok('deleted',(await tv('ach'))==='6.5 h'&&(await tv('buf'))==='13 h'&&!!(await plan())['mx-2026-11-14'].deleted,await tv('ach')+'|'+await tv('buf'));
   await pg.click('#v3ut .ub-b');await R(400);
   ok('delete undo',(await tv('ach'))==='6.5 h'&&(await tv('buf'))==='10 h',await tv('ach')+'|'+await tv('buf'));
   // 13
