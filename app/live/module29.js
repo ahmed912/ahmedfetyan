@@ -27,8 +27,8 @@ function mxCalc(w0){const key=[w0,iso(new Date())].join();if(mxMemo&&mxMemo.key=
     for(let b=0;b<4;b++){const k=i+"|"+b,c=doc.cells[k]||{t:"o"};cm[k]=0;
       if(c.t==="w"){alloc+=H[b];dayW[i]+=H[b];blW[b]+=H[b];}else if(c.t==="b"){buf+=H[b];dayB[i]+=H[b];}else off+=H[b];
       if(c.ref&&c.t!=="o")(by[c.ref]=by[c.ref]||[]).push(b);}
-    Object.keys(by).forEach(ref=>{const S=mxIds(ref);let m=workedMin(d,x=>typeof x.ref==="string"&&x.ref.indexOf("tasks:")===0&&S.has(x.ref.slice(6)));
-      by[ref].forEach((b,j)=>{const give=j===by[ref].length-1?m:Math.min(m,H[b]*60);m-=give;cm[i+"|"+b]=give;blA[b]+=give;ach+=give;});});}
+    {let m=workedMin(d);const order=[0,1,2,3].filter(b=>(doc.cells[i+"|"+b]||{t:"o"}).t==="w").concat([0,1,2,3].filter(b=>(doc.cells[i+"|"+b]||{t:"o"}).t==="b"));
+      ach+=m;order.forEach((b,j)=>{const give=j===order.length-1?m:Math.min(m,H[b]*60);m-=give;cm[i+"|"+b]=give;blA[b]+=give;});if(!order.length&&m>0){blA[0]+=m;}}}
   const v={doc,H,cm,dayW,dayB,blW,blA,alloc,buf,off,ach,pct:alloc>0?Math.round(ach/60/alloc*100):0};
   mxMemo={key,p:state.plans,e:state.entries,t:state.tasks,v};return v;}
 const mxShown=(c,m,h)=>c.done===true||(c.done!==false&&!!c.ref&&m>=h*60);
