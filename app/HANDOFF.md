@@ -75,3 +75,4 @@
 - 15 Nov: published 1794729875 (vital): War on a task and Start on a stack now list only that task's own subtasks. Rollback = delete version 1794729875 rows from app_code (previous 1794726761). Data not touched.
 - 19 Nov: published 1795068641 (vital): Weekly time-block matrix page (module29, r61, plans/mx-<Saturday> docs). Rollback = delete version 1795068641 rows from app_code (previous 1794729875). Data not touched. Friday Block 1 copied from his sheet as Work.
 - 19 Nov: published 1795070683: matrix Achieved = ticked block hours, else logged time (any task or War) filling the day's blocks; compact matrix row. Rollback = delete version 1795070683 rows (previous 1795068641). Data not touched.
+- 19 Nov: published 1795071019: Week matrix as one full page (#mxView). Rollback = delete version 1795071019 rows (previous 1795070683). Data not touched.
