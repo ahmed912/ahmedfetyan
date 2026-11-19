@@ -76,3 +76,4 @@
 - 19 Nov: published 1795068641 (vital): Weekly time-block matrix page (module29, r61, plans/mx-<Saturday> docs). Rollback = delete version 1795068641 rows from app_code (previous 1794729875). Data not touched. Friday Block 1 copied from his sheet as Work.
 - 19 Nov: published 1795070683: matrix Achieved = ticked block hours, else logged time (any task or War) filling the day's blocks; compact matrix row. Rollback = delete version 1795070683 rows (previous 1795068641). Data not touched.
 - 19 Nov: published 1795071019: Week matrix as one full page (#mxView). Rollback = delete version 1795071019 rows (previous 1795070683). Data not touched.
+- 19 Nov: published 1795072601 (vital): War Skip breaks toggle (settings/warSkip), Skip break button (War and Pomodoro), Ready: no auto-start, waiting logs nothing (modules 30-32, r62a-c). Rollback = delete version 1795072601 rows (previous 1795071019). Data not touched.
