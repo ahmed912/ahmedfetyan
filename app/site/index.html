@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sprint Board</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#C2410C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#F2F3F5;--surface:#fff;--ink:#15171C;--muted:#5E6472;--line:#DADDE3;--accent:#C2410C;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1115;--surface:#171A20;--ink:#ECEEF2;--muted:#9AA1AE;--line:#2A2F38;--accent:#FF7A3D;color-scheme:dark}}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+[hidden]{display:none!important}
+.gate{min-height:100vh;display:grid;place-items:center;padding:16px;box-sizing:border-box}
+.card{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px}
+.card h1{margin:0;font-size:22px}.card p{margin:0;color:var(--muted);font-size:14px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
+input{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink)}
+button{font:inherit;font-weight:600;border-radius:8px;padding:10px 14px;cursor:pointer}
+.primary{border:0;background:var(--accent);color:#fff}.dark .primary{color:#1A0D06}
+.link{border:0;background:transparent;color:var(--muted);text-decoration:underline;padding:4px}
+#loginMsg{min-height:20px;font-size:14px}
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:s 1s linear infinite}@keyframes s{to{transform:rotate(1turn)}}
+@media (prefers-color-scheme:dark){.primary{color:#1A0D06}}
+</style>
+</head>
+<body>
+<div class="gate" id="boot"><div class="card" style="align-items:center;text-align:center"><div class="spin" aria-hidden="true"></div><p id="bootMsg" role="status">Opening…</p></div></div>
+<main class="gate" id="login" hidden>
+  <form class="card" id="loginForm">
+    <h1>Sprint Board</h1>
+    <p>Private. Sign in to continue.</p>
+    <label>Email<input id="email" type="email" autocomplete="username" required></label>
+    <label>Password<input id="password" type="password" autocomplete="current-password" required minlength="8"></label>
+    <button class="primary" type="submit">Sign in</button>
+    <button class="link" type="button" id="signupBtn">First time on this account? Create it</button>
+    <div id="loginMsg" role="status" aria-live="polite"></div>
+  </form>
+</main>
+<script src="config.js"></script>
+<script src="supabase.js"></script>
+<script src="boot.js"></script>
+</body>
+</html>
