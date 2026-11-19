@@ -1,0 +1,27 @@
+// Round 62a: War setup "Skip breaks" toggle: off by default, saved to settings/warSkip, remembered after reload, stamped on the war
+const {openp,run}=require('./h.js');const {load,reloadKeep}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const today='2026-11-19';
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const d=load();d.settings=d.settings||{};d.settings.war={countPause:false};delete d.settings.warSkip;d.timers=d.timers||{};d.timers.war={active:false,w:null};delete d.timers.pomo;
+  d.tasks.r62a={title:'R62 Alpha',cat:'portfolio',date:today,done:false,order:-9};
+  const pg=await openp(b,w,{when:today+'T09:00:00',real:JSON.stringify(d)});const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
+  ok('glossary has Skip breaks',await pg.evaluate("__ph.gloss.some(x=>x.id==='skipbreaks')"));
+  await pg.evaluate("document.getElementById('warCard').click()");await R(500);
+  ok('toggle shown, off',(await pg.locator('.ps-sheet .wr-skip').count())===1&&(await pg.getAttribute('.ps-sheet .wr-skip','aria-pressed'))==='false');
+  ok('hint with breaks',(await pg.textContent('.ps-sheet .wr-hint')).includes('10 min break'));
+  await pg.click('.ps-sheet .wr-skip');await R(300);
+  ok('on and saved',(await pg.getAttribute('.ps-sheet .wr-skip','aria-pressed'))==='true'&&await pg.evaluate("window.__data.settings.warSkip.on===true"));
+  ok('hint without breaks',(await pg.textContent('.ps-sheet .wr-hint')).includes('no breaks'));
+  await pg.locator('.ps-sheet .wr-grid .wr-chip').first().click();await R(300);
+  ok('still on after picking a target (sheet re-render)',(await pg.getAttribute('.ps-sheet .wr-skip','aria-pressed'))==='true');
+  await pg.click('.ps-sheet .wr-go');await R(2000);
+  ok('war stamped skipB',(await pg.evaluate("window.__sbWar.get().skipB"))===true);
+  ok('countPause doc untouched',await pg.evaluate("window.__data.settings.war.countPause===false"));
+  await pg.evaluate("window.__sbWar.put(null)");await R(500);
+  await reloadKeep(pg);await pg.evaluate("document.getElementById('warCard').click()");await R(500);
+  ok('remembered after reload',(await pg.getAttribute('.ps-sheet .wr-skip','aria-pressed'))==='true');
+  await pg.click('.ps-sheet .wr-skip');await R(300);
+  ok('turn off saved',await pg.evaluate("window.__data.settings.warSkip.on===false"));
+  ok('no errors',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0,JSON.stringify(pg.errs.slice(0,3)));
+  await pg.context().close();}});

@@ -5,7 +5,7 @@ const today='2026-11-09',yday='2026-11-08';const at=(d,h,m)=>new Date(d+'T'+Stri
 const base=()=>{const d=JSON.parse(fs.readFileSync(process.env.MOCKDATA,'utf8'));d.entries={};d.sleep={};d.rollover={};
   d.logs[today]={date:today,workIn:at(today,8,0)};
   d.logs[yday]={date:yday,workIn:at(yday,8,0),workOut:at(yday,17,0)};
-  d.timers=d.timers||{};d.timers.war={active:true,w:{k:'cat',v:'portfolio',label:'Design',ids:[],done:[],start:at(today,20,5),dur:480,phase:'focus',phase0:0},at:Date.now()};
+  d.timers=d.timers||{};d.timers.war={active:true,w:{k:'cat',v:'portfolio',label:'Design',ids:[],done:[],start:at(today,20,5),dur:30,phase:'focus',phase0:0},at:Date.now()};
   d.timers.active={block:'deep1',date:today,startedAt:at(today,19,0),pausedAt:null,pausedTotal:0};
   d.gym=d.gym||{};d.gym.active={id:'g57',day:0,startedAt:at(today,19,30),sets:{'0-0':{done:true,at:at(today,19,40),w:20,r:10}},alts:{},restUntil:null,restFor:null};
   return d;};
@@ -37,7 +37,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate("window.__u57.run()");await R(1000);d=await D();const E2=((d.entries[today]||{}).items)||[];
   ok('closing again does nothing',E2.length===2&&d.logs[today].workOut===at(today,21,30));
   // started after 21:30: 2 h at most
-  await pg.evaluate("window.__sbWar.put({k:'cat',v:'portfolio',label:'Late',ids:[],done:[],start:"+at(today,22,0)+",dur:480,phase:'focus',phase0:0})");
+  await pg.evaluate("window.__sbWar.put({k:'cat',v:'portfolio',label:'Late',ids:[],done:[],start:"+at(today,22,0)+",dur:30,phase:'focus',phase0:0})");
   await pg.clock.fastForward(30*60000);await R(35000);d=await D();
   ok('late War still running before 2 h',!!(await pg.evaluate("window.__sbWar.get()")));
   await pg.clock.fastForward(130*60000);await R(35000);d=await D();

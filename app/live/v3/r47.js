@@ -26,7 +26,12 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('after the focus round the war is on break',await pg.evaluate("window.__sbWar.get().phase")==='break');
   await pg.clock.fastForward(11*60000);await pg.clock.runFor(3000);await W(300);
   let wr=await pg.evaluate("window.__sbWar.get()");
-  ok('break over: check-in pending, the war is NOT paused',!!wr.checkAt&&!wr.pausedAt,JSON.stringify({c:wr.checkAt,p:wr.pausedAt}));
+  ok('break over: the war waits at Ready, paused, no check-in',wr.ready===true&&!!wr.pausedAt&&!wr.checkAt,JSON.stringify({r:wr.ready,c:wr.checkAt,p:wr.pausedAt}));
+  ok('the screen says Ready',(await pg.textContent('#warView .wr-ph')).trim()==='Ready');
+  // a legacy auto pause (older version) still becomes a check-in, so the trim path below stays covered
+  await pg.evaluate("(()=>{const w=window.__sbWar.get();w.auto=true;w.ready=false;window.__sbWar.put(w);})()");await pg.clock.runFor(2000);await W(300);
+  wr=await pg.evaluate("window.__sbWar.get()");
+  ok('legacy auto pause: check-in pending, the war is NOT paused',!!wr.checkAt&&!wr.pausedAt,JSON.stringify({c:wr.checkAt,p:wr.pausedAt}));
   ok('the screen asks Still here',(await pg.locator('.wr-here').count())===1);
   await pg.clock.fastForward(125*60000);await pg.clock.runFor(4000);await W(500);
   ok('unanswered for 2 h: the war ended by itself',/"active":false/.test(await pg.evaluate("JSON.stringify(window.__data.timers.war)")));

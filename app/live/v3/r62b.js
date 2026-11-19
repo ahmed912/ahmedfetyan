@@ -1,0 +1,34 @@
+// Round 62b: Skip break in the War break and in the Pomodoro (running break and at Ready after a focus round); Break now stays
+const {openp,run}=require('./h.js');const {load}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const today='2026-11-19';
+const seed=()=>{const d=load();d.settings=d.settings||{};d.settings.war={countPause:false};d.settings.warSkip={on:false};d.timers=d.timers||{};d.timers.war={active:false,w:null};delete d.timers.pomo;
+  d.tasks.r62a={title:'R62 Alpha',cat:'portfolio',date:today,done:false,order:-9};return JSON.stringify(d);};
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  {const pg=await openp(b,w,{when:today+'T09:00:00',real:seed()});const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
+  const btn=t=>pg.locator(`#warView .wr-btns button:has-text("${t}")`);const W=()=>pg.evaluate("window.__sbWar.get()");
+  await pg.evaluate("document.getElementById('warCard').click()");await R(500);await pg.locator('.ps-sheet .wr-grid .wr-chip').first().click();await R(200);await pg.click('.ps-sheet .wr-go');await R(2000);
+  ok('Break now shown',(await btn('Break now').count())===1);
+  await btn('Break now').click();await R(500);
+  ok('on break: Skip break, no Back to focus',(await W()).phase==='break'&&(await btn('Skip break').count())===1&&(await btn('Back to focus').count())===0);
+  await btn('Skip break').click();await R(500);const wr=await W();
+  ok('Skip break: focus runs',wr.phase==='focus'&&!wr.pausedAt);
+  ok('Break now back',(await btn('Break now').count())===1);
+  await pg.context().close();}
+  {const pg=await openp(b,w,{when:today+'T09:00:00',real:seed()});const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
+  const FF=async ms=>{await pg.clock.fastForward(ms);await pg.clock.runFor(3000);await pg.waitForTimeout(300);};
+  const PM=()=>pg.evaluate("JSON.parse(JSON.stringify((window.__data.timers||{}).pomo||{}))");
+  const PT=()=>pg.evaluate(`window.__u20.itemsRaw('${today}').filter(x=>x.kind==='pomo').reduce((a,x)=>a+Number(x.minutes||0),0)`);
+  const p0=await PT();
+  await pg.evaluate("__u32.pStartFor({what:'other',label:'R62 focus',minutes:120})");await R(600);
+  await FF(50*60000);
+  ok('Ready after focus: Skip break offered',(await pg.locator('#pomoFull .pf-skip').count())===1&&(await pg.textContent('#pomoFull .pf-skip')).trim()==='Skip break');
+  await FF(30*60000);await pg.click('#pomoFull .pf-skip');await R(1000);let pm=await PM();
+  ok('Skip break at Ready: round 2 runs, 50 logged',pm.phase==='focus'&&pm.round===2&&!pm.pausedAt&&Math.abs((await PT())-p0-50)<0.2,JSON.stringify({ph:pm.phase,r:pm.round,m:(await PT())-p0}));
+  await FF(50*60000);await pg.click('#pomoFull .pf-main');await R(1000);pm=await PM();
+  ok('running break has Skip break',pm.phase==='short'&&(await pg.locator('#pomoFull .pf-sec:has-text("Skip break")').count())===1);
+  await pg.click('#pomoFull .pf-sec:has-text("Skip break")');await R(1000);pm=await PM();
+  ok('Skip break during break: focus runs',pm.phase==='focus'&&!pm.pausedAt);
+  await pg.evaluate("__r2.pStop()");await R(500);
+  ok('no errors',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0,JSON.stringify(pg.errs.slice(0,3)));
+  await pg.context().close();}}});
