@@ -1,6 +1,6 @@
 // two devices that share one "server": every write on one page is forwarded to the other (ops are merged, whole docs are replaced), with an optional hold to make writes cross
 const {chromium}=require('playwright');const fs=require('fs');
-const A_='/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/pickerfix/app';
+const A_='/tmp/claude-0/-home-user-ahmedfetyan/a43a4871-81e3-5037-9abb-260f84a9877e/scratchpad/pubbuild14/app';
 const base=fs.readFileSync(A_+'/test.py','utf8').split('mock="""')[1].split('"""')[0].replace('%s','{}');
 const real=fs.readFileSync(process.env.MOCKDATA||A_+'/cut/real.json','utf8');
 const hsrc=fs.readFileSync(A_+'/v3/h.js','utf8');const SBMOCK=eval(hsrc.split('\n').find(l=>l.startsWith('const SBMOCK=')).replace(/^const SBMOCK=/,'').replace(/;$/,''));
@@ -11,7 +11,7 @@ M=M.replace("set:async b=>{data[c][id]=b;","set:async b=>{data[c][id]=b;window._
 const SB=SBMOCK.replace("(window.__data[c]=window.__data[c]||{})[i]=window.__sbSafeApi.applyOps(cur||{},a.p_ops);","(window.__data[c]=window.__data[c]||{})[i]=window.__sbSafeApi.applyOps(cur||{},a.p_ops);window.__push&&window.__push('ops',c,i,a.p_ops);");
 async function openPair(b,o={}){o=o||{};const st={hold:false,q:[]};const pgs=[];
   for(let n=0;n<2;n++){const ctx=await b.newContext({viewport:{width:o.w||390,height:900}});const pg=await ctx.newPage();pg.errs=[];pg.on('pageerror',e=>pg.errs.push(String(e)));
-    await pg.clock.install({time:new Date(o.when||'2026-11-09T11:00:00')});await pg.addInitScript(M);await pg.addInitScript(SB);await pg.route('**/*',r=>/^https?:/.test(r.request().url())?r.abort():r.continue());pgs.push(pg);}
+    await pg.clock.install({time:new Date(o.when||'2026-11-09T11:00:00')});await pg.addInitScript(M);if(!o.m33)await pg.addInitScript("try{localStorage.setItem('sb-m33','off')}catch(e){}");await pg.addInitScript(SB);await pg.route('**/*',r=>/^https?:/.test(r.request().url())?r.abort():r.continue());pgs.push(pg);}
   const fwd=(i,k,c,id,p)=>{const f=()=>pgs[1-i].evaluate(a=>window.__inject(a[0],a[1],a[2],a[3]),[k,c,id,p]).catch(()=>{});if(st.hold)st.q.push(f);else f();};
   await pgs[0].exposeFunction('__push',(k,c,id,p)=>fwd(0,k,c,id,p));await pgs[1].exposeFunction('__push',(k,c,id,p)=>fwd(1,k,c,id,p));
   for(const pg of pgs){await pg.goto('file://'+A_+'/test.html');await pg.clock.runFor(2500);}
