@@ -13,7 +13,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const pg=await openp(b,w,{when:today+'T11:00:00',real:JSON.stringify(d)});
   const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
   const tv=k=>pg.textContent(`.mx-tile[data-k="${k}"] .mx-tv`);
-  const cell=k=>`.ps-sheet td.mx-c[data-k="${k}"]`;
+  const cell=k=>`#mxView td.mx-c[data-k="${k}"]`;
   const vis=s=>pg.locator(s).first().isVisible();
   const plan=()=>pg.evaluate("JSON.stringify(window.__data.plans||{})").then(JSON.parse);
   const swipe=async(sel,dx)=>{const bb=await pg.locator(sel).boundingBox(),cx=bb.x+bb.width/2,cy=bb.y+bb.height/2;
@@ -27,18 +27,18 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('lazy: no doc written',(await plan())['mx-2026-11-14']===undefined);
   // 2
   await pg.click('#planMatrix .mx-open');await R(600);
-  ok('board sheet open',await vis('.ps-sheet[aria-label="Week matrix"]'));
+  ok('board page open',await vis('#mxView.in'));
   ok('tiles initial',(await tv('alloc'))==='68 h'&&(await tv('ach'))==='6.5 h'&&(await tv('pct'))==='10%'&&(await tv('buf'))==='13 h'&&(await tv('off'))==='24 h',[await tv('alloc'),await tv('ach'),await tv('pct'),await tv('buf'),await tv('off')].join('|'));
   ok('label/week/dates',(await pg.inputValue('.mx-label'))==='Week 47'&&(await pg.inputValue('.mx-wk'))===W0&&(await pg.textContent('.mx-dates')).trim()==='14 Nov to 20 Nov');
   // 3
   const cnt=s=>pg.locator(s).count();
-  ok('counts',(await cnt('.ps-sheet td.mx-c'))===28&&(await cnt('.ps-sheet .mx-c.t-work'))===17&&(await cnt('.ps-sheet .mx-c.t-buf'))===4&&(await cnt('.ps-sheet .mx-c.t-off'))===7&&(await cnt('.ps-sheet .mx-dh'))===7,[await cnt('.ps-sheet td.mx-c'),await cnt('.ps-sheet .mx-c.t-work'),await cnt('.ps-sheet .mx-c.t-buf'),await cnt('.ps-sheet .mx-c.t-off'),await cnt('.ps-sheet .mx-dh')].join(','));
+  ok('counts',(await cnt('#mxView td.mx-c'))===28&&(await cnt('#mxView .mx-c.t-work'))===17&&(await cnt('#mxView .mx-c.t-buf'))===4&&(await cnt('#mxView .mx-c.t-off'))===7&&(await cnt('#mxView .mx-dh'))===7,[await cnt('#mxView td.mx-c'),await cnt('#mxView .mx-c.t-work'),await cnt('#mxView .mx-c.t-buf'),await cnt('#mxView .mx-c.t-off'),await cnt('#mxView .mx-dh')].join(','));
   // 4
   await pg.click(cell('5|0'));await R(600);
   ok('picker open',await vis('.ps-sheet[aria-label="Pick for block"]')&&(await pg.textContent('.ps-sh-sum')).includes('Thu Block 1'));
   await pg.fill('.mx-find','R61 Al');await R(200);
   await pg.click('.mx-opt:has-text("R61 Alpha")');await R(600);
-  ok('back on board',await vis('.ps-sheet[aria-label="Week matrix"]'));
+  ok('back on board',await vis('#mxView.in'));
   ok('cell name',(await pg.textContent(cell('5|0')+' .mx-cn'))==='R61 Alpha');
   ok('toast pick',(await pg.textContent('#v3ut')).includes('Thu Block 1: R61 Alpha'));
   ok('ach unchanged by pick',(await tv('ach'))==='6.5 h',await tv('ach'));
@@ -47,7 +47,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate("__mx.pick('2026-11-14','4|0','tasks:r61b',true);__mx.pick('2026-11-14','4|1','tasks:r61b',true)");await R(400);
   ok('ach 6.5 pct 10',(await tv('ach'))==='6.5 h'&&(await tv('pct'))==='10%',await tv('ach')+'|'+await tv('pct'));
   ok('auto tick 4|0 only',(await pg.isChecked(cell('4|0')+' .mx-ck'))&&!(await pg.isChecked(cell('4|1')+' .mx-ck')));
-  ok('block ach',(await pg.textContent('.ps-sheet .mx-ba[data-b="0"]'))==='5.5 h'&&(await pg.textContent('.ps-sheet .mx-ba[data-b="1"]'))==='1 h',await pg.textContent('.ps-sheet .mx-ba[data-b="0"]')+'|'+await pg.textContent('.ps-sheet .mx-ba[data-b="1"]'));
+  ok('block ach',(await pg.textContent('#mxView .mx-ba[data-b="0"]'))==='5.5 h'&&(await pg.textContent('#mxView .mx-ba[data-b="1"]'))==='1 h',await pg.textContent('#mxView .mx-ba[data-b="0"]')+'|'+await pg.textContent('#mxView .mx-ba[data-b="1"]'));
   // 6
   await pg.click(cell('5|0')+' .mx-ck');await R(400);
   ok('hand tick',(await pg.isChecked(cell('5|0')+' .mx-ck'))&&(await plan())['mx-2026-11-14'].cells['5|0'].done===true);
@@ -101,9 +101,11 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('next week',(await pg.inputValue('.mx-wk'))==='2026-11-21'&&(await pg.inputValue('.mx-label'))==='Week 48'&&(await tv('buf'))==='10 h'&&(await tv('ach'))==='0 h',[await pg.inputValue('.mx-wk'),await pg.inputValue('.mx-label'),await tv('buf'),await tv('ach')].join('|'));
   ok('next week lazy',(await plan())['mx-2026-11-21']===undefined);
   // 14
-  const lay=await pg.evaluate("(()=>{const g=document.querySelector('.ps-sheet .mx-grid');return {r:g.getBoundingClientRect().right,iw:innerWidth,n:g.classList.contains('narrow')}})()");
-  ok('layout fits',lay.r<=lay.iw+1,JSON.stringify(lay));
-  ok('narrow class',lay.n===(w===390),JSON.stringify(lay));
+  const lay=await pg.evaluate("(()=>{const g=document.querySelector('#mxView .mx-grid'),w=document.querySelector('#mxView .mx-gw'),r=document.getElementById('mxView').getBoundingClientRect(),ths=[...document.querySelectorAll('#mxView .mx-dh')].map(x=>x.getBoundingClientRect());return {gr:g.getBoundingClientRect().right,iw:innerWidth,sw:w.scrollWidth,cw:w.clientWidth,docw:document.documentElement.scrollWidth,vw:r.width,vh:r.height,ih:innerHeight,tv:document.body.classList.contains('tv-open'),cls:document.getElementById('mxView').className,days:ths.every(t=>t.right<=innerWidth+1&&t.left>=0)}})()");
+  ok('full page',lay.vw===lay.iw&&lay.vh===lay.ih&&lay.tv&&/task-view war-view/.test(lay.cls),JSON.stringify(lay));
+  ok('7 days fit, page never scrolls sideways',lay.gr<=lay.iw+1&&lay.sw<=lay.cw+1&&lay.docw<=lay.iw&&lay.days,JSON.stringify(lay));
+  await pg.click('#mxView .mx-x');await R(500);
+  ok('close returns to Plan',!(await pg.evaluate("!!document.getElementById('mxView')"))&&!(await pg.evaluate("document.body.classList.contains('tv-open')"))&&await vis('#planMatrix'));
   // 15
   ok('no errors',pg.errs.filter(e=>!e.includes('ERR_FAILED')).length===0,JSON.stringify(pg.errs.slice(0,3)));
   await pg.context().close();

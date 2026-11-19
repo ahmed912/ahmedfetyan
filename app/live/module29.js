@@ -1,8 +1,6 @@
 // ===== Weekly time-block matrix: Sat..Fri x Blocks 1-4, picks, achieved from workedMin. Stored in plans/mx-<sat>. =====
-PS_WIDE.add("Week matrix");
 const MX_T=["wwwwwww","wwwwwwb","wwowowo","bbobooo"],MX_H=[4,4,4,3],MX_TN={w:"Work",b:"Buffer",o:"Off"};
 let mxS={w0:null},mxSeen=null,mxSeen2=null,mxMemo=null;
-const mxNarrow=()=>window.innerWidth<700;
 const mxId=w0=>"mx-"+w0;
 const mxDn=(w0,i)=>fmt(addDays(w0,i),{weekday:"short"});
 const mxCellName=(w0,k)=>{const [i,b]=k.split("|").map(Number);return mxDn(w0,i)+" Block "+(b+1);};
@@ -50,7 +48,7 @@ function mxSaveDefault(w0){const doc=mxDoc(w0),types=[0,1,2,3].map(b=>[0,1,2,3,4
   v3undoToast("Saved as default",()=>{const p={...(state.plans||{})};if(old){p["mx-default"]=old;store.set("plans/mx-default",old).catch(fail);}else{delete p["mx-default"];store.del("plans/mx-default").catch(fail);}state.plans=p;mxMemo=null;render();try{sheetRefresh();}catch(e){}});}
 function mxReset(w0){const T=mxTpl();mxPut(w0,d=>{d.blockH=T.blockH.slice();for(let i=0;i<7;i++)for(let b=0;b<4;b++){const c=d.cells[i+"|"+b]||(d.cells[i+"|"+b]={t:"o",ref:null,done:null});c.t=T.types[b][i]||"o";if(c.t==="o"){c.ref=null;c.done=null;}}},"Week reset to default");}
 // ---- sheets ----
-const mxBack={onClose:()=>setTimeout(()=>{if(!sheetStack.length&&Date.now()-(window.__psOutside||0)>400)mxOpen();},260)};
+const mxBack={};
 function mxCellSheet(w0,k){psOpen("Pick for block",re=>{const v=mxCalc(w0),c=v.doc.cells[k]||{t:"o"},b=Number(k.split("|")[1]);
   const mk=(r,label,hint)=>el("li",null,el("button",{type:"button",class:"mx-opt","data-ref":r||"",onclick:()=>{psClose(true);mxPick(w0,k,r);mxOpen();}},label,hint?el("span",{class:"hint"},hint):null));
   const fill=q=>{q=(q||"").trim().toLowerCase();const rows=[];
@@ -81,22 +79,15 @@ function mxCellEl(w0,k,v){const c=v.doc.cells[k]||{t:"o"},b=Number(k.split("|")[
     el("span",{class:"mx-cn"},mxRefName(c.ref)));
   if(c.t!=="o"){const ck=el("input",{class:"mx-ck",type:"checkbox","aria-label":"Done",onchange:()=>mxDone(w0,k)});ck.checked=shown;td.append(ck);}
   swipeable(td,()=>mxDone(w0,k),()=>mxClear(w0,k),()=>mxCellSheet(w0,k),{direct:true,directR:true});return td;}
-function mxGrid(w0,v,re){const narrow=mxNarrow(),T=iso(new Date());
-  const dh=i=>el("th",{class:"mx-dh"+(addDays(w0,i)===T?" today":""),scope:"row"},mxDn(w0,i)+" "+Number(addDays(w0,i).slice(8)));
-  const bh=b=>el("th",null,el("button",{type:"button",class:"mx-bh","data-b":String(b),onclick:()=>mxBlockSheet(w0,b)},"Block "+(b+1),el("span",{class:"hint"},mxHs(v.H[b]))));
+function mxGrid(w0,v,re){const T=iso(new Date());
+  const dh=i=>el("th",{class:"mx-dh"+(addDays(w0,i)===T?" today":""),scope:"col"},el("span",{class:"mx-dn"},mxDn(w0,i)),el("span",{class:"mx-dd"},String(Number(addDays(w0,i).slice(8)))));
+  const bh=b=>el("th",{scope:"row"},el("button",{type:"button",class:"mx-bh","data-b":String(b),onclick:()=>mxBlockSheet(w0,b)},"Block "+(b+1),el("span",{class:"hint"},mxHs(v.H[b]))));
   const days=[0,1,2,3,4,5,6],blocks=[0,1,2,3],num=(t,x)=>el("td",Object.assign({class:"num"},x||{}),t);
-  let head,rows,foot;
-  if(!narrow){
-    head=el("tr",null,el("th",null,""),...days.map(i=>{const h=dh(i);h.scope="col";return h;}),el("th",null,"Alloc"),el("th",null,"Achieved"));
-    rows=blocks.map(b=>el("tr",null,bh(b),...days.map(i=>mxCellEl(w0,i+"|"+b,v)),num(mxHs(v.blW[b]),{class:"num mx-bw","data-b":String(b)}),num(mxMs(v.blA[b]),{class:"num mx-ba","data-b":String(b)})));
-    foot=[el("tr",{class:"mx-fw"},el("th",null,"Work"),...days.map(i=>num(mxHs(v.dayW[i]))),num(mxHs(v.alloc)),num(mxMs(v.ach))),
-      el("tr",{class:"mx-fb"},el("th",null,"Buffer"),...days.map(i=>num(mxHs(v.dayB[i]))),num(mxHs(v.buf)),el("td",null,""))];}
-  else{
-    head=el("tr",null,el("th",null,""),...blocks.map(bh),el("th",null,"Work"),el("th",null,"Buf"));
-    rows=days.map(i=>el("tr",null,dh(i),...blocks.map(b=>mxCellEl(w0,i+"|"+b,v)),num(mxHs(v.dayW[i])),num(mxHs(v.dayB[i]))));
-    foot=[el("tr",{class:"mx-fw"},el("th",null,"Alloc"),...blocks.map(b=>num(mxHs(v.blW[b]),{class:"num mx-bw","data-b":String(b)})),num(mxHs(v.alloc)),num(mxHs(v.buf))),
-      el("tr",{class:"mx-fa"},el("th",null,"Achieved"),...blocks.map(b=>num(mxMs(v.blA[b]),{class:"num mx-ba","data-b":String(b)})),num(mxMs(v.ach)),el("td",null,""))];}
-  return el("table",{class:"mx-grid"+(narrow?" narrow":"")},el("thead",null,head),el("tbody",null,...rows),el("tfoot",null,...foot));}
+  const head=el("tr",null,el("th",null,""),...days.map(dh),el("th",null,"Alloc"),el("th",null,"Done"));
+  const rows=blocks.map(b=>el("tr",null,bh(b),...days.map(i=>mxCellEl(w0,i+"|"+b,v)),num(mxHs(v.blW[b]),{class:"num mx-bw","data-b":String(b)}),num(mxMs(v.blA[b]),{class:"num mx-ba","data-b":String(b)})));
+  const foot=[el("tr",{class:"mx-fw"},el("th",null,"Work"),...days.map(i=>num(mxHs(v.dayW[i]))),num(mxHs(v.alloc)),num(mxMs(v.ach))),
+    el("tr",{class:"mx-fb"},el("th",null,"Buffer"),...days.map(i=>num(mxHs(v.dayB[i]))),num(mxHs(v.buf)),el("td",null,""))];
+  return el("div",{class:"mx-gw"},el("table",{class:"mx-grid"},el("thead",null,head),el("tbody",null,...rows),el("tfoot",null,...foot)));}
 function mxBody(re){mxSeen=state.plans;mxSeen2=state.entries;
   const w0=mxS.w0=mxS.w0||v3wkStart(iso(new Date())),v=mxCalc(w0),doc=v.doc;
   const lab=el("input",{class:"v3-in mx-label",type:"text","aria-label":"Week label",onchange:e=>mxField(w0,"label",e.target.value)});lab.value=doc.label||"Week "+mxWeekNo(w0);
@@ -111,7 +102,16 @@ function mxBody(re){mxSeen=state.plans;mxSeen2=state.entries;
   let seen=false;try{seen=!!localStorage.getItem("sb-mx-tip");}catch(e){}
   if(!seen){out.push(el("p",{class:"hint mx-tip"},"Tap a block to pick. Swipe right done, left clear. Hold the totals for options."));try{localStorage.setItem("sb-mx-tip","1");}catch(e){}}
   out.push(mxGrid(w0,v,re));return out;}
-function mxOpen(){mxS.w0=mxS.w0||v3wkStart(iso(new Date()));psOpen("Week matrix",re=>mxBody(re));}
+function mxRender(){const v=document.getElementById("mxView");if(!v)return;const keep=v.querySelector(".tv-scroll"),top=keep?keep.scrollTop:0;
+  const re=()=>mxRender();
+  rc(v,el("div",{class:"tv-scroll mx-scroll"},el("div",{class:"tv-head"},el("h2",{text:"Week matrix"}),el("button",{type:"button",class:"tv-x mx-x",onclick:mxClose},"Close")),...mxBody(re)));
+  const n=v.querySelector(".tv-scroll");if(n)n.scrollTop=top;}
+function mxOpen(){mxS.w0=mxS.w0||v3wkStart(iso(new Date()));
+  if(document.getElementById("mxView")){mxRender();return;}
+  const v=el("div",{id:"mxView",class:"task-view war-view mx-view",role:"dialog","aria-modal":"true","aria-label":"Week matrix"});
+  document.body.append(v);document.body.classList.add("tv-open","mx-pg");mxRender();requestAnimationFrame(()=>v.classList.add("in"));}
+function mxClose(){const v=document.getElementById("mxView");if(!v)return;v.classList.remove("in");document.body.classList.remove("mx-pg");if(!document.getElementById("warView"))document.body.classList.remove("tv-open");setTimeout(()=>v.remove(),200);v.id="mxViewX";}
+addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("mxView")&&!sheetStack.length)mxClose();});
 // ---- Plan page row ----
 function mxEntry(){const pg=document.querySelector('.page[data-page="projects"]');if(!pg||pg.hidden)return;
   const w0=v3wkStart(iso(new Date())),v=mxCalc(w0),sum=(v.doc.label||"Week "+mxWeekNo(w0))+" · "+mxMs(v.ach)+" of "+mxHs(v.alloc)+" · "+v.pct+"%";
@@ -120,8 +120,8 @@ function mxEntry(){const pg=document.querySelector('.page[data-page="projects"]'
   if(!sec.parentElement){const ib=document.getElementById("planInbox");if(ib&&ib.parentElement)ib.parentElement.insertBefore(sec,ib);else pg.prepend(sec);}
   if(sec.dataset.sig===sum)return;sec.dataset.sig=sum;
   rc(sec,el("button",{type:"button",class:"mx-open",onclick:()=>{mxS.w0=null;mxOpen();}},el("span",{class:"bk-title mx-st"},"Week matrix"),el("span",{class:"hint mx-sum"},sum),el("div",{class:"tr-bar"},el("span",{style:"width:"+Math.min(100,v.pct)+"%"}))));}
-{const _r29=render;render=function(){_r29();try{mxEntry();const s=sheetStack[sheetStack.length-1],a=document.activeElement;
-  if(s&&s.title==="Week matrix"&&(mxSeen!==state.plans||mxSeen2!==state.entries)&&!(a&&a.closest&&a.closest(".ps-sheet")&&/INPUT|TEXTAREA/.test(a.tagName))){mxSeen=state.plans;mxSeen2=state.entries;s.re();}}catch(e){console.warn(e);}};}
+{const _r29=render;render=function(){_r29();try{mxEntry();const a=document.activeElement;
+  if(document.getElementById("mxView")&&(mxSeen!==state.plans||mxSeen2!==state.entries)&&!(a&&a.closest&&a.closest("#mxView")&&/INPUT|TEXTAREA/.test(a.tagName)&&a.type!=="checkbox")){mxSeen=state.plans;mxSeen2=state.entries;mxRender();}}catch(e){console.warn(e);}};}
 {const _sp29=setPage;setPage=function(p,...a){const r=_sp29(p,...a);try{mxEntry();}catch(e){}return r;};}
 try{if(typeof PH_GLOSS!=="undefined")PH_GLOSS.push({id:"mx",g:"Plan",t:"Week matrix",w:"Your week as 4 blocks x 7 days. Pick a task or bucket per block. Achieved fills from logged time; a block ticks itself when its hours are logged.",ex:"Week 47: 6.5 of 68 h, 10%."});}catch(e){}
-window.__mx={open:mxOpen,doc:mxDoc,calc:mxCalc,pick:mxPick,done:mxDone,clear:mxClear,type:mxType,blockH:mxBlockH,saveDefault:mxSaveDefault,reset:mxReset,del:mxDelete,weekNo:mxWeekNo,S:mxS};
+window.__mx={open:mxOpen,close:mxClose,doc:mxDoc,calc:mxCalc,pick:mxPick,done:mxDone,clear:mxClear,type:mxType,blockH:mxBlockH,saveDefault:mxSaveDefault,reset:mxReset,del:mxDelete,weekNo:mxWeekNo,S:mxS};
