@@ -3,6 +3,7 @@ const {openp,run}=require('./h.js');const {load}=require('./dmlib.js');
 const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
 const today='2026-11-19';
 const seed=()=>{const d=load();d.settings=d.settings||{};d.settings.war={countPause:false};d.settings.warSkip={on:false};d.timers=d.timers||{};d.timers.war={active:false,w:null};delete d.timers.pomo;
+  d.gym=d.gym||{};d.gym.s_r63={start:Date.parse('2026-11-17T08:00:00'),end:Date.parse('2026-11-17T08:50:00'),date:'2026-11-17',day:0,title:'R63 Session',sets:3,planned:3,items:[]};
   d.tasks.r63a={title:'R63 Alpha',cat:'portfolio',date:today,done:false,order:-9};return JSON.stringify(d);};
 const noerr=pg=>pg.errs.filter(x=>!/ERR_FAILED/.test(x)).length===0;
 run(async b=>{
@@ -16,6 +17,27 @@ run(async b=>{
   ok('two tabs',tabs.length===2&&tabs[0]==='Gym'&&tabs[1]==='Money',JSON.stringify(tabs));
   await pg.click('#mNav .m-tab >> nth=1');await R(300);ok('Money tab',(await page())==='finance');
   await pg.evaluate("__u33.setPage('today')");await R(300);ok('today goes to gym',(await page())==='gym');
+  {const vis=s=>pg.locator(s).first().isVisible();
+  ok('gym tabs visible',await vis('#gymTabs'));
+  const gb=await pg.locator('#gymTabs').boundingBox(),hb=await pg.locator('#mHead').boundingBox(),bb=await pg.locator('#m33Bar').boundingBox();
+  const sel=t=>pg.locator('#gymTabs button[data-t="'+t+'"]').getAttribute('aria-selected').then(v=>v==='true');
+  ok('tabs under header',gb.y>=hb.y+hb.height-1&&gb.y<bb.y&&gb.x>=0&&gb.x+gb.width<=391,JSON.stringify([gb,hb,bb]));
+  const tl=(await pg.locator('#gymTabs button').evaluateAll(a=>a.filter(b=>b.offsetWidth>0).map(b=>b.dataset.t)));
+  ok('tabs today history stats',['today','history','stats'].every(t=>tl.includes(t)),JSON.stringify(tl));
+  ok('weight icon shown',await vis('#bwBtnGym'));
+  await pg.click('#gymTabs button[data-t="history"]');await R(400);
+  ok('history tab',await sel('history')&&(await pg.locator('#gymTabs button[data-t="history"]').getAttribute('aria-selected'))==='true'&&(await pg.locator('#gymView .g-hist li').count())>=1);
+  ok('history shows past session',(await pg.locator('#gymView .g-hist').textContent()).includes('R63 Session'));
+  await pg.click('#gymTabs button[data-t="stats"]');await R(400);
+  ok('stats tab',(await sel('stats'))&&(await pg.locator('#gymView .g-hist').count())===0);
+  await pg.click('#mNav .m-tab >> nth=1');await R(300);await pg.click('#mNav .m-tab >> nth=0');await R(500);
+  ok('tab persists',(await sel('stats'))&&await vis('#gymTabs'));
+  await pg.click('#gymTabs button[data-t="today"]');await R(400);
+  ok('today tab',(await sel('today'))&&(await pg.locator('#gymView .g-hist').count())===0);
+  await pg.click('#bwBtnGym');await R(400);ok('weight dialog opens',await pg.locator('#bwDlg').isVisible());
+  await pg.keyboard.press('Escape');await R(300);
+  await pg.evaluate("__u33.setPage('finance')");await R(300);ok('tabs hidden on Money',!(await vis('#gymTabs')));
+  await pg.evaluate("__u33.setPage('gym')");await R(300);}
   const by=(await pg.locator('#m33Bar').boundingBox()).y,ny=(await pg.locator('#mNav').boundingBox()).y;
   ok('bar on top',await pg.locator('#m33Bar').isVisible()&&by<ny&&await pg.locator('#m33Run').isHidden());
   await pg.fill('#m33In','R63 note');await pg.click('.m33-add');await R(500);
