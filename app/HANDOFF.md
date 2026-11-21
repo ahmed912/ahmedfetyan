@@ -1,3 +1,4 @@
+Hub: standing rules, index and topic notes are in ../hub/ (start at ../hub/INDEX.md).
 # Handoff (12 Nov 2026). Read this instead of the old chat.
 ## Rules (user)
 - Pick the cheapest model per task: architect (Opus) plans, builder (Sonnet) codes, runner (Haiku) builds/tests/uploads. Briefs under 10 lines, replies 5 lines. Rules also in ~/.claude/CLAUDE.md.

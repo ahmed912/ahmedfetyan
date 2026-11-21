@@ -1,0 +1,14 @@
+# Decisions
+- 12 Nov: Source committed under app/ on branch claude/cloud-environment-setup-llsle2. Reason: keep a copy outside the container.
+- 13 Nov: Self as a company; work (design) 8 to 10 h a day, other stuff outside the work clock. Reason: protect revenue and family obligations.
+- 13 Nov: Replan option B: Sprint 2 13 to 25 Nov, Gate 1 3 Jan 2027, Taste Makers out. Reason: holdable plan.
+- 13 Nov: Hold publishing until all rounds done, then one publish. Reason: user order; lifted later.
+- 13 Nov: Data changes need backup, one-tap rollback, editable in app.
+- 14 Nov: One portfolio project at a time; client projects run beside it. Reason: focus.
+- 14 Nov: Reordering is always a gesture. Reason: calm, fewer buttons.
+- 14 Nov: Time entries are never auto-deleted (soft delete). Reason: billable time.
+- 15 Nov: Edit queue policy, only "vital" overrides. Reason: reserve tokens before the Wednesday 18:00 reset.
+- 19 Nov: Netlify shell stores app and data in IndexedDB. Reason: localStorage quota exceeded.
+- 19 Nov: Phone shows only Gym, Money, Capture. Reason: his request, published as vital.
+- 20 Nov: Gym routine 6 to 5 days. Reason: one leg day is right as a coach.
+- 20 Nov: Today page: keep the theme exactly, only unify spacing. Reason: he likes the current look.
