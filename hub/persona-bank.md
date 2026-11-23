@@ -734,3 +734,57 @@ Under the whole flow, a "Week card" template row (one table, 10 columns, light):
    AI-slides tie-in · "AI made this pitch deck. Here is what it hid." · Comments
    Sourced number · "Investors spend minutes, not hours, on your deck." (cite the source) · Shares
    Under the grid, a red-outline card "Never": engagement bait, rage, mocking, invented numbers, tagging strangers.
+
+=====================================================================
+## v4.8 THE WEEK ENGINE (6 hours, one sitting, zero memory needed)
+=====================================================================
+Purpose: Ahmed opens this at the start of every week, remembers nothing, has 6 hours, and leaves with the whole week written, designed, checked and scheduled.
+Placement: a NEW FIRST chapter of the whole Persona bank strip (left of the Decision board), titled "Start of week: the Week Engine". It is the first thing he sees. Largest block on the page.
+Layout: one horizontal flow in 7 phase bands with a timer chip on each (v3 colors), a "Remember card" before phase 1, a "Stuck rules" card strip under the flow, and a running clock bar along the top (0h, 1h ... 6h marks aligned to phases). v4.4 connector rules, no-crop check.
+
+REMEMBER CARD (dark #2C2C2C, white text, read in 2 min):
+"North Star: help decision makers see the one insight that matters, and design it so the decision is obvious.
+Hero: founders and leaders with a high-stakes presentation. Want: a clear yes. Villain: clutter. Fear: looking unprepared.
+One-liner: Months of work get judged in seconds. I shape your story into a clear, human presentation, so you win the day.
+Week: Sun Win the room or My path · Mon Work that won · Tue Win the room · Wed How I work (Book a call) · Thu Before and after carousel · + 1 Arabic. No Friday.
+Every post: one persona, one goal, one Builds, one authority marker, one CTA."
+
+PHASE 0 RESET · 15 min (grey)
+"Open 4 things: this board, the Sheet (Persona bank), Content Studio, LinkedIn" → "Read the Remember card" → "Read last Thursday's note: weakest Builds + one change" (if none: "Weakest = Trust")
+
+PHASE 1 DECIDE · 30 min (blue)
+diamond "Any client work or result from last week?" Yes right → "It becomes Mon Work that won + Thu carousel material" · No down → "Sheet: filter Status = New, pick the top-scored line" (Buyer, Proof, Sales use, Effort, 0 to 2)
+→ "Pick ONE theme: one founder fear or myth" → "Check the edge: my view, my proof, my signature?" diamond, No down → "Pick the next line"
+
+PHASE 2 PICK · 30 min (orange)
+Priority chips each to its slot: P1 Thu carousel · P2 Wed How I work · P3 Mon Work that won · P4 Tue Win the room · P5 Sun · + Arabic
+→ "Fill the Week card: persona, pillar, goal, Builds, bank line, authority marker, hook idea"
+→ 3 quick diamonds: "Founders in 3 of 5?" · "Exactly one Sell?" · "Weakest Builds included?" (No → own fix box each)
+Story arc chips under it: Sun name it → Mon show it solved → Tue teach the rule → Wed how we'd fix yours → Thu see it on a slide
+
+BREAK · 10 min (white card, dashed)
+
+PHASE 3 WRITE · 2 h (violet), in priority order, one timer each
+"P1 Thu carousel script, 8 slides: hook, problem, before, 3 fixes, after, CTA · 30 min"
+→ "P2 Wed · 25 min" → "P3 Mon · 25 min" → "P4 Tue · 20 min" → "P5 Sun · 15 min" → "Arabic · 5 min note, write natively later in the week"
+Repeating method chip above the row: "Each post: 5 hooks, pick 1 → ugly draft → 5 moves → cut to 120 to 200 words"
+
+BREAK · 15 min
+
+PHASE 4 VISUALS · 1 h 45 (teal)
+"Carousel: clone the template in Content Studio, drop in the script and slides · 75 min"
+→ diamond "Where does each post's point live?" chips: In a slide → "Export the real slide (placeholder text if needed)" · In an idea → "Branded card from One Light layouts" · In a story → "Personal photo" · Text only → "No image" (each own arrow, merge) · 30 min total
+
+PHASE 5 CHECK · 30 min (red)
+"Run the pre-publish check on each post, 5 min each" → "Read each one aloud" → diamond "All pass?" No down → "Fix one thing, recheck" (loop below)
+
+PHASE 6 SHIP · 15 min (green)
+"Schedule all posts in LinkedIn at their slots (Wed 15:30, others 08:30 Egypt)" → "Sheet: Status = Drafted, add dates" → "Move one spare post to the ready bank" → End (dark): "Week done. Daily: 20 min of comments only."
+
+STUCK RULES strip (yellow #FFF4CC cards, Bold title + Regular line):
+"Stuck over 5 min on a choice? Take the default: Founders, their fear of looking amateur, Win the room."
+"No idea at all? Open the Sheet, sort by Score, take the top line. Don't think, pick."
+"Running over time? Cut P5, post it from the ready bank. Never cut P1 or P2."
+"Carousel too heavy this week? One before and after image instead."
+"Hate a draft? Ship it if it passes the check. Done beats perfect."
+"Sunday 08:30 post: comes from the ready bank, written last week."

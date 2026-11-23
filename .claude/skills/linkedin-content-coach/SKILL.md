@@ -75,6 +75,8 @@ Monthly balance (20 posts): Authority 6, Relevance 5, Trust 5, Likability 3, Act
 
 **Authority floor (every post, whatever its Builds):** each post carries at least one authority marker: a real slide or before and after; a sourced number; a named principle ("Problem before product"); a design decision with its trade-off; a true pattern seen across decks; one brand-script authority line; or a clear position with reasons. Test: could a generic designer or ChatGPT have written it? If yes, add a marker.
 
+**Edge test (all three yes, or rework or bank it):** my view (a belief others in my field don't say), my proof (something from my real work), my signature (voice, One Light look, the doctor's diagnosis or the decision maker's chair). Positioning lens: "Others design slides. I diagnose decisions."
+
 **Reach formats (1 to 2 a week, usually Thu carousel + Tue):** famous deck teardown (credit, critique the slide never the founder); before and after with a big gap ("Same data. 47 words to 6."); myth-bust; save-worthy framework or cheat sheet carousel; story with a turn; AI-slides tie-in (clutter's modern face); a sourced research number. Mechanics: saves (frameworks), shares ("send this to your co-founder before the pitch"), comments (an easy opinion question), dwell (carousel, held tension). Never: engagement bait ("comment YES"), rage, mocking, invented numbers, tagging strangers. Judge reach posts by saves, shares and founder engagers, not likes. Every reach post still carries an authority marker and speaks to founders.
 
 ## 4. How to write (the house method)
@@ -132,6 +134,7 @@ Verdict: **Post**, **Fix then post**, or **Rework**. Score pass or fix:
 | Craft | Score the 7 craft places 1 to 5 |
 | North Star | Does it help a decision maker see the insight and decide? |
 | Builds | One main Builds, and does it pass that Builds check? |
+| Edge | My view, my proof, my signature? |
 | Authority floor | At least one authority marker? Not something a generic designer or ChatGPT could write? |
 | CTA | Exactly one, matching the pillar? |
 | Brand | Image follows One Light? |
@@ -148,7 +151,7 @@ Filter: would a founder who reads this trust Ahmed more with their deck?
 
 ### 6. Plan the week
 Rhythm: Sun (Win the room or My path) 08:30, Mon Work that won 08:30, Tue Win the room 08:30, Wed How I work 15:30, Thu carousel 08:30, plus one Arabic post. Egypt time; 08:30 Egypt = 09:30 KSA = 10:30 UAE; 15:30 Egypt = 08:30 New York. Ramadan: morning slot moves to about 21:00 Egypt.
-Run Flow 8 (Sunday, 45 min):
+If he has one 6-hour sitting, run the Week Engine: Reset 15 min, Decide 30, Pick 30, break 10, Write 2 h (in priority order: Thu carousel script 30, Wed 25, Mon 25, Tue 20, Sun 15, Arabic note 5), break 15, Visuals 1 h 45, Check 30, Ship 15 (schedule everything). Stuck over 5 min: take the default (Founders, fear of looking amateur, Win the room). Otherwise run Flow 8 (Sunday, 45 min):
 1. Decide (10 min): read Thursday's weakest Builds and one change; fresh client work becomes Monday, else the top-scored bank line (Buyer, Proof, Sales use, Effort, 0 to 2 each); pick ONE theme (one founder fear or myth).
 2. Prioritize (15 min): P1 Thu carousel, P2 Wed How I work, P3 Mon Work that won, P4 Tue Win the room, P5 Sun. Short on time: cut from P5 up, never P1 or P2.
 3. Connect (10 min): the week tells one story: Sun name it, Mon show it solved, Tue teach the rule, Wed how we'd fix yours, Thu see it on a slide; Arabic post = my take on the theme. Reuse one "their words" line twice; end Tue pointing to Thursday.
