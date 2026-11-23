@@ -10,7 +10,7 @@ text = open(src).read()
 
 SECTIONS = ["Who","Trigger moments","Goals","Pains (external)","Fears (internal)","Beliefs and myths",
             "Questions they ask","Objections to hiring","Their words","Success picture","Ready angles"]
-SOURCES = ["Draft (Claude)","Client call","DM","Comment","Upwork message","Proposal","Observation","Other"]
+SOURCES = ["Client call","DM","Comment","Proposal","Observation","Other","Draft (Claude)"]
 PILLARS = ["Work that won","Before and after","Win the room","How I work","My path","My thinking (Arabic)"]
 GOALS = ["Educate","Prove","Connect","Sell","Spark"]
 STATUS = ["New","Idea","Drafted","Posted"]
@@ -69,7 +69,7 @@ guide = [
  ["   Builds = what the reader concludes about you: Relevance (he gets my problem), Authority (he knows how), Trust (he is safe to hire), Likability (I like how he thinks), Action (I know the next step)."],
  ["   One main Builds per post. Check the Builds balance tab every Thursday; plan the weakest one first on Sunday."],
  ["   Score = Buyer + Proof + Sales use + Effort (0 to 2 each, max 8). Sort by Score to pick the next post. Funnel layer fills itself from Builds."],
- ["   Rows from Claude come with suggested Pillar, Goal, Builds and scores. Change any of them."],
+ ["   Everything after Status fills itself: type Section, Line, Source and Status; Pillar, Goal, Builds, the 4 scores, Score and Funnel layer calculate from the 'Score rules' tab."],
  ["6. Every Sunday: add at least 3 new lines from the week's calls, DMs, comments and Upwork messages."],
  ["7. Reuse a posted line after 3 months with a new angle."],
  [""],
@@ -102,8 +102,7 @@ def make_sheet(name, rows):
         c.fill = dark; c.font = cream; c.alignment = Alignment(vertical="center", wrap_text=True)
     ws.row_dimensions[1].height = 30
     for sec,line,ans in rows:
-        pl,go,bu,pr,sa,ef = SUG.get(sec,("","","",1,1,1))
-        ws.append([sec,line,ans,"Draft (Claude)","2026-11-23",pl,go,bu,"New","","Pillar, Goal, Builds and scores suggested by Claude. Change freely.",BUY.get(name,1),pr,sa,ef])
+        ws.append([sec,line,ans,"Draft (Claude)","2026-11-23","","","","New","",""])
         r = ws.max_row
         for c in ws[r][:17]:
             c.fill = PatternFill("solid", fgColor=TINT.get(sec,"FFFFFF"))
@@ -114,7 +113,16 @@ def make_sheet(name, rows):
     last = max(ws.max_row, 2) + 200
     for i,w in enumerate(WID): ws.column_dimensions[chr(65+i)].width = w
     for r in range(2,last+1):
-        ws[f"P{r}"] = f'=IF(B{r}="","",SUM(L{r}:O{r}))'
+        R="'Score rules'!"
+        ws[f"F{r}"] = f'=IF(A{r}="","",IFERROR(VLOOKUP(A{r},{R}$A$4:$F$14,2,FALSE),""))'
+        ws[f"G{r}"] = f'=IF(A{r}="","",IFERROR(VLOOKUP(A{r},{R}$A$4:$F$14,3,FALSE),""))'
+        ws[f"H{r}"] = f'=IF(A{r}="","",IFERROR(VLOOKUP(A{r},{R}$A$4:$F$14,4,FALSE),""))'
+        ws[f"L{r}"] = f'=IF(B{r}="","",IFERROR(VLOOKUP("{name}",{R}$H$4:$I$9,2,FALSE),1))'
+        ws[f"M{r}"] = f'=IF(B{r}="","",IFERROR(VLOOKUP(D{r},{R}$K$4:$L$11,2,FALSE),1))'
+        ws[f"N{r}"] = f'=IF(B{r}="","",IFERROR(VLOOKUP(A{r},{R}$A$4:$F$14,5,FALSE),1))'
+        ws[f"O{r}"] = f'=IF(B{r}="","",IFERROR(VLOOKUP(F{r},{R}$N$4:$O$9,2,FALSE),1))'
+        for col in "FGHLMNO": ws[f"{col}{r}"].font = Font(color="1A1B1D")
+        ws[f"P{r}"] = f'=IF(B{r}="","",IF(I{r}="Posted","Used",SUM(L{r}:O{r})))'
         ws[f"Q{r}"] = f'=IF(H{r}="","",IF(OR(H{r}="Relevance",H{r}="Likability"),"TOFU",IF(H{r}="Authority","MOFU","BOFU")))'
         ws[f"P{r}"].fill = PatternFill("solid", fgColor="F2F2F2"); ws[f"Q{r}"].fill = PatternFill("solid", fgColor="F2F2F2")
     ws.conditional_formatting.add(f"P2:P{last}", ColorScaleRule(start_type="num",start_value=0,start_color="FFFFFF",end_type="num",end_value=8,end_color="57BB8A"))
@@ -144,6 +152,44 @@ def make_sheet(name, rows):
     dvd = DataValidation(type="date", allow_blank=True); ws.add_data_validation(dvd); dvd.add(f"E2:E{last}")
     for r in range(2,last+1): ws[f"E{r}"].number_format = "yyyy-mm-dd"
     return len(rows)
+
+# Score rules sheet
+sr = wb.create_sheet("Score rules", 1); sr.sheet_properties.tabColor = "57BB8A"
+sr["A1"] = "Score rules: the sheet fills Pillar, Goal, Builds and the score from these tables. Change a value here and every row updates."
+sr["A1"].font = Font(bold=True, size=13, color="1A1B1D"); sr.merge_cells("A1:O1")
+sr["A2"] = "You only type: Section, Line, Source, Status. Overwrite Pillar, Goal or Builds in a row if you want a different choice."
+sr["A2"].font = Font(italic=True, color="404B50"); sr.merge_cells("A2:O2")
+heads = [("A3","Section"),("B3","Pillar"),("C3","Goal"),("D3","Builds"),("E3","Sales use (0-2)"),("F3","Note"),
+         ("H3","Sheet"),("I3","Buyer (0-2)"),("K3","Source"),("L3","Proof (0-2)"),("N3","Pillar"),("O3","Effort (2 = under 1 h)")]
+for ref,t in heads:
+    sr[ref] = t; sr[ref].fill = dark; sr[ref].font = Font(color="E8E2D0", bold=True)
+sec_rules = [("Who","Win the room","Educate","Relevance",0,"Background, rarely a post"),
+ ("Trigger moments","Win the room","Educate","Relevance",1,""),
+ ("Goals","Work that won","Prove","Authority",1,""),
+ ("Pains (external)","Win the room","Educate","Relevance",1,""),
+ ("Fears (internal)","Win the room","Educate","Relevance",1,""),
+ ("Beliefs and myths","Win the room","Educate","Authority",1,""),
+ ("Questions they ask","Win the room","Educate","Authority",2,"People ask it before buying"),
+ ("Objections to hiring","How I work","Sell","Trust",2,"Answers a reason not to hire"),
+ ("Their words","Win the room","Spark","Relevance",1,""),
+ ("Success picture","Work that won","Prove","Authority",2,""),
+ ("Ready angles","Before and after","Educate","Authority",2,"")]
+for i,row in enumerate(sec_rules, start=4):
+    for j,v in enumerate(row): sr.cell(i, 1+j, v)
+buyer = [("Founders",2),("Executives and teams",2),("Speakers",1),("Creative directors",1),("New persona",1)]
+for i,(a,b) in enumerate(buyer, start=4): sr.cell(i,8,a); sr.cell(i,9,b)
+proof = [("Client call",2),("DM",2),("Upwork message",2),("Proposal",2),("Comment",1),("Observation",1),("Other",1),("Draft (Claude)",0)]
+for i,(a,b) in enumerate(proof, start=4): sr.cell(i,11,a); sr.cell(i,12,b)
+effort = [("Win the room",2),("How I work",2),("My path",2),("My thinking (Arabic)",2),("Work that won",1),("Before and after",0)]
+for i,(a,b) in enumerate(effort, start=4): sr.cell(i,14,a); sr.cell(i,15,b)
+for col,w in zip("ABCDEFGHIJKLMNO",[22,18,10,12,12,30,2,22,10,2,18,10,2,22,16]): sr.column_dimensions[col].width = w
+for r in range(4,15):
+    for c in (5,9,12,15):
+        sr.cell(r,c).fill = PatternFill("solid", fgColor="E3F5E7"); sr.cell(r,c).font = Font(bold=True, color="1E7B34")
+sr["A16"] = "Proof: real client words (call, DM, proposal) score 2; a comment or observation 1; a Claude draft 0. Replace drafts with real words and they rise."
+sr["A17"] = "Effort: text posts are quick (2); a case study takes longer (1); a carousel takes about 90 minutes (0)."
+sr["A18"] = "Score = Buyer + Proof + Sales use + Effort, max 8. A posted line shows 'Used'. Sort by Score to pick the next post."
+for ref in ("A16","A17","A18"): sr[ref].font = Font(italic=True, color="404B50")
 
 counts={}
 for name, hdr in personas:
