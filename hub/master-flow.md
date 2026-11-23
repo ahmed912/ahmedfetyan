@@ -76,3 +76,28 @@ A legend card: station colors, link chip style, yellow = explanation.
 3. Close crops of each station and of every cross link start and end.
 4. No-crop check on the new page. Nothing overlaps, no connector crosses a shape.
 Report under 8 lines with the page id, section id and numbers.
+
+## v2 LAYOUT: FLOWER / PENTAGON (overrides "one spine, 7 stations")
+Ahmed: "think of how a pentagon or a flower was designed". The system is a cycle around one core, so draw it as a flower: a core in the middle, 5 petals at the corners of a pentagon, read clockwise, the loop closes by itself.
+
+CORE (center): FOUNDATION · dark #2C2C2C. Clones: SB7 brandscript, Content system, Maps. On top of the core, a round "seed" card: North Star + one-liner + "Others design slides. I diagnose decisions." Everything grows from here.
+5 PETALS at the pentagon corners, clockwise from the top:
+  1 top · WHO (people) · blue #1E5BB8 · persona mind map, 4 persona chapters, New persona
+  2 upper right · COLLECT (all week) · teal #0F766E · Start here + Sheet card
+  3 lower right · PLAN (start of week) · orange #B5530C · Week Engine, Flow 8, Flow 5, Flow 4
+  4 lower left · MAKE AND SHIP (each post) · violet #6B3FA0 · Decision board, Daily framework, Flows 1, 2, 6, Reach formats, Flow 3
+  5 upper left · GROW (results) · green #1E7B34 · Flow 7 trust ladder, Thursday review card, Booked call → client work card
+
+Geometry:
+- Pentagon radius large enough that no petal touches another or the core (minimum 1500 px clear gap). Petal i at angle -90° + i*72°.
+- Each petal = one tinted rounded region (its color's tint, 2 px stroke in its strong color, corner radius 400) around its clones. Petal grows outward from the core: its long axis points away from the center. Text is NEVER rotated; blocks inside a petal keep horizontal reading, stacked along the petal's axis.
+- Petal title card at the petal's inner tip (near the core): number + name, Extra Bold 64, white on strong color.
+- A small overview diagram in the top-left corner of the section (1200 px): the same flower drawn small (pentagon + 5 colored petals + core) as the legend, "you are here" style.
+
+Connections:
+- RING (the cycle): thick 10 px curved arrows on the OUTSIDE of the flower, clockwise, petal to petal: WHO → COLLECT ("listen to them") → PLAN ("bank feeds the week") → MAKE AND SHIP ("plan becomes posts") → GROW ("posts build trust") → WHO ("every client teaches you about your people"). Each ring arrow in the color of the petal it leaves.
+- SPOKES: from the core to each petal's tip, 4 px dark straight lines, chip at the core end: WHO "the hero", COLLECT "what to listen for", PLAN "the pillars and rhythm", MAKE "the writing method and One Light", GROW "the North Star test".
+- Cross links from the v1 list stay, but route them so they do not cross the core: links between neighbouring petals go along the ring side; links that would cross the center go around the outside. If a link cannot avoid a crossing, drop it and write it as a short line in the target's yellow callout instead ("fed by: ...").
+- Explanation callouts unchanged.
+
+Verify as before, plus: one zoomed-out screenshot of the whole section must read as a flower (core + 5 petals + ring).
