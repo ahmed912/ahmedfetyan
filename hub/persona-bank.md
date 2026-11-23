@@ -369,3 +369,45 @@ Who / Brand script want / Trigger moments / Goals / Pains / Fears / Beliefs and 
 ## NEW FIELD (empty template)
 =====================================================================
 Three rows: "Field name", "What goes here", "Example". For anything that does not fit above.
+
+=====================================================================
+## FLOWCHARTS (new column "How to make a post", placed right after "Start here")
+=====================================================================
+Build with FigJam diagram shapes and connectors (load figma-generate-diagram skill and use generate_diagram, or native FigJam shapes). Top to bottom flow inside the column. Use the v3 colors: start/end nodes #2C2C2C with white text, steps white with 2 px #1E5BB8 border, decisions as diamonds with #FFF4CC fill and #9A6B00 border, "no" paths in #B42318, "yes" paths in #1E7B34. Labels Inter, 20 px min.
+
+### Flow 1. From idea to post
+Start: raw material (a project, a question someone asked, a comment, a DM, an old project)
+→ Who sat in the client's chair? Pick the persona
+→ Pick one line from that persona's bank (trigger, pain, fear, myth, question, objection)
+→ Pick the pillar
+→ Pick ONE goal
+→ Decision "Goal?": Educate → carousel (or text + takeaway card) | Prove → text + 1 or 2 real slides | Connect → text only or personal photo | Sell → text + branded image or 60 s video | Spark → text only
+→ Write the skeleton: hook, proof, one guide line, ending, one CTA
+→ Apply the 5 moves: hero's moment first, withhold, turn on its own line, brand script proof only, cut design explanations
+→ Pre-publish check (Flow 3)
+→ Schedule in the slot (08:30 Egypt, Wed 15:30)
+→ Post, stay online 60 min, reply to every comment
+End: log results, mark the bank line "Posted"
+
+### Flow 2. Which image?
+Start: the post needs an image
+→ Decision "Real slide and client permission?" yes → use the real slide (placeholder text if needed) → End
+no → Decision "Does the post open with a question?" yes → Question card
+no → Decision "One sourced number carries the post?" yes → Number card
+no → Takeaway card
+All cards → One Light layout 01 or 04, render from the pillar row, amber line above the headline → End
+
+### Flow 3. Pre-publish check
+Start: draft ready
+→ "Hero's problem in lines 1 and 2?" → "Visual proof, not just words?" → "Exactly one guide line?" → "Do lines 1 to 3 earn the ...more?" → "Helps a decision maker see the insight and decide?" → "Exactly one CTA?"
+Every "no" → Fix that one thing → back to Start
+All "yes" → Publish
+
+### Flow 4. The weekly cycle (a loop)
+All week: add lines to the bank after every call, DM and comment
+→ Sunday: plan 5 post cards (45 min)
+→ Sunday or Monday: write 4 posts (2 h)
+→ Tuesday: build the carousel (90 min)
+→ Daily: publish at the slot + 5 comments on founders' posts (20 min)
+→ Thursday afternoon: review the numbers, change ONE thing (20 min)
+→ loops back to "All week"
