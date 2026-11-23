@@ -6,7 +6,12 @@ Heroes from the brand script: Founders, Executives and teams, Speakers. Peer per
 ## BUILD SPEC (for the builder)
 =====================================================================
 Where: FigJam fileKey 5AMqs2LbPEP9JHxBqoHity. New page "Persona bank" if the API allows pages; else one new top-level section "Persona bank" placed to the right of everything, starting at the same top edge.
-Layout: ONE vertical column, read by scrolling down. Column width 1200. Nothing side by side except label + text inside a row, and the small tables. No horizontal reading.
+Layout: COLUMNS SIDE BY SIDE, each read top to bottom. One column per compartment, never one long strip:
+  Column 1 "Start here": page title, How to use this page, Content goals and formats, Branded image cards.
+  Column 2 Founders. Column 3 Executives and teams. Column 4 Speakers. Column 5 Creative directors. Column 6 New persona + New field templates.
+  Each column 1200 wide, 160 px gap between columns, all columns top-aligned. Each column is its own frame/section, height hugs its content (no empty dark space at the bottom).
+  Inside a column everything stacks vertically; never place two sections side by side inside a column.
+  Drop the jump list; the column titles are the navigation.
 Elements: text layers and rounded rectangles only. No sticky notes. No icons.
 
 Brand reference (the ONLY direction): Content Studio page "Visual library · One Light", frame "One Light · Applications" (node 151:185). Dark ground, off-white serif headlines, small grey mono labels, a short thin amber line (about 120 px) sitting just above each headline. No cream pages, no brown, no fills in amber.
@@ -35,7 +40,6 @@ Structure top to bottom:
 2. Block "How to use this page" (section 1 below).
 3. Block "Content goals and formats" (section 2) as a table.
 4. Block "Branded image cards" (section 3).
-5. Jump list: Founders, Executives and teams, Speakers, Creative directors, New persona.
 6. Four persona blocks, each starting with a Basalt header band, sections in the order given, each section ending with 2 empty "Add new" rows.
 7. Block "New persona (empty template)" with every section title and 2 empty rows each.
 8. Block "New field" with 3 empty rows labeled "Field name / What goes here / Example".
