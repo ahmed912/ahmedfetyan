@@ -582,3 +582,12 @@ Do not change the Decision board, Start here, Maps and frameworks or Flowcharts,
 Each persona is a HORIZONTAL ROW, read left to right: the persona header card first (name, Who, Wants), then its section cards side by side in this order: Trigger moments, Goals, Pains, Fears, Beliefs and myths, Questions, Objections, Their words, Success picture, Ready angles. Card width 520, 24 px gap, all cards in a row top-aligned and the same height as the tallest card in that row.
 Personas stacked as rows, 120 px apart: Founders, Executives and teams, Speakers, Creative directors, New persona (+ New field card at the end of its row).
 Place the persona rows below the Flowcharts section. Decision board, Start here and Maps and frameworks stay as columns, placed to the left of the persona rows (or above them if that reads better), no overlaps.
+
+### v4.2 WHOLE PAGE READS BY HORIZONTAL SCROLLING (overrides all earlier placement)
+Ahmed reads by scrolling sideways. Lay the ENTIRE page out as ONE horizontal strip with a fixed height of 2400 px (fits one screen at a comfortable zoom). Nothing below the strip, nothing stacked above it.
+Order left to right, each chapter starts with a narrow chapter divider card (full strip height, 320 wide, chapter color fill, white chapter number + title, rotated or large):
+ 1 Decision board (its 8 rows become 8 cards flowing in columns) · 2 Start here (how to use, color key, goals and formats, branded cards) · 3 Daily framework flowchart · 4 Flows 1 to 4, one after another · 5 Maps and frameworks (brand mind map, persona mind map, frameworks 1 to 6) · 6 Founders · 7 Executives and teams · 8 Speakers · 9 Creative directors · 10 New persona + New field.
+Inside a chapter, cards flow top to bottom and wrap into the next column to the right when the 2400 px height is reached (newspaper columns). Column width 520 for cards, 120 px gap between chapters, 24 px between cards.
+Flowcharts keep their left-to-right flow; if one is taller than 2400, scale its spacing down, never its text below 18 px.
+Persona chapters: header card (name, Who, Wants) first, then the 10 simplified v4 section cards flowing in columns.
+Remove the old vertical columns and the old rows after rebuilding. Re-run the no-crop check.
