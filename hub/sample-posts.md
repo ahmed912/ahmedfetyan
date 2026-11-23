@@ -1,6 +1,6 @@
 # Sample posts, one per pillar (Content Studio)
 Written 23 Nov 2026. Purpose: show how a finished post looks as text + One Light image inside a real LinkedIn post frame. No carousels.
-Facts used are only those already in the Content Studio drafts. "$100K raised" still needs client confirmation before real use.
+Every sample is checked against the FigJam brand script (SB7 v1, 21 Nov 2026): hero, villain (clutter), internal fear, guide line, plan wording, CTAs and success line. Authority only uses brand script lines; no unconfirmed results.
 
 =====================================================================
 ## BUILD SPEC (for the builder)
@@ -16,7 +16,7 @@ Inside "Sample post", left to right:
      - Image: 4:5 (552 x 690), edge to edge in the card, the brand image (B) placed as an instance or clone scaled to fit.
      - Under the image: a row "Like · Comment · Repost · Send" in 14 px semibold #00000099, text only, no icons.
   B. Brand image at full size 1080 x 1350, built by cloning a layout from "One Light · Applications" (frame 151:185) and swapping text and the image fill with the named render from "Dark visual library" (frame 150:3052). Keep the layout's type, amber line and fade exactly.
-  C. Annotation column (width 480), on the page's existing dark style, using the file's text styles: label + text rows for GOAL, HERO, FORMAT, IMAGE RECIPE, then "WHY IT WORKS" with one row per craft place listed for that sample.
+  C. Annotation column (width 480), on the page's existing dark style, using the file's text styles: label + text rows for GOAL, HERO, FORMAT, IMAGE RECIPE, BRAND SCRIPT (which SB7 parts the post uses), then "WHY IT WORKS" with one row per craft place listed for that sample.
 Gap 64 between A, B, C. No carousels. No icons. No em dashes.
 Update 00 Start here page index with one line: "Each pillar page now opens with a Sample post."
 Verify each page with get_screenshot (enableBase64Response true). Report node ids.
@@ -25,6 +25,7 @@ Verify each page with get_screenshot (enableBase64Response true). Report node id
 ## P1 WORK THAT WON (page 1:2)
 =====================================================================
 GOAL: Prove. HERO: Founders. FORMAT: text + 1 image (normally a real slide; this sample uses the brand layout).
+BRAND SCRIPT: Problem (external), Guide (authority), Success (before and after: the order changed the first read).
 IMAGE RECIPE: clone layout "01 LinkedIn post" (151:188). Image fill: render "P1 04 flow51" (149:766). Headline: "Investors fund problems they can picture." Top label stays "AHMED FETYAN · PRESENTATION STRATEGIST". Note under the image in the annotation: "With client permission, use the real $413B opening slide instead. Real proof beats a branded card."
 
 POST TEXT:
@@ -41,7 +42,7 @@ Then the market.
 
 By the time the product appeared, the investor was already looking for a solution.
 
-The startup raised $100K.
+Decks like this one are behind $57M in funding rounds.
 
 Investors fund problems they can picture.
 
@@ -53,12 +54,13 @@ WHY IT WORKS:
 - Hook: a number plus stakes, no "I" in the first two lines.
 - Specificity: 60%, elderly, a strip smaller than a fingernail.
 - The turn: "By the time the product appeared, the investor was already looking for a solution."
-- Guide line: one authority fact, the raise. Nothing else about you.
+- Guide line: the brand script authority line ($57M, "behind", not "raised"). Swap in this deck's own result only after the client confirms it in writing.
 - Ending: the takeaway, then one soft question.
 
 =====================================================================
 ## P2 BEFORE AND AFTER (page 1:5)
 =====================================================================
+BRAND SCRIPT: Problem (villain: clutter), Success (before and after), CTA (transitional: weekly before and after).
 GOAL: Educate. HERO: Founders. FORMAT: text + 1 image showing before and after side by side. (The weekly carousel is the main format; this is the single-image version.)
 IMAGE RECIPE: clone layout "02 Carousel content" (151:202) as a 1080 x 1350 frame. Replace the render area with two slide placeholders side by side (dark #222428 rectangles, 16:9, 460 wide each) with mono labels "BEFORE" and "AFTER" above them, and the small text "Client slide, placeholder text" under them. Image fill behind them: render "P2 01 flow0" (149:801) at low opacity only if it does not reduce text contrast. Headline: "Start where it's highlighted." Counter label "01 / 01" removed.
 
@@ -67,6 +69,8 @@ The answer was already highlighted.
 
 A client sent me a slide called "Why sport".
 One paragraph. A few words in it were already highlighted.
+
+Clutter hides the point. Here the point was hiding in plain sight.
 
 That was the clue.
 The point was sitting in one sentence.
@@ -93,6 +97,7 @@ WHY IT WORKS:
 =====================================================================
 ## P3 WIN THE ROOM (page 1:3)
 =====================================================================
+BRAND SCRIPT: Problem (villain: clutter, philosophical line), Failure ("judged in seconds"), Want (a clear yes).
 GOAL: Educate. HERO: Founders. FORMAT: text + takeaway card. (Text only is also fine for this pillar.)
 IMAGE RECIPE: clone layout "04 Quote post" (151:226), resized to 1080 x 1350 by extending the dark area below. Image fill: render "P3 02 flow89" (149:778). Headline: "Put your slides in the order your investor asks." Small line under it: "Win the room".
 
@@ -103,6 +108,8 @@ They are reading for one of two things.
 A reason to say yes.
 Or a reason to stop.
 
+In the room or in their inbox, months of work get judged in seconds.
+
 Most decks hand them the second one early.
 Too many ideas on one slide. A number with nothing to compare it to. The product before the problem.
 
@@ -110,6 +117,8 @@ So build the deck around their questions, not your story's order.
 Who has the problem? What does it cost? Why now? Why you?
 
 Answer them in the order they will ask.
+
+A good idea should never lose because it was explained badly.
 
 What question do investors ask you first?
 
@@ -125,7 +134,8 @@ WHY IT WORKS:
 =====================================================================
 ## P4 HOW I WORK (page 1:4)
 =====================================================================
-GOAL: Sell. HERO: Executives and teams. FORMAT: text + branded image. CTA: Book a call.
+BRAND SCRIPT: Plan (Talk, Shape, Win, word for word) + one promise, CTA (direct: Book a call).
+GOAL: Sell. HERO: Founders and leaders (executives and teams). FORMAT: text + branded image. CTA: Book a call.
 IMAGE RECIPE: clone layout "06 Deck section divider" (151:248) re-cut to 1080 x 1350 (giant "01" top left, render lower right). Image fill: render "P4 01 flow29" (149:768). Top label: "TALK · SHAPE · WIN". Headline: "A deck is decided in the text." 
 
 POST TEXT:
@@ -145,11 +155,12 @@ Colour, type and imagery came after.
 A deck is decided in the text, before the first slide.
 
 Every project with me runs the same way.
-Talk: we agree on scope and timeline before you pay anything.
-Shape: I build the story first, then the design.
+Talk: book a call.
+Shape: we shape your story.
 Win: you walk in ready.
+You get a clear scope and timeline before you pay anything.
 
-Have a document that needs to become a deck? Book a call, link in the comments.
+Have a document that needs to become a deck? Book a call. Link in the comments.
 
 #PresentationDesign #PitchDeck #CompanyProfile
 
@@ -163,6 +174,7 @@ WHY IT WORKS:
 =====================================================================
 ## P5 MY PATH (page 1:6)
 =====================================================================
+BRAND SCRIPT: Guide (empathy line, word for word), identity (ex-doctor turned presentation strategist).
 GOAL: Connect. HERO: Founders. FORMAT: text + one personal photo (this sample uses a render until the photo exists).
 IMAGE RECIPE: clone layout "08 Featured" (151:263) re-cut to 1080 x 1350, or layout "01 LinkedIn post" (151:188). Image fill: your portrait if available, else render "P5 04 flow21" (149:787). Headline: "Listen fully before you decide anything."
 
@@ -180,6 +192,9 @@ I listened first.
 The shirts, the stadium lines, the two concepts all came from what that audience already loved.
 
 The message the client sent after delivery is the reason I stayed in this work.
+
+I know how it feels when months of work come down to twenty minutes and a few slides.
+That is why I listen first.
 
 Good design starts with good questions.
 
