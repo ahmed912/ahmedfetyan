@@ -4,7 +4,8 @@
       "mcp__Supabase__apply_migration",
       "mcp__Supabase__execute_sql",
       "Bash(*python3 upload.py*)",
-      "mcp__Netlify__netlify-deploy-services-updater"
+      "mcp__Netlify__netlify-deploy-services-updater",
+      "mcp__Figma"
     ]
   },
   "autoContinueAtUsageLimit": true
