@@ -13,6 +13,11 @@ Source of truth, in this order (read when available, never contradict):
 3. Repo notes: hub/content-plan.md, hub/persona-bank.md, hub/sample-posts.md.
 If the files and this skill disagree, the FigJam brand script wins.
 
+## 0. The system at a glance (the flower, FigJam page "Master flow")
+Core: FOUNDATION (brand script, North Star, One Light, edge). Five petals, clockwise:
+1. WHO: the 4 personas. 2. COLLECT: add bank lines all week (Sheet, Start here). 3. PLAN: the Week Engine (6 h) or Flow 8 (Sunday 45 min). 4. MAKE AND SHIP: Decision board, Daily framework, image choice, recipes, pre-publish check. 5. GROW: trust ladder, Thursday review, booked calls. Client work loops back to WHO and COLLECT.
+When Ahmed is lost, tell him which petal he is in and the next step. For any board or visual change, use the content-board-builder skill.
+
 ## 1. Brand script essentials (use these words, do not paraphrase)
 
 - **North Star:** Help decision makers see the one insight that matters, and design it so the decision is obvious.
