@@ -35,6 +35,41 @@ Color and contrast (WCAG AA minimum):
 - "Add new" rows: transparent fill, 2 px dashed Mist border, placeholder text Cream at 60%, 24 px.
 - Do not use color alone to carry meaning: every box also has a text label.
 
+
+### BUILD SPEC v3 (23 Nov, overrides every color and type rule above)
+Ahmed: the One Light monochrome page is hard to read. This page is a working document, not a brand asset: use FigJam colors and real hierarchy.
+Background: FigJam's light canvas. Columns keep the same layout (6 columns side by side, top to bottom).
+Font: Inter. Four weights, used consistently:
+- L1 page title: 96 px, Extra Bold (or Black), #1E1E1E.
+- L2 column title (persona name): 64 px, Extra Bold, white on the persona header band.
+- L3 section title: 36 px, Bold, in the section's strong color.
+- L4 row label: 16 px, Semi Bold, UPPERCASE, +6% tracking, in the section's strong color.
+- L5 body: 22 px, Regular, #1E1E1E, line height 150%.
+- Truth or answer text under a myth, question or objection: 20 px, Medium, #444444, starting with "Truth:" / "Answer:".
+
+Persona colors (header band fill, white title, all pass AA):
+- Start here: #2C2C2C. Founders: #1E5BB8 (blue). Executives and teams: #6B3FA0 (violet). Speakers: #B5530C (orange). Creative directors: #0F766E (teal). New persona: #555555.
+- Header band: full column width, 200 px tall, 24 px radius, persona name + one-line "who" in white Regular 22.
+
+Section colors (same in every persona, so they become a code): strong color for title, label and a 8 px left bar; tint as the section block fill.
+| Section | Strong | Tint |
+|---|---|---|
+| Who / Brand script want | #555555 | #F1F1F1 |
+| Trigger moments | #9A6B00 | #FFF4CC |
+| Goals | #1E7B34 | #E3F5E7 |
+| Pains (external) | #B42318 | #FDE7E5 |
+| Fears (internal) | #6B3FA0 | #EFE7FA |
+| Beliefs and myths | #B5530C | #FFEBD9 |
+| Questions they ask | #1E5BB8 | #E3EDFB |
+| Objections to hiring | #A3195B | #FBE4EF |
+| Their words | #0F766E | #DDF3F0 |
+| Success picture | #2E7D32 | #E8F5E9 |
+| Ready angles | #2C2C2C | #EDEDED |
+Rows: white cards (#FFFFFF, 12 px radius, 1 px #E0E0E0 border) inside the tinted section block, label above the text.
+"Add new" rows: white, 2 px dashed in the section's strong color, placeholder "Add new..." in #6B6B6B.
+Start here column: add a "Color key" block listing every section with its color chip and name (chip = 24 px rounded square).
+Keep all text exactly. No stickies, no icons, no em dashes.
+
 Structure top to bottom:
 1. Page title "Persona bank" + one line "Read this first every week, then the pillars, then the Content Studio."
 2. Block "How to use this page" (section 1 below).
