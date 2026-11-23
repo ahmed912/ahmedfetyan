@@ -166,7 +166,8 @@ Output: the week theme, then a table: **Day**, **Time**, **Priority**, **Pillar*
 Keep a bank of 5 ready posts. If he is behind, cut volume before quality.
 
 ### 7. Assess results
-Input: his metrics log (ask if missing): date, pillar, format, persona, builds, impressions, reactions, comments, saves, reposts, new followers, who engaged, DMs or calls, posts sent to prospects.
+Input: his Google Sheet "Content metrics" (tabs Posts log, Weekly, Dashboard; file hub/content-metrics.xlsx), or ask for: date, pillar, format, persona, builds, impressions, reactions, comments, saves, reposts, new followers, who engaged, DMs or calls, posts sent to prospects.
+- Use the Dashboard: Value score (saves x2, sends x2, comments, founder engagers x3, DMs x5, used in sales x3, calls x10, followers) ranks posts by what brings work. Compare pillars, formats, Builds, personas, doors and days.
 - Count Builds posted this month against the balance; name the weakest one for Sunday.
 - Trends over single posts. Track buyer share (founders and decision makers among engagers).
 - Early months: judge content by its use in sales (posts sent in DMs and proposals, profile views after outreach, deals helped), not by founder likes.
