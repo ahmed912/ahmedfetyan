@@ -411,3 +411,39 @@ All week: add lines to the bank after every call, DM and comment
 → Daily: publish at the slot + 5 comments on founders' posts (20 min)
 → Thursday afternoon: review the numbers, change ONE thing (20 min)
 → loops back to "All week"
+
+=====================================================================
+## MAPS AND FRAMEWORKS (new column "Maps and frameworks", placed right after "How to make a post")
+=====================================================================
+Ahmed learns best from maps, flowcharts and frameworks. Visual first, words short. Same v3 colors and Inter weights. Each block: L3 title, one-line caption, then the visual.
+
+### Map 1. The brand system (mind map)
+Center node (dark #2C2C2C, white text): "North Star: help decision makers see the one insight that matters, and design it so the decision is obvious."
+Branch A "Brand script" → Hero (founders and leaders, want: a clear yes) · Villain (clutter) · Guide (empathy + 3 authority lines) · Plan (Talk, Shape, Win) · CTA (Book a call / weekly carousel) · Failure (judged in seconds) · Success (you win the day)
+Branch B "Personas" → Founders · Executives and teams · Speakers · Creative directors (each node in its persona color)
+Branch C "Pillars" → Work that won · Before and after · Win the room · How I work · My path · My thinking (Arabic)
+Branch D "Goals and formats" → Educate: carousel · Prove: text + real slides · Connect: text or photo · Sell: branded image or video · Spark: text only
+Branch E "Brand look" → One Light: dark room, one lit form, amber line, serif headline, mono label
+
+### Framework 1. SB7 as a story strip (7 numbered boxes left to right, wrapping to 2 rows if needed)
+1 A character (founders and leaders) → 2 has a problem (clutter hides the point) → 3 meets a guide (I know how it feels; $57M, 6 countries, Top 1%) → 4 who gives them a plan (Talk, Shape, Win) → 5 and calls them to action (Book a call) → 6 that helps them avoid failure (judged in seconds) → 7 and ends in success (you win the day)
+
+### Framework 2. Post skeleton (5 stacked bars, widest at top, like a funnel)
+Hook (villain or fear, never "I") → Proof (real slide, before and after, result) → Guide line (empathy OR one authority fact) → Ending (stakes or success) → CTA (one only)
+Side note: "Lines 1 to 3 must work alone. LinkedIn cuts after about 3 lines."
+
+### Framework 3. The 5 moves (5 numbered cards in a row)
+1 Start from the hero's moment · 2 Withhold: say what it was not first · 3 The turn gets its own line · 4 Proof only from brand script lines · 5 Cut sentences that explain the design
+
+### Framework 4. The 7 craft places (a scorecard grid, 7 rows x columns 1 to 5)
+Hook · Tension · Specificity · The turn · Voice · Rhythm · Ending. Each row: name, one-line rule, five empty score boxes.
+
+### Framework 5. Persona x pillar matrix (grid, rows = 4 personas in their colors, columns = 5 pillars)
+Each cell: one ready angle in 8 words or fewer, taken from the persona's "Ready angles" or myths. Empty cells say "Add an angle".
+Founders: Work that won "The $413B opening slide" · Before and after "Problem or solution first?" · Win the room "More slides show more effort" · How I work "AI is faster? Not the decisions" · My path "Listen fully before you decide".
+Executives and teams: Work that won "The bid book's second read" · Before and after "Which chart should we use?" · Win the room "Executives want all the data" · How I work "Our data is confidential" · My path "Add an angle".
+Speakers: Work that won "Add an angle" · Before and after "How much text per slide?" · Win the room "Slides are my notes" · How I work "Add an angle" · My path "Add an angle".
+Creative directors: Work that won "Add an angle" · Before and after "Add an angle" · Win the room "Add an angle" · How I work "AI will replace deck designers" · My path "Add an angle".
+
+### Framework 6. Weekly rhythm as a calendar strip (5 day columns Sun to Thu)
+Each day: pillar (colored chip), format, Egypt time. Sun: Win the room or My path, 08:30 · Mon: Work that won, 08:30 · Tue: Win the room, 08:30 · Wed: How I work, 15:30 · Thu: Before and after carousel, 08:30. Under the strip: "+1 Arabic post any day 08:30. No Friday."
