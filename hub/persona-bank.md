@@ -598,3 +598,13 @@ Each persona chapter is one 16:9 block (about 3840 x 2160) that fits on one scre
  Row 2: Questions + Objections + Their words + Success picture + Ready angles (+ the "+ add a line" note for new sections at the end)
 Cards 600 wide, 24 px gaps, all cards in a row equal height. Body 20 px stays the minimum; tighten line height to 130% and bullet spacing to 6 px before shrinking anything else. If a card is still too tall, let that one row grow, but keep the block within about 2400 px tall.
 The strip height becomes the persona block height, and the other chapters flow within the same height. New persona chapter uses the same 2-row grid.
+
+### v4.4 CONNECTOR READABILITY (whole board, every flowchart)
+Problem: branches share one trunk line and their labels pile up on the trunk, far from their own arrows (seen in the Daily "What day is it?" fan and across the board).
+Rules for ALL flowcharts (Daily framework, Flows 1 to 4, mind maps):
+1. No shared trunks. Every branch out of a decision gets its own connector, leaving from its own side or point of the shape.
+2. Fan-outs with more than 2 branches: replace connector labels with option chips. Decision → one plain connector → a stacked column of colored option chips (each chip holds the label text, Bold 20) → one short straight arrow from EACH chip to its own target on the same row.
+3. Yes/No branches: "Yes" leaves from the right, "No" from the bottom. The label sits as a small chip right at the start of its own connector (within 24 px of the shape), green for Yes, red for No.
+4. Straight or single-elbow connectors only. No connector crosses another connector or passes behind a shape. Loops run above or below the main line with clear space.
+5. Daily framework day chips in calendar order: Sun, Mon, Tue, Wed, Thu, Fri or Sat. The Thu jump to CHECK starts from the Thu chip and runs along the top.
+Verify with close crops of every decision area, then run the no-crop check.
