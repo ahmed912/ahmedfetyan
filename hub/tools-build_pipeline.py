@@ -9,7 +9,7 @@ F=lambda c:PatternFill("solid",fgColor=c); B=lambda **k:Font(name="Inter",**k)
 WH=Font(color="FFFFFF",bold=True,size=11,name="Inter"); BOR=Border(bottom=Side(style="thin",color="D0D0D0"))
 STAGES=["1 SEE","2 TRUST","3 TALK","4 SHAPE","5 WIN","6 RETURN","Nurture","Lost"]
 SC={"1 SEE":("B5530C","FFEBD9"),"2 TRUST":("1E5BB8","E3EDFB"),"3 TALK":("0F766E","DDF3F0"),"4 SHAPE":("6B3FA0","EFE7FA"),"5 WIN":("1E7B34","E3F5E7"),"6 RETURN":("2C2C2C","EDEDED"),"Nurture":("9A6B00","FFF4CC"),"Lost":("B42318","FDE7E5")}
-SOURCES=["LinkedIn post","LinkedIn comment","Outbound DM","Slide Diagnosis","Upwork","Referral","Agency"]
+SOURCES=["LinkedIn post","LinkedIn comment","Outbound DM","Slide Diagnosis","Referral","Agency","Accelerator or VC","Website"]
 PERS=["Founders","Executives and teams","Speakers","Creative directors","Other"]
 DECKS=["Pitch deck","Company profile","C-level deck","Report","Keynote","Webinar","Other"]
 SIGNALS=["Engaged 2 posts","Raising a round","New role","Event or keynote","Posted a deck","Agency pitch","Inbound ask","Other"]

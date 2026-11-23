@@ -16,7 +16,8 @@ Stage 6 feeds stage 1 and the Persona bank (new proof, new lines).
 ## Lead sources (where people enter)
 - LinkedIn content and comments (founders, executives, speakers)
 - Outbound DMs on signals
-- Upwork (Top 1% Expert-Vetted)
+- Accelerators and VC platforms: pitch-deck clinics for founder cohorts
+- Website + booking link (owned home for the offer)
 - Referrals from past clients
 - Agencies and consultancies (Creative directors persona): overflow work. This is the main door to Fortune 500 clients.
 
@@ -66,7 +67,7 @@ Monthly: ask every past client one check-in question.
 New page "Sales funnel" in 5AMqs2LbPEP9JHxBqoHity, one section "The Clear Yes funnel", horizontal reading, light mode v3.
 Stage colors: SEE #B5530C, TRUST #1E5BB8, TALK #0F766E, SHAPE #6B3FA0, WIN #1E7B34, RETURN #2C2C2C.
 A. Funnel: 6 stage bands left to right, each band shorter than the last (funnel shape, tapering), each with a stage card: number + name (Extra Bold), "They think", "What I do", "Content", "Metric", "Starting target". A green return arc from RETURN back over the top to SEE, chip "proof, referrals and new bank lines".
-B. Lead sources map: 5 source chips on the left feeding into SEE or TALK (Upwork, referrals and agencies enter at TALK).
+B. Lead sources map: 6 source chips on the left feeding into SEE or TALK (referrals, agencies, accelerators and the website enter at TALK).
 C. Flow S1 "Signal to DM": signal chips → matching script card → diamond "Replied?" Yes → "Offer the Slide Diagnosis or book a call" / No → "Wait for a new signal, nurture list".
 D. Flow S2 "Diagnosis call": 5 timed steps → 4 DDBM diamonds in a row → chips: 4 green "Proposal in 24 h" · 2 to 3 "Proposal with the gap or a smaller step" · 0 to 1 "Nurture or refer".
 E. Flow S3 "Proposal to yes": proposal card (8 parts as a list) → Day 2 → Day 5 → Day 10 → diamond "Yes?" Yes → "50% deposit, kickoff in 48 h" / No → "Nurture list, ask why".
