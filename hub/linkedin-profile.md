@@ -87,3 +87,57 @@ Turn on Services: Presentation Design, Graphic Design, Brand Design (or the clos
 | Agencies and consultancies | 10% | Overflow work; the door to Fortune 500 | Month 1: list 20, contact 3 a week |
 | Website + booking link | setup once | Owned home for the offer and booking | Week 1: one simple page (free tier) |
 Not now: Instagram, X, YouTube, Behance. One strong channel beats five weak ones.
+
+=====================================================================
+## PROFILE AND PORTFOLIO BY FUNNEL LAYER (23 Nov, update)
+=====================================================================
+Every LinkedIn section and every portfolio part has a funnel layer and one job.
+
+### LinkedIn sections
+| Section | Layer | Job | What goes in |
+|---|---|---|---|
+| Headline | TOFU | Sells under every comment | Who you help + $57M proof + ex-doctor edge |
+| Photo | TOFU | A face people reply to | Clear, well lit, looking at camera |
+| Activity (posts, comments) | TOFU | Discovery | 5 posts a week, 5 comments a day |
+| Banner | MOFU | The promise at a glance | One Light: "Others design slides. I diagnose decisions." + $57M line |
+| About | MOFU to BOFU | The brand script as a story | Draft above, ends in Book a call + Slide Diagnosis |
+| Featured | MOFU to BOFU | Proof, then the offer | The 6 items in order (above) |
+| Experience | MOFU | Credibility over time | "Presentation strategist, self-employed" with 3 media attachments (case study PDFs); medicine as an earlier role (identity) |
+| Projects | MOFU | One entry per case study | Title = the stakes ("Health-tech seed deck: problem first"), 2-line story, link to the portfolio page |
+| Recommendations | MOFU | Other people's words | Ask every past client; 5 in 60 days |
+| Skills | MOFU | Search and trust | Pin 5 (list above) |
+| Services page | BOFU | "Request services" button | Pitch decks, company profiles, board decks, keynotes; "clear scope before you pay" |
+| Intro link / Contact info | BOFU | One click to start | Booking page with the Slide Diagnosis |
+| Custom profile URL | all | Easy to share in DMs and proposals | linkedin.com/in/ahmedfetyan (or closest) |
+| Newsletter (month 3+) | TOFU to MOFU | Subscribers get every issue | Monthly: the best Deck Diagnosis + one lesson |
+
+### Portfolio (one simple website + the same content as a PDF)
+Order of the page, top to bottom:
+| # | Part | Layer | Content |
+|---|---|---|---|
+| 1 | Hero | MOFU | One-liner ("Months of work get judged in seconds. I shape your story into a clear, human presentation, so you win the day.") + two buttons: Book a call, Send one slide |
+| 2 | Proof strip | MOFU | Decks behind $57M in funding rounds · Founders in 6 countries · (client logos only with permission) |
+| 3 | 3 featured case studies | MOFU | One per deck type: pitch deck, company profile or board deck, keynote |
+| 4 | Before and after gallery | TOFU to MOFU | 6 to 9 slides, placeholder text where needed |
+| 5 | How I work | BOFU | Talk, Shape, Win + the promises |
+| 6 | Testimonials | BOFU | 3 short quotes with role and country |
+| 7 | About | MOFU | Ex-doctor to presentation strategist, the diagnosis habit |
+| 8 | FAQ (objections) | BOFU | Price, in-house, AI, time zones, confidentiality, timeline |
+| 9 | Final CTA | BOFU | Slide Diagnosis form + booking link |
+
+Each case study page follows the brand script (SB7), in this order:
+1. The stakes: who, what room, what was at risk (client unnamed if needed).
+2. The problem: what the raw deck did wrong (clutter, order, buried point).
+3. The insight: the one thing the deck had to make obvious.
+4. Before and after: 2 to 4 slide pairs.
+5. Decisions: 3 design decisions with the why.
+6. Result: only confirmed facts ("behind" unless the client confirms "raised").
+7. Client words: one quote (with permission).
+8. CTA: "Have a deck like this? Book a call" or "Send me one slide."
+The case study page is also the source for one Work that won post and one Before and after carousel (portfolio feeds TOFU and MOFU content).
+
+### Where each piece is used
+- DMs (BOFU): send the case study that matches their deck type.
+- Proposals (BOFU): attach one matching case study + one post.
+- Featured slot 6 and Experience media: the PDF version.
+- Projects section: one entry per case study, linking to its page.

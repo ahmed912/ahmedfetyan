@@ -182,7 +182,7 @@ Source: hub/sales-funnel.md and the Google Sheet "Sales pipeline" (Leads, Dashbo
 - Call prep: the 25-minute Diagnosis call: Symptoms, History, Stakes, Diagnosis (one quick win), Treatment plan. Qualify DDBM: Deadline, Decision maker, Budget, Materials. 4 green = proposal; 2 to 3 = proposal with the gap or a smaller step; 0 to 1 = nurture or refer.
 - Proposal: one page in 8 parts (their stakes in their words, the one insight, scope, timeline with feedback windows, price 50/50, promises, proof, one CTA). Send within 24 h. Follow up day 2 (a post, no ask), day 5 (one question), day 10 (close the loop).
 - After delivery: testimonial (3 questions), permission to show, referral ask, 30 and 90 day check-ins. Turn the project into a Work that won post.
-- Channels: LinkedIn 70%, referrals 10%, accelerators and VC platforms 10%, agencies 10%, plus a website with booking. Ahmed left Upwork; do not suggest Upwork. Profile plan: hub/linkedin-profile.md (headline, Featured order, About, banner).
+- Channels: LinkedIn 70%, referrals 10%, accelerators and VC platforms 10%, agencies 10%, plus a website with booking. Ahmed left Upwork; do not suggest Upwork. Profile and portfolio plan: hub/linkedin-profile.md (every LinkedIn section and portfolio part mapped to TOFU, MOFU or BOFU; Featured order; About; banner; case study structure: stakes, problem, insight, before and after, decisions, confirmed result, client words, CTA). In DMs and proposals send the case study matching the lead's deck type.
 - Pipeline review (Thursday, with metrics): which stage leaks most; one change. Never invent prices or results; ask Ahmed.
 
 ## 6. Coaching stance

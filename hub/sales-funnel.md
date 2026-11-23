@@ -115,3 +115,14 @@ Rule: every new person gets a row in the Sales pipeline (Leads) within 24 hours 
 2. A "Funnel layers" grid under the funnel: 4 columns (TOFU, MOFU, BOFU, Post-funnel) x rows Builds, Pillars and assets, Formats, CTA, Metrics, Hook example (from the table above).
 3. A new flow "S0 Entry router" placed first (before S1): 11 entry chips on the left (stacked, one arrow each) → each to its stage chip (2 TRUST, 3 TALK, 4 SHAPE, Nurture) → all merge into one card "Add a row in the Sales pipeline within 24 h: stage, next action, date" → "In the funnel". Yellow callout: "No row = not in the funnel."
 4. A content mix strip: Sun MOFU · Mon MOFU · Tue TOFU · Wed BOFU · Thu TOFU · Arabic TOFU, "about 40 / 40 / 20".
+
+
+## PROFILE AND PORTFOLIO IN THE FUNNEL
+Full detail: hub/linkedin-profile.md ("PROFILE AND PORTFOLIO BY FUNNEL LAYER").
+TOFU: headline, photo, activity, newsletter (later), before and after gallery.
+MOFU: banner, About, Featured, Experience media, Projects (one per case study), Recommendations, Skills, portfolio hero, proof strip, 3 case studies, About me.
+BOFU: Services page, intro link and contact, portfolio How I work, testimonials, FAQ, final CTA (Slide Diagnosis + booking); case studies sent in DMs and proposals.
+Every case study follows SB7: stakes, problem, insight, before and after, decisions, result (confirmed only), client words, CTA.
+
+## BUILD ADD-ON 2 (Sales funnel page)
+A block "Profile and portfolio in the funnel": 3 columns TOFU, MOFU, BOFU (same colors as the brackets), each listing its LinkedIn sections and portfolio parts as chips (LinkedIn chips white with a blue left bar, portfolio chips white with a violet left bar, small legend). Under it a strip "Case study page (SB7)": 8 numbered steps left to right: Stakes → Problem → Insight → Before and after → Decisions → Result (confirmed only) → Client words → CTA, with an arrow from the strip to the TOFU and MOFU columns labeled "becomes posts".
