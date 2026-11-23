@@ -17,7 +17,8 @@ Builds and audits the visual side of Ahmed's LinkedIn content system. Content co
   - Page Persona bank: horizontal strip of chapters: 0 Week Engine 100:2166, Decision board 79:1434, Start here 79:1474, Flows 1 to 4 61:2993, Daily framework 70:921, B Builds 96:1539, Maps 73:1076, 4 persona chapters, New persona
   - Page Master flow: the flower (a duplicate of everything)
 - Content Studio JoETndwAvLhNpGn3N99x8U: pillar pages with Sample posts, One Light visual library (brand assets)
-- Specs: hub/persona-bank.md (v3 to v4.8), hub/master-flow.md, hub/sample-posts.md, hub/content-plan.md
+- Specs: hub/persona-bank.md (v3 to v4.8), hub/master-flow.md, hub/sales-funnel.md, hub/sample-posts.md, hub/content-plan.md
+- Page Sales funnel: The Clear Yes funnel (stages, flows S1 to S4)
 
 ## Two visual languages, never mixed
 - Working documents (boards, flowcharts, maps): light mode, strong contrast, colorful, Inter in 4 weights (Extra Bold titles, Bold labels, Medium questions, Regular body), body text #111111, minimum 18 px.
