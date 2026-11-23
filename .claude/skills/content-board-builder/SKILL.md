@@ -52,6 +52,6 @@ Builds and audits the visual side of Ahmed's LinkedIn content system. Content co
 
 ## Verify before reporting
 1. Close crops (get_screenshot, enableBase64Response true) of every decision area and every changed block; re-shoot after any fix.
-2. No-crop check: every text node fits inside its shape; report the count and flagged count.
+2. No-crop check: every text node fits inside its shape; report the count and flagged count. For diamonds, ellipses and big corner radii, test against the shape's inscribed area, not its bounding box (a diamond's usable area is about half its box). Keep diamond text to 2 to 4 words; put longer wording in a small label above it.
 3. For duplicates: text node totals in sources equal totals in clones.
 4. Report under 8 lines: node ids, counts, and anything not re-shot or not clean. Never claim a check you did not run.
