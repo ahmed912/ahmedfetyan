@@ -9,20 +9,25 @@ Where: FigJam fileKey 5AMqs2LbPEP9JHxBqoHity. New page "Persona bank" if the API
 Layout: ONE vertical column, read by scrolling down. Column width 1200. Nothing side by side except label + text inside a row, and the small tables. No horizontal reading.
 Elements: text layers and rounded rectangles only. No sticky notes. No icons.
 
-Text hierarchy (exactly 5 levels, use consistently):
-- L1 Page title: 96 px, Bold.
-- L2 Persona title / major block title: 56 px, Bold, with a 4 px Amber line under it only if on Basalt; on light use Deep Amber.
-- L3 Section title (Trigger moments, Goals, ...): 32 px, Bold.
-- L4 Label (small caps style, e.g. "GOAL", "BEST FORMAT", "PILLAR"): 18 px, Medium, letter spacing 8%, Slate.
-- L5 Body: 22 px, Regular, line height 150%. Max 80 characters per line.
-Spacing: 160 px between personas, 64 px between sections, 24 px between rows, 32 px padding inside boxes.
-Font: IBM Plex Sans if available, else Inter.
+Brand: "One Light" (Content Studio page "Brand board v2 · One Light"). A cool dark room, one warm light. Black, white, one yellow line, geometric forms. No cream pages, no brown, no amber fills.
 
-Color and contrast (WCAG AA minimum, AAA for body where possible):
-- Page ground: Cream #E8E2D0 or lighter tint #F3F0E4. Body text Brown #3F382F (8.9:1 on Cream). Headings Basalt #1A1B1D.
-- Persona header band: Basalt #1A1B1D fill, Cream #E8E2D0 text, one thin Amber #FEA307 line. Amber is never text on light and never a fill.
-- Labels: Slate #404B50 on light (passes AA).
-- "Add new" rows: white fill #FFFFFF, 2 px dashed Slate border, placeholder text Grey #6B6A66 at 22 px.
+Text hierarchy (exactly 5 levels, use consistently):
+- L1 Page title: 120 px, serif (Thmanyah Serif Display, stand-in DM Serif Display), Cream.
+- L2 Persona title / major block title: 72 px, serif, Cream.
+- L3 Section title (Trigger moments, Goals, ...): 40 px, serif, Cream.
+- L4 Label: 20 px, IBM Plex Mono Medium, UPPERCASE, tracking +8%, Cream at 70% opacity. Never longer than a few words.
+- L5 Body: 24 px, IBM Plex Sans Regular, line height 140%, Cream. Max 80 characters per line.
+Max 3 text styles per box (label + title + body). Everything left-aligned.
+Spacing: 160 px between personas, 64 px between sections, 24 px between rows, 40 px padding inside boxes.
+
+Color and contrast (WCAG AA minimum):
+- Page ground: Basalt #1A1B1D.
+- Cards and rows: #222428 fill, 1 px #404B50 (Slate) border, 16 px corner radius.
+- Persona header band: Slate #404B50 fill, Cream text (6.9:1).
+- Text: Cream #E8E2D0 on Basalt (about 13:1). Mist #708290 only for text 24 px and up, never for body.
+- The yellow line: Amber #FEA307 as ONE thin 2 px horizontal line per persona header, nowhere else. Never text, never a fill.
+- Geometric accent: one small abstract form per persona header (an arc, a sphere outline or modular tiles, drawn as simple vector shapes in Slate/Mist strokes), from the One Light pattern language. Decoration stays quiet and never sits behind text.
+- "Add new" rows: transparent fill, 2 px dashed Mist border, placeholder text Cream at 60%, 24 px.
 - Do not use color alone to carry meaning: every box also has a text label.
 
 Structure top to bottom:
@@ -60,10 +65,10 @@ Weekly mix: 2 Educate, 1 Prove, 1 Sell, 1 Connect or Spark.
 =====================================================================
 ## 3. Branded image cards (your brand identity)
 =====================================================================
-Use when a text post has no real slide to show. Built on the cover system: Basalt ground, the thin Amber horizon line in the lower third, headline in Cream, meaning line in Plex Mono.
-- Question card: the post's opening question as the headline. Example: "What does a winning deck feel like?" Meaning line: the topic in 3 words.
-- Takeaway card: the post's takeaway sentence as the headline. Example: "Put your slides in the order your investor asks." Meaning line: "Win the room".
-- Number card: one number + one line saying what it counts. Use only with a source.
+Use when a text post has no real slide to show. Built on One Light: Basalt room, one lit geometric form (sphere, arc, tile or column), one thin yellow line, serif headline in Cream, mono label for the source or series.
+- Question card: the post's opening question as the serif headline. Example: "What does a winning deck feel like?" Mono label: the topic in 3 words.
+- Takeaway card: the post's takeaway sentence as the serif headline. Example: "Put your slides in the order your investor asks." Mono label: "WIN THE ROOM".
+- Number card: one big number in Plex Sans Thin (96 px and up) + one line saying what it counts + a mono source line. Use only with a source.
 Rules: one idea per card. 12 words max on the headline. Real proof beats a branded card: never use a card for a Prove post if a real slide exists. Arabic posts get the Arabic mirror cover.
 
 =====================================================================
