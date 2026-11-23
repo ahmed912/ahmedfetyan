@@ -26,7 +26,7 @@ Verify each page with get_screenshot (enableBase64Response true). Report node id
 =====================================================================
 GOAL: Prove. HERO: Founders. FORMAT: text + 1 image (normally a real slide; this sample uses the brand layout).
 BRAND SCRIPT: Problem (external), Guide (authority), Success (before and after: the order changed the first read).
-IMAGE RECIPE: clone layout "01 LinkedIn post" (151:188). Image fill: render "P1 04 flow51" (149:766). Headline: "Investors fund problems they can picture." Top label stays "AHMED FETYAN · PRESENTATION STRATEGIST". Note under the image in the annotation: "With client permission, use the real $413B opening slide instead. Real proof beats a branded card."
+IMAGE RECIPE: clone layout "01 LinkedIn post" (151:188). Image fill: render "P1 04 flow51" (149:766). Headline: "Investors fund problems they can picture." Top label stays "AHMED FETYAN · PRESENTATION STRATEGIST". Note under the image in the annotation: "The point lives in a slide (the $413B opening slide), so the real post shows that slide; placeholder text if the client prefers. The branded card here is only a demo."
 
 POST TEXT:
 $413 billion a year.
