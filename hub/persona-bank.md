@@ -591,3 +591,10 @@ Inside a chapter, cards flow top to bottom and wrap into the next column to the 
 Flowcharts keep their left-to-right flow; if one is taller than 2400, scale its spacing down, never its text below 18 px.
 Persona chapters: header card (name, Who, Wants) first, then the 10 simplified v4 section cards flowing in columns.
 Remove the old vertical columns and the old rows after rebuilding. Re-run the no-crop check.
+
+### v4.3 EACH PERSONA FITS ONE SCREEN, IN 2 ROWS (overrides v4.2 for persona chapters)
+Each persona chapter is one 16:9 block (about 3840 x 2160) that fits on one screen when zoomed to fit:
+ Row 1: header card (name, Who, Wants) + Trigger moments + Goals + Pains + Fears + Beliefs and myths
+ Row 2: Questions + Objections + Their words + Success picture + Ready angles (+ the "+ add a line" note for new sections at the end)
+Cards 600 wide, 24 px gaps, all cards in a row equal height. Body 20 px stays the minimum; tighten line height to 130% and bullet spacing to 6 px before shrinking anything else. If a card is still too tall, let that one row grow, but keep the block within about 2400 px tall.
+The strip height becomes the persona block height, and the other chapters flow within the same height. New persona chapter uses the same 2-row grid.
