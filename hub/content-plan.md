@@ -27,12 +27,12 @@ Open with their problem, never with you. You appear in one line only: empathy OR
 ### A3. Weekly rhythm
 | Day | Pillar | Format | CTA | Egypt time |
 |---|---|---|---|---|
-| Sun | Win the room, or My path every other week | Text only, or text + personal photo | Soft | 08:30 |
-| Mon | Work that won | Text + 1 or 2 images. Once a month: 5-slide case carousel | Soft | 08:30 |
-| Tue | Win the room | Text only | Soft | 08:30 |
-| Wed | How I work | 60 to 90 s video, or a process screenshot | Direct: Book a call | 15:30 |
-| Thu | Before and after | 8-slide carousel | Transitional: follow for next week's carousel | 08:30 |
-| Any day | My thinking (Arabic) | Text, or text + image | Soft or none | 08:30 |
+| Sun | The Lesson, or My Story every other week | Text only, or text + personal photo | Soft | 08:30 |
+| Mon | The Work | Text + 1 or 2 images. Once a month: 5-slide case carousel | Soft | 08:30 |
+| Tue | The Lesson | Text only | Soft | 08:30 |
+| Wed | Working with me | 60 to 90 s video, or a process screenshot | Direct: Book a call | 15:30 |
+| Thu | The Change | 8-slide carousel | Transitional: follow for next week's carousel | 08:30 |
+| Any day | My Thinking (Arabic) | Text, or text + image | Soft or none | 08:30 |
 
 Why: no Friday post, it is the weekend in Saudi Arabia and Egypt. Sunday is a workday there.
 08:30 Egypt = 09:30 KSA, 10:30 UAE. 15:30 Egypt = 16:30 KSA, 14:30 Europe, 08:30 New York.
@@ -43,7 +43,7 @@ Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Dail
 
 ### A4. The five pillars
 
-**Pillar 1. Work that won**
+**Pillar 1. The Work**
 - What it is: case studies of decks that did their job. Proof that you are the guide.
 - Brand script part: Guide (authority) and Success.
 - Hero: the client's situation, not you. Founders, executives and teams, speakers.
@@ -55,7 +55,7 @@ Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Dail
 - Card: client type, the stakes moment, the turn, the result, proof image, permission level.
 - Avoid: listing everything you did. A result you cannot confirm.
 
-**Pillar 2. Before and after**
+**Pillar 2. The Change** (was Before and after)
 - What it is: the weekly carousel. Clutter beaten on screen. Your transitional CTA, so it is a series people wait for.
 - Brand script part: Problem (villain: clutter) and Success (before and after).
 - Hero: founders.
@@ -67,7 +67,7 @@ Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Dail
 - Card: source and permission, hero, the one point the before slide hides, fix 1 to 3, lesson, 3 cover hooks.
 - Avoid: a before slide you are not allowed to show. Mocking the original or its author.
 
-**Pillar 3. Win the room**
+**Pillar 3. The Lesson**
 - What it is: advice for founders and leaders about presenting and decks. "What I'd tell a founder."
 - Brand script part: Problem (internal fear, philosophical) and Failure (stakes).
 - Hero: founders first, then executives and speakers.
@@ -79,7 +79,7 @@ Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Dail
 - Card: the belief, why it fails, the fix, 5 hooks.
 - Avoid: generic tips that any designer could post. If it does not come from your work, cut it.
 
-**Pillar 4. How I work**
+**Pillar 4. Working with me**
 - What it is: your process. Talk, Shape, Win, what AI never decides. Includes craft posts for creative directors.
 - Brand script part: Plan (3 steps and the promises).
 - Hero: founders for process posts. Creative directors for craft posts. Alternate the two.
@@ -91,7 +91,7 @@ Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Dail
 - Card: the decision, the alternative you rejected, the result, the clip or screenshot.
 - Avoid: tool tutorials with no decision in them.
 
-**Pillar 5. My path**
+**Pillar 5. My Story**
 - What it is: medicine to design. Who the guide is. One post every two weeks.
 - Brand script part: Guide (empathy) and the identity shift.
 - Hero: the reader who is also changing or growing. The lesson must serve them.
@@ -190,22 +190,22 @@ Create page "Backup 23 Nov (before alignment)" and clone into it the frames 9:2,
 ### C2. New page structure (rename and rebuild pages, then move post frames by id)
 | New page | Header title | Header description | Format line (new text under the description) |
 |---|---|---|---|
-| P1 Work that won | Work that won | Case studies of decks that did their job. Proof that I am the guide. | FORMAT: Monday, 08:30 Egypt. Text + 1 or 2 images. Once a month a 5-slide case carousel. Soft CTA. |
-| P2 Before and after | Before and after | The weekly carousel. Clutter beaten on screen. | FORMAT: Thursday, 08:30 Egypt. 8-slide carousel, 1080 x 1350 PDF. Write slide text first. CTA: follow for next week's carousel. |
-| P3 Win the room | Win the room | Advice for founders and leaders: what I'd tell a founder. | FORMAT: Tuesday, and Sunday on alternate weeks. 08:30 Egypt. Text only, 120 to 200 words. Soft CTA. |
-| P4 How I work | How I work | Talk, Shape, Win. What AI never decides. Craft posts for creative directors. | FORMAT: Wednesday, 15:30 Egypt. 60 to 90 s video or a process screenshot. Direct CTA: Book a call. Alternate process (founders) and craft (creative directors). |
-| P5 My path | My path | Medicine to design. Who the guide is. | FORMAT: every other Sunday, 08:30 Egypt. Text only, or text + one personal photo. Soft CTA. |
+| P1 The Work | The Work | Case studies of decks that did their job. Proof that I am the guide. | FORMAT: Monday, 08:30 Egypt. Text + 1 or 2 images. Once a month a 5-slide case carousel. Soft CTA. |
+| P2 The Change | The Change | The weekly carousel. Clutter beaten on screen. | FORMAT: Thursday, 08:30 Egypt. 8-slide carousel, 1080 x 1350 PDF. Write slide text first. CTA: follow for next week's carousel. |
+| P3 The Lesson | The Lesson | Advice for founders and leaders: what I'd tell a founder. | FORMAT: Tuesday, and Sunday on alternate weeks. 08:30 Egypt. Text only, 120 to 200 words. Soft CTA. |
+| P4 Working with me | Working with me | Talk, Shape, Win. What AI never decides. Craft posts for creative directors. | FORMAT: Wednesday, 15:30 Egypt. 60 to 90 s video or a process screenshot. Direct CTA: Book a call. Alternate process (founders) and craft (creative directors). |
+| P5 My Story | My Story | Medicine to design. Who the guide is. | FORMAT: every other Sunday, 08:30 Egypt. Text only, or text + one personal photo. Soft CTA. |
 | Parked | Parked for a later brand script | Good work whose hero is not in the current brand script (marketing leads, portfolio tour). Keep for brand script 2. | none |
 
 Header label text becomes "PILLAR N / CONTENT PLAN" with the new N.
 
 ### C3. Post moves, new ids in order (old page.post → new slot)
-P1 Work that won, posts: WW1 = old P1 Post 1 (9:10). WW2 = old P1 Post 3 (9:40). WW3 = old P1 Post 5 (9:70). WW4 = old P1 Post 8 (9:115).
+P1 The Work, posts: WW1 = old P1 Post 1 (9:10). WW2 = old P1 Post 3 (9:40). WW3 = old P1 Post 5 (9:70). WW4 = old P1 Post 8 (9:115).
 P1 carousels: Showcase (9:236), Health Tech (7:72 from P4), Fintech (9:132), Saudi Bid Book (8:177 from P2).
-P2 Before and after: BA1 = old P4 Post 4 (7:55). BA2 = old P4 Post 1 (7:10). BA3 = old P4 Post 2 (7:25). BA4 = old P4 Post 3 (7:40).
-P3 Win the room: WR1 = old P1 Post 2 (9:25). WR2 = old P1 Post 4 (9:55). WR3 = old P1 Post 6 (9:85). WR4 = old P2 Post 1 (8:10). WR5 = old P2 Post 5 (8:70). WR6 = old P2 Post 4 (8:55). WR7 = old P2 Post 2 (8:25).
-P4 How I work: HW1 = old P3 Post 5 (7:192). HW2 = old P3 Post 1 (7:132). HW3 = old P3 Post 6 (7:207). HW4 = old P2 Post 3 (8:40). HW5 = old P3 Post 2 (7:147). HW6 = old P2 Post 11 (8:160). HW7 = old P2 Post 6 (8:85). HW8 = old P2 Post 7 (8:100). HW9 = old P2 Post 9 (8:130). HW10 = old P1 Post 7 (9:100).
-P5 My path: MP1 = old P5 Post 1 (3:10). MP2 = old P3 Post 3 (7:162).
+P2 The Change: BA1 = old P4 Post 4 (7:55). BA2 = old P4 Post 1 (7:10). BA3 = old P4 Post 2 (7:25). BA4 = old P4 Post 3 (7:40).
+P3 The Lesson: WR1 = old P1 Post 2 (9:25). WR2 = old P1 Post 4 (9:55). WR3 = old P1 Post 6 (9:85). WR4 = old P2 Post 1 (8:10). WR5 = old P2 Post 5 (8:70). WR6 = old P2 Post 4 (8:55). WR7 = old P2 Post 2 (8:25).
+P4 Working with me: HW1 = old P3 Post 5 (7:192). HW2 = old P3 Post 1 (7:132). HW3 = old P3 Post 6 (7:207). HW4 = old P2 Post 3 (8:40). HW5 = old P3 Post 2 (7:147). HW6 = old P2 Post 11 (8:160). HW7 = old P2 Post 6 (8:85). HW8 = old P2 Post 7 (8:100). HW9 = old P2 Post 9 (8:130). HW10 = old P1 Post 7 (9:100).
+P5 My Story: MP1 = old P5 Post 1 (3:10). MP2 = old P3 Post 3 (7:162).
 Parked: old P2 Post 8 heritage (8:115), old P2 Post 10 BD template (8:145), old P3 Post 4 brand values (7:177), Carousel Portfolio six sections (9:184).
 Rename each post frame "WW1 Fintech Pitchdeck" style (new id + project). Update each page's "POSTS (n)" and "CAROUSELS (n)" counts.
 
@@ -223,7 +223,7 @@ Replace the Target line in each post with the Hero value from C6.
 Add a small block under the FIRST COMMENT in column A, label "COACH NOTE", body as below (one line each: Hero, Layer, Format, CTA, Fix).
 
 WW1 Fintech. Hero: Founders. Layer: External. Format: text + cover and problem slide images. CTA: soft. Fix: there is no result yet. Add one real outcome or the moment it was used. If posting as images, cut "Swipe through".
-WW2 Bid book. Hero: Executives and teams. Layer: External. Format: text + 1 page image. CTA: soft. Fix: the [add] slot is the result. Without it this is not "work that won", so fill it or move it to How I work.
+WW2 Bid book. Hero: Executives and teams. Layer: External. Format: text + 1 page image. CTA: soft. Fix: the [add] slot is the result. Without it this is not "The Work", so fill it or move it to Working with me.
 WW3 Health tech. Hero: Founders. Layer: External. Format: text + cover and $413B slide. CTA: soft. Fix: strongest result in the file. Move "raised $100K" to line 3. Confirm the raise with the client first, same rule as the $57M line.
 WW4 Showcase shirts. Hero: Executives and teams. Layer: Internal (one shot, no brand). Format: 7-slide carousel PDF, ready. CTA: soft. Fix: best story in the file. Keep the client unnamed. First comment now points to Thursday.
 Carousels on P1, one shared note above them: "Case carousel, once a month. Trim to 5 slides: problem, stakes, 3 key slides, result. Keep the hook, problem, two strongest moves and the takeaway."

@@ -99,7 +99,7 @@ WHY IT WORKS:
 =====================================================================
 BRAND SCRIPT: Problem (villain: clutter, philosophical line), Failure ("judged in seconds"), Want (a clear yes).
 GOAL: Educate. HERO: Founders. FORMAT: text + takeaway card. (Text only is also fine for this pillar.)
-IMAGE RECIPE: clone layout "04 Quote post" (151:226), resized to 1080 x 1350 by extending the dark area below. Image fill: render "P3 02 flow89" (149:778). Headline: "Put your slides in the order your investor asks." Small line under it: "Win the room".
+IMAGE RECIPE: clone layout "04 Quote post" (151:226), resized to 1080 x 1350 by extending the dark area below. Image fill: render "P3 02 flow89" (149:778). Headline: "Put your slides in the order your investor asks." Small line under it: "The Lesson".
 
 POST TEXT:
 Your investor is not reading to be impressed.
@@ -213,10 +213,10 @@ WHY IT WORKS:
 Source: Content Studio "Brand board v2 · One Light" (78:2): T08 Pattern (78:8, modular tiles: flat tiles, one lit), T09 Form (78:9, arcs continue the curve: thin concentric arc lines), T05 Clutter to clarity (78:10, scattered slide fragments, one amber curved line leading to the lit sphere).
 Rules: one pattern or line system per image. Strokes 1 to 2 px in Slate #404B50 or Mist #708290 at 40 to 70% opacity, tiles in #222428 / #2A2D31. Never behind the headline or labels; keep text contrast unchanged. Amber stays a single line (the existing short line above the headline, or the one curved line in Clutter to clarity), never more.
 Per image:
-- P1 Work that won (186:3): T09 arcs. 4 to 6 thin concentric arcs continuing the curve of the sphere render outward, upper right area.
-- P2 Before and after (187:3): T05 Clutter to clarity. Small scattered slide fragments (outlined rectangles, mini bars) around the BEFORE slide, one amber curved line flowing from BEFORE to AFTER.
-- P3 Win the room (188:3): T08 modular tiles. A band of flat modular tiles (squares, quarter circles, half circles) along the top or right edge, exactly one tile lit (lighter #D9D6CC with soft shadow).
-- P4 How I work (190:3): T09 arcs as thin lines framing the giant "01", plus a faint baseline grid of 3 horizontal hairlines under the steps render.
-- P5 My path (190:66): a single horizon hairline across the image at the lower third (Mist, 1 px) and 3 thin arcs rising from it, quiet.
+- P1 The Work (186:3): T09 arcs. 4 to 6 thin concentric arcs continuing the curve of the sphere render outward, upper right area.
+- P2 The Change (187:3): T05 Clutter to clarity. Small scattered slide fragments (outlined rectangles, mini bars) around the BEFORE slide, one amber curved line flowing from BEFORE to AFTER.
+- P3 The Lesson (188:3): T08 modular tiles. A band of flat modular tiles (squares, quarter circles, half circles) along the top or right edge, exactly one tile lit (lighter #D9D6CC with soft shadow).
+- P4 Working with me (190:3): T09 arcs as thin lines framing the giant "01", plus a faint baseline grid of 3 horizontal hairlines under the steps render.
+- P5 My Story (190:66): a single horizon hairline across the image at the lower third (Mist, 1 px) and 3 thin arcs rising from it, quiet.
 Copy the vector shapes from 78:8, 78:9, 78:10 where possible instead of redrawing.
 Also add one row "PATTERN" to each annotation column C naming the pattern used and why.

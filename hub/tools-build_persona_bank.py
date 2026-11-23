@@ -11,7 +11,7 @@ text = open(src).read()
 SECTIONS = ["Who","Trigger moments","Goals","Pains (external)","Fears (internal)","Beliefs and myths",
             "Questions they ask","Objections to hiring","Their words","Success picture","Ready angles"]
 SOURCES = ["Client call","DM","Comment","Proposal","Observation","Other","Draft (Claude)"]
-PILLARS = ["Work that won","Before and after","Win the room","How I work","My path","My thinking (Arabic)"]
+PILLARS = ["The Work","The Change","The Lesson","Working with me","My Story","My Thinking (Arabic)"]
 GOALS = ["Educate","Prove","Connect","Sell","Spark"]
 STATUS = ["New","Idea","Drafted","Posted"]
 BUILDS = ["Relevance","Authority","Trust","Likability","Action"]
@@ -83,17 +83,17 @@ ws0.sheet_properties.tabColor = "FEA307"; ws0.column_dimensions["A"].width = 120
 for row in ws0.iter_rows(min_row=2):
     for c in row: c.alignment = Alignment(wrap_text=True)
 
-SUG = {"Who":("Win the room","Educate","Relevance",0,1,1),
- "Trigger moments":("Win the room","Educate","Relevance",1,1,2),
- "Goals":("Work that won","Prove","Authority",1,1,1),
- "Pains (external)":("Win the room","Educate","Relevance",1,1,2),
- "Fears (internal)":("Win the room","Educate","Relevance",1,1,2),
- "Beliefs and myths":("Win the room","Educate","Authority",1,1,2),
- "Questions they ask":("Win the room","Educate","Authority",1,2,2),
- "Objections to hiring":("How I work","Sell","Trust",1,2,2),
- "Their words":("Win the room","Spark","Relevance",1,1,2),
- "Success picture":("Work that won","Prove","Authority",1,2,1),
- "Ready angles":("Before and after","Educate","Authority",1,2,1)}
+SUG = {"Who":("The Lesson","Educate","Relevance",0,1,1),
+ "Trigger moments":("The Lesson","Educate","Relevance",1,1,2),
+ "Goals":("The Work","Prove","Authority",1,1,1),
+ "Pains (external)":("The Lesson","Educate","Relevance",1,1,2),
+ "Fears (internal)":("The Lesson","Educate","Relevance",1,1,2),
+ "Beliefs and myths":("The Lesson","Educate","Authority",1,1,2),
+ "Questions they ask":("The Lesson","Educate","Authority",1,2,2),
+ "Objections to hiring":("Working with me","Sell","Trust",1,2,2),
+ "Their words":("The Lesson","Spark","Relevance",1,1,2),
+ "Success picture":("The Work","Prove","Authority",1,2,1),
+ "Ready angles":("The Change","Educate","Authority",1,2,1)}
 BUY = {"Founders":2,"Executives and teams":2,"Speakers":1,"Creative directors":1}
 def make_sheet(name, rows):
     ws = wb.create_sheet(name[:31])
@@ -163,24 +163,24 @@ heads = [("A3","Section"),("B3","Pillar"),("C3","Goal"),("D3","Builds"),("E3","S
          ("H3","Sheet"),("I3","Buyer (0-2)"),("K3","Source"),("L3","Proof (0-2)"),("N3","Pillar"),("O3","Effort (2 = under 1 h)")]
 for ref,t in heads:
     sr[ref] = t; sr[ref].fill = dark; sr[ref].font = Font(color="E8E2D0", bold=True)
-sec_rules = [("Who","Win the room","Educate","Relevance",0,"Background, rarely a post"),
- ("Trigger moments","Win the room","Educate","Relevance",1,""),
- ("Goals","Work that won","Prove","Authority",1,""),
- ("Pains (external)","Win the room","Educate","Relevance",1,""),
- ("Fears (internal)","Win the room","Educate","Relevance",1,""),
- ("Beliefs and myths","Win the room","Educate","Authority",1,""),
- ("Questions they ask","Win the room","Educate","Authority",2,"People ask it before buying"),
- ("Objections to hiring","How I work","Sell","Trust",2,"Answers a reason not to hire"),
- ("Their words","Win the room","Spark","Relevance",1,""),
- ("Success picture","Work that won","Prove","Authority",2,""),
- ("Ready angles","Before and after","Educate","Authority",2,"")]
+sec_rules = [("Who","The Lesson","Educate","Relevance",0,"Background, rarely a post"),
+ ("Trigger moments","The Lesson","Educate","Relevance",1,""),
+ ("Goals","The Work","Prove","Authority",1,""),
+ ("Pains (external)","The Lesson","Educate","Relevance",1,""),
+ ("Fears (internal)","The Lesson","Educate","Relevance",1,""),
+ ("Beliefs and myths","The Lesson","Educate","Authority",1,""),
+ ("Questions they ask","The Lesson","Educate","Authority",2,"People ask it before buying"),
+ ("Objections to hiring","Working with me","Sell","Trust",2,"Answers a reason not to hire"),
+ ("Their words","The Lesson","Spark","Relevance",1,""),
+ ("Success picture","The Work","Prove","Authority",2,""),
+ ("Ready angles","The Change","Educate","Authority",2,"")]
 for i,row in enumerate(sec_rules, start=4):
     for j,v in enumerate(row): sr.cell(i, 1+j, v)
 buyer = [("Founders",2),("Executives and teams",2),("Speakers",1),("Creative directors",1),("New persona",1)]
 for i,(a,b) in enumerate(buyer, start=4): sr.cell(i,8,a); sr.cell(i,9,b)
 proof = [("Client call",2),("DM",2),("Upwork message",2),("Proposal",2),("Comment",1),("Observation",1),("Other",1),("Draft (Claude)",0)]
 for i,(a,b) in enumerate(proof, start=4): sr.cell(i,11,a); sr.cell(i,12,b)
-effort = [("Win the room",2),("How I work",2),("My path",2),("My thinking (Arabic)",2),("Work that won",1),("Before and after",0)]
+effort = [("The Lesson",2),("Working with me",2),("My Story",2),("My Thinking (Arabic)",2),("The Work",1),("The Change",0)]
 for i,(a,b) in enumerate(effort, start=4): sr.cell(i,14,a); sr.cell(i,15,b)
 for col,w in zip("ABCDEFGHIJKLMNO",[22,18,10,12,12,30,2,22,10,2,18,10,2,22,16]): sr.column_dimensions[col].width = w
 for r in range(4,15):

@@ -22,7 +22,7 @@ rows=[("Sales pipeline: The Clear Yes funnel",""),
 ("Daily","Add every new conversation as a row. Set Next action and its date. Red rows = overdue, yellow = due today."),
 ("Diagnosis call","After the call, fill the 4 green lights (Deadline, Decision maker, Budget, Materials). 4 = proposal. 2 to 3 = proposal with the gap or a smaller step. 0 to 1 = Nurture or refer."),
 ("Proposal","Enter the date sent; follow-up days 2, 5 and 10 calculate themselves. After day 10 with no answer: Nurture."),
-("After the project","Tick Testimonial, Permission and Referral asked. Each project becomes a Work that won post."),
+("After the project","Tick Testimonial, Permission and Referral asked. Each project becomes a The Work post."),
 ("Thursday","Read the Dashboard with the Content metrics sheet. Which stage leaks most? Change ONE thing."),
 ("Privacy","Use first names or initials if you prefer. This sheet stays in your Drive.")]
 for i,(a,b) in enumerate(rows,1): h.cell(i,1,a); h.cell(i,2,b)

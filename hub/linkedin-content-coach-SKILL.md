@@ -53,13 +53,15 @@ For full triggers, pains, questions, objections and their words, read the Person
 
 ## 3. Pillars, goals and formats
 
-| Pillar | What it is | Usual goal | Format | CTA | Day, Egypt time |
-|---|---|---|---|---|---|
-| Work that won | Case studies of decks that did their job | Prove | Text + 1 or 2 real slide images; monthly a 5-slide case carousel | Soft | Mon 08:30 |
-| Before and after | Clutter beaten on screen, weekly series | Educate | 8-slide carousel, or text + one before/after image | Transitional: follow | Thu 08:30 |
-| Win the room | What I'd tell a founder | Educate or Spark | Text only, or text + takeaway card | Soft question | Tue 08:30, alt Sun |
-| How I work | Talk, Shape, Win; what AI never decides; craft for creative directors | Sell | Text + branded image, or 60 to 90 s video | Direct: Book a call | Wed 15:30 |
-| My path | Medicine to design, who the guide is | Connect | Text only, or text + personal photo | Soft or none | alt Sun 08:30 |
+Pillar names (renamed 23 Nov 2026, old names in brackets): The Work (Work that won), The Change (Before and after), The Lesson (Win the room), Working with me (How I work), My Story (My path), My Thinking (Arabic lane). Each pillar answers one question.
+
+| Pillar | The question it answers | What it is | Usual goal | Format | CTA | Day, Egypt time |
+|---|---|---|---|---|---|---|
+| The Work | What did I do? | Case studies of decks that did their job | Prove | Text + 1 or 2 real slide images; monthly a 5-slide case carousel | Soft | Mon 08:30 |
+| The Change | Show me the change | Clutter beaten on screen, weekly series | Educate | 8-slide carousel, or text + one before/after image | Transitional: follow | Thu 08:30 |
+| The Lesson | What should you learn from it? | What I'd tell a founder | Educate or Spark | Text only, or text + takeaway card | Soft question | Tue 08:30, alt Sun |
+| Working with me | How would I do this for you? | Talk, Shape, Win; what AI never decides; craft for creative directors | Sell | Text + branded image, or 60 to 90 s video | Direct: Book a call | Wed 15:30 |
+| My Story | Who is this person? | Medicine to design, who the guide is | Connect | Text only, or text + personal photo | Soft or none | alt Sun 08:30 |
 | My thinking (Arabic lane) | Opinions and general advice, in Arabic | Connect or Spark | Text, or text + image | Soft or none | Any day 08:30 |
 
 One goal per post. Weekly mix: 2 Educate, 1 Prove, 1 Sell, 1 Connect or Spark. No Friday posts (weekend in KSA and Egypt).
@@ -68,11 +70,11 @@ One goal per post. Weekly mix: 2 Educate, 1 Prove, 1 Sell, 1 Connect or Spark. N
 
 | Builds | Reader thinks | Mine from | Usual pillar | Check |
 |---|---|---|---|---|
-| Relevance | "He gets my problem." | Triggers, pains, fears, their words | Win the room | Would a founder say "that's me" by line 2? |
-| Authority | "He knows how to fix it." | Myths (truth), ready angles, real projects | Work that won, Before and after | Something on screen they could not do themselves? |
-| Trust | "He's safe to hire." | Objections, questions | How I work | Does it remove one risk of hiring me? |
-| Likability | "I like how he thinks." | My path, values, Arabic lane | My path, Arabic | Would they know my voice without my name? |
-| Action | "I know the next step." | Success picture, plan | How I work | Is the next step one sentence, one click? |
+| Relevance | "He gets my problem." | Triggers, pains, fears, their words | The Lesson | Would a founder say "that's me" by line 2? |
+| Authority | "He knows how to fix it." | Myths (truth), ready angles, real projects | The Work, The Change | Something on screen they could not do themselves? |
+| Trust | "He's safe to hire." | Objections, questions | Working with me | Does it remove one risk of hiring me? |
+| Likability | "I like how he thinks." | My Story, values, Arabic lane | My Story, Arabic | Would they know my voice without my name? |
+| Action | "I know the next step." | Success picture, plan | Working with me | Is the next step one sentence, one click? |
 
 Monthly balance (20 posts): Authority 6, Relevance 5, Trust 5, Likability 3, Action 1 to 2. Trust is usually the gap. Trust ladder: Relevance, Authority, Likability, Trust, Action, booked call.
 
@@ -155,10 +157,10 @@ Do not say: client details, unconfirmed results, politics or religion debates, c
 Filter: would a founder who reads this trust Ahmed more with their deck?
 
 ### 6. Plan the week
-Rhythm: Sun (Win the room or My path) 08:30, Mon Work that won 08:30, Tue Win the room 08:30, Wed How I work 15:30, Thu carousel 08:30, plus one Arabic post. Egypt time; 08:30 Egypt = 09:30 KSA = 10:30 UAE; 15:30 Egypt = 08:30 New York. Ramadan: morning slot moves to about 21:00 Egypt.
-If he has one 6-hour sitting, run the Week Engine: Reset 15 min, Decide 30, Pick 30, break 10, Write 2 h (in priority order: Thu carousel script 30, Wed 25, Mon 25, Tue 20, Sun 15, Arabic note 5), break 15, Visuals 1 h 45, Check 30, Ship 15 (schedule everything). Stuck over 5 min: take the default (Founders, fear of looking amateur, Win the room). Otherwise run Flow 8 (Sunday, 45 min):
+Rhythm: Sun (The Lesson or My Story) 08:30, Mon The Work 08:30, Tue The Lesson 08:30, Wed Working with me 15:30, Thu carousel 08:30, plus one Arabic post. Egypt time; 08:30 Egypt = 09:30 KSA = 10:30 UAE; 15:30 Egypt = 08:30 New York. Ramadan: morning slot moves to about 21:00 Egypt.
+If he has one 6-hour sitting, run the Week Engine: Reset 15 min, Decide 30, Pick 30, break 10, Write 2 h (in priority order: Thu carousel script 30, Wed 25, Mon 25, Tue 20, Sun 15, Arabic note 5), break 15, Visuals 1 h 45, Check 30, Ship 15 (schedule everything). Stuck over 5 min: take the default (Founders, fear of looking amateur, The Lesson). Otherwise run Flow 8 (Sunday, 45 min):
 1. Decide (10 min): read Thursday's weakest Builds and one change; fresh client work becomes Monday, else the top-scored bank line (Buyer, Proof, Sales use, Effort, 0 to 2 each); pick ONE theme (one founder fear or myth).
-2. Prioritize (15 min): P1 Thu carousel, P2 Wed How I work, P3 Mon Work that won, P4 Tue Win the room, P5 Sun. Short on time: cut from P5 up, never P1 or P2.
+2. Prioritize (15 min): P1 Thu carousel, P2 Wed Working with me, P3 Mon The Work, P4 Tue The Lesson, P5 Sun. Short on time: cut from P5 up, never P1 or P2.
 3. Connect (10 min): the week tells one story: Sun name it, Mon show it solved, Tue teach the rule, Wed how we'd fix yours, Thu see it on a slide; Arabic post = my take on the theme. Reuse one "their words" line twice; end Tue pointing to Thursday.
 4. Check (10 min): founders in 3 of 5, exactly one Sell, weakest Builds included, proof ready for every slot.
 Session order: Persona bank → pillar cards → Content Studio. Sunday plan 45 min, writing 2 h, carousel 90 min.
@@ -181,7 +183,7 @@ Source: hub/sales-funnel.md and the Google Sheet "Sales pipeline" (Leads, Dashbo
 - DM: never pitch first. Pick the script by signal (engaged 2 posts, raising, new role, event, posted a deck, agency). Offer the free Slide Diagnosis (one slide, a 2-minute video: symptom, diagnosis, one change; max 3 a week). Attach one matching post.
 - Call prep: the 25-minute Diagnosis call: Symptoms, History, Stakes, Diagnosis (one quick win), Treatment plan. Qualify DDBM: Deadline, Decision maker, Budget, Materials. 4 green = proposal; 2 to 3 = proposal with the gap or a smaller step; 0 to 1 = nurture or refer.
 - Proposal: one page in 8 parts (their stakes in their words, the one insight, scope, timeline with feedback windows, price 50/50, promises, proof, one CTA). Send within 24 h. Follow up day 2 (a post, no ask), day 5 (one question), day 10 (close the loop).
-- After delivery: testimonial (3 questions), permission to show, referral ask, 30 and 90 day check-ins. Turn the project into a Work that won post.
+- After delivery: testimonial (3 questions), permission to show, referral ask, 30 and 90 day check-ins. Turn the project into a The Work post.
 - Channels: LinkedIn 70%, referrals 10%, accelerators and VC platforms 10%, agencies 10%, plus a website with booking. Ahmed left Upwork; do not suggest Upwork. Profile and portfolio plan: hub/linkedin-profile.md (every LinkedIn section and portfolio part mapped to TOFU, MOFU or BOFU; Featured order; About; banner; case study structure: stakes, problem, insight, before and after, decisions, confirmed result, client words, CTA). In DMs and proposals send the case study matching the lead's deck type.
 - Pipeline review (Thursday, with metrics): which stage leaks most; one change. Never invent prices or results; ask Ahmed.
 

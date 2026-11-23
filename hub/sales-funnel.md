@@ -10,7 +10,7 @@ Starting targets are guesses to calibrate after 12 weeks of real numbers in the 
 | 3 | TALK | "Let's talk." | Start DMs on signals, offer the free Slide Diagnosis, book the call | Posts sent inside DMs | DMs started, reply rate, calls booked | 10 DMs a week, 2 calls a week |
 | 4 | SHAPE | "This is exactly what we need." | Diagnosis call, proposal in 24 h, follow up day 2, 5, 10 | Case study matching their deck type | Proposals sent, close rate | 1 in 3 proposals closes |
 | 5 | WIN | "We walked in ready." | Deliver with updates, feedback windows, video walkthrough | none (do the work) | On time, revisions | 100% on time |
-| 6 | RETURN | "I'll tell others." | Testimonial, permission to show, referral ask, 30 and 90 day check-in | Becomes Work that won and Before and after | Testimonials, referrals, repeat | 1 referral ask per project |
+| 6 | RETURN | "I'll tell others." | Testimonial, permission to show, referral ask, 30 and 90 day check-in | Becomes The Work and The Change | Testimonials, referrals, repeat | 1 referral ask per project |
 Stage 6 feeds stage 1 and the Persona bank (new proof, new lines).
 
 ## Lead sources (where people enter)
@@ -52,7 +52,7 @@ Kickoff within 48 h of the deposit → updates at every step → feedback window
 - Permission to show: full, blurred, placeholder text or rebuild.
 - Referral: "Who else do you know preparing a deck or a talk?"
 - Check-ins at 30 and 90 days (next round, board meeting, event).
-Every project becomes a Work that won post and a Before and after carousel (with permission) and adds lines to the Persona bank.
+Every project becomes a The Work post and a The Change carousel (with permission) and adds lines to the Persona bank.
 
 ## Objections
 Use the Persona bank "Objections to hiring" with their answers. Common: price (anchor on the stakes, offer a smaller first step), "we can do it in-house" (offer the Slide Diagnosis), "AI can do it" (show what AI hid), time zone (async updates and video walkthroughs), confidentiality (NDA as standard).
@@ -80,9 +80,9 @@ Verify per the skill. Report under 6 lines.
 ## FUNNEL LAYERS (TOFU, MOFU, BOFU, post-funnel) and awareness levels
 | Layer | Clear Yes stages | Awareness level (Schwartz) | Builds | Pillars and assets | Formats | CTA | Metrics |
 |---|---|---|---|---|---|---|---|
-| TOFU top | 1 SEE | Unaware, problem aware | Relevance, Likability | Win the room myths, Before and after carousel, reach formats, Arabic lane, comments on founders' posts | Text, carousel, takeaway card | Soft question, follow | Impressions, saves, shares, new followers |
-| MOFU middle | 2 TRUST | Solution aware | Authority, Likability, Trust | Work that won, My path, deep Before and after, Featured, About, recommendations | Text + real slides, case carousel | Soft, mention the Slide Diagnosis | Founder engagers, profile views, accepted connections, DM replies |
-| BOFU bottom | 3 TALK, 4 SHAPE | Product aware, most aware | Trust, Action | How I work, offer posts (Slide Diagnosis), objection and FAQ posts, testimonials; 1:1: DMs, Diagnosis call, proposal | Text + branded image, 60 s video | Book a call, send me one slide | DMs, calls, proposals, close rate |
+| TOFU top | 1 SEE | Unaware, problem aware | Relevance, Likability | The Lesson myths, The Change carousel, reach formats, Arabic lane, comments on founders' posts | Text, carousel, takeaway card | Soft question, follow | Impressions, saves, shares, new followers |
+| MOFU middle | 2 TRUST | Solution aware | Authority, Likability, Trust | The Work, My Story, deep The Change posts, Featured, About, recommendations | Text + real slides, case carousel | Soft, mention the Slide Diagnosis | Founder engagers, profile views, accepted connections, DM replies |
+| BOFU bottom | 3 TALK, 4 SHAPE | Product aware, most aware | Trust, Action | Working with me, offer posts (Slide Diagnosis), objection and FAQ posts, testimonials; 1:1: DMs, Diagnosis call, proposal | Text + branded image, 60 s video | Book a call, send me one slide | DMs, calls, proposals, close rate |
 | Post-funnel (retain, advocate) | 5 WIN, 6 RETURN | Customer | Trust | Updates, video walkthrough, testimonial, referral ask, check-ins, case study that feeds TOFU and MOFU | 1:1 | Referral, review | Testimonials, referrals, repeat |
 
 Hooks by awareness level:
@@ -121,7 +121,7 @@ Rule: every new person gets a row in the Sales pipeline (Leads) within 24 hours 
 Full detail: hub/linkedin-profile.md ("PROFILE AND PORTFOLIO BY FUNNEL LAYER").
 TOFU: headline, photo, activity, newsletter (later), before and after gallery.
 MOFU: banner, About, Featured, Experience media, Projects (one per case study), Recommendations, Skills, portfolio hero, proof strip, 3 case studies, About me.
-BOFU: Services page, intro link and contact, portfolio How I work, testimonials, FAQ, final CTA (Slide Diagnosis + booking); case studies sent in DMs and proposals.
+BOFU: Services page, intro link and contact, portfolio Working with me, testimonials, FAQ, final CTA (Slide Diagnosis + booking); case studies sent in DMs and proposals.
 Every case study follows SB7: stakes, problem, insight, before and after, decisions, result (confirmed only), client words, CTA.
 
 ## BUILD ADD-ON 2 (Sales funnel page)

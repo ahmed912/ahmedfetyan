@@ -93,11 +93,11 @@ Mark a line "used" with the date when it becomes a post. Reuse a line after 3 mo
 =====================================================================
 | Goal | What the post does | Best format | Usual pillars | Ends with |
 |---|---|---|---|---|
-| Educate | Teaches one rule they can apply today | Carousel (8 slides). Short version: text + takeaway card | Before and after, Win the room | The lesson |
-| Prove | Shows that your work wins | Text + 1 or 2 real slide images. Monthly: 5-slide case carousel | Work that won | The result |
-| Connect | Builds trust in you as a person | Text only, or text + personal photo | My path, Arabic lane | A feeling, no ask |
-| Sell | Invites them to work with you | Text + branded image (question card or takeaway card), or a 60 s video | How I work | Book a call |
-| Spark | Starts a conversation, widens reach | Text only, a clear opinion | Win the room, Arabic lane | One question |
+| Educate | Teaches one rule they can apply today | Carousel (8 slides). Short version: text + takeaway card | The Change, The Lesson | The lesson |
+| Prove | Shows that your work wins | Text + 1 or 2 real slide images. Monthly: 5-slide case carousel | The Work | The result |
+| Connect | Builds trust in you as a person | Text only, or text + personal photo | My Story, Arabic lane | A feeling, no ask |
+| Sell | Invites them to work with you | Text + branded image (question card or takeaway card), or a 60 s video | Working with me | Book a call |
+| Spark | Starts a conversation, widens reach | Text only, a clear opinion | The Lesson, Arabic lane | One question |
 Rule: one goal per post. If a post tries to educate and sell, it does neither.
 Weekly mix: 2 Educate, 1 Prove, 1 Sell, 1 Connect or Spark.
 
@@ -173,10 +173,10 @@ Brand script want: a clear yes in the room that matters.
 They walk in calm. The investor asks follow-up questions instead of skimming. They get the second meeting and send the deck with pride.
 
 ### Ready angles
-- Myth "More slides show more effort" / Win the room / Spark / text only.
-- Question "Problem or solution first?" / Win the room / Educate / carousel.
-- Objection "AI is faster" / How I work / Sell / text + takeaway card.
-- Trigger "send me your deck" / Before and after / Educate / carousel.
+- Myth "More slides show more effort" / The Lesson / Spark / text only.
+- Question "Problem or solution first?" / The Lesson / Educate / carousel.
+- Objection "AI is faster" / Working with me / Sell / text + takeaway card.
+- Trigger "send me your deck" / The Change / Educate / carousel.
 
 =====================================================================
 ## PERSONA 2. EXECUTIVES AND TEAMS
@@ -239,10 +239,10 @@ Board note: high stakes, need impression, clear data viz.
 The room sees what they see and decides. The deck is quoted after the meeting. The team reuses the system for the next one.
 
 ### Ready angles
-- Myth "Executives want all the data" / Win the room / Spark / text only.
-- Question "Which chart should we use?" / Before and after / Educate / carousel.
-- Pain "Charts that prove nothing" / How I work / Educate / text + process screenshot.
-- Objection "Our data is confidential" / How I work / Sell / text + takeaway card.
+- Myth "Executives want all the data" / The Lesson / Spark / text only.
+- Question "Which chart should we use?" / The Change / Educate / carousel.
+- Pain "Charts that prove nothing" / Working with me / Educate / text + process screenshot.
+- Objection "Our data is confidential" / Working with me / Sell / text + takeaway card.
 
 =====================================================================
 ## PERSONA 3. SPEAKERS
@@ -299,15 +299,15 @@ Board note: TED style, seek simplicity, creativity is key.
 The audience quotes their one line after the talk. Organizers invite them back. They feel free on stage, not tied to the screen.
 
 ### Ready angles
-- Myth "Slides are my notes" / Win the room / Spark / text only.
-- Question "How much text per slide?" / Before and after / Educate / carousel.
-- Success picture / Work that won / Prove / text + stage photo or slides.
+- Myth "Slides are my notes" / The Lesson / Spark / text only.
+- Question "How much text per slide?" / The Change / Educate / carousel.
+- Success picture / The Work / Prove / text + stage photo or slides.
 
 =====================================================================
 ## PERSONA 4. CREATIVE DIRECTORS (peer persona)
 =====================================================================
 Who: creative directors, studio leads and senior designers. They hire freelancers or send overflow work. They care about craft, process and AI workflow.
-Brand script: second brand script later. For now, craft posts in How I work.
+Brand script: second brand script later. For now, craft posts in Working with me.
 
 ### Trigger moments
 - A studio has more deck work than its team can handle.
@@ -356,9 +356,9 @@ Brand script: second brand script later. For now, craft posts in How I work.
 They hand over a brief and get back work they would sign. You become their first call for decks.
 
 ### Ready angles
-- Myth "AI will replace deck designers" / How I work / Spark / text only.
-- Question "How do you handle RTL?" / How I work / Educate / carousel or Arabic lane.
-- Pain "Messy files" / How I work / Educate / text + file screenshot.
+- Myth "AI will replace deck designers" / Working with me / Spark / text only.
+- Question "How do you handle RTL?" / Working with me / Educate / carousel or Arabic lane.
+- Pain "Messy files" / Working with me / Educate / text + file screenshot.
 
 =====================================================================
 ## NEW PERSONA (empty template)
@@ -399,7 +399,7 @@ Start: the post needs an image
       Ends on a lesson → Takeaway card
       All cards → One Light layout 01 or 04, render from the pillar row, amber line above the headline → End
    In a person or a moment of my story → PERSONAL PHOTO → End
-   Text-only post (Win the room, Spark) → NO IMAGE → End
+   Text-only post (The Lesson, Spark) → NO IMAGE → End
 
 ### Flow 3. Pre-publish check
 Start: draft ready
@@ -425,7 +425,7 @@ Ahmed learns best from maps, flowcharts and frameworks. Visual first, words shor
 Center node (dark #2C2C2C, white text): "North Star: help decision makers see the one insight that matters, and design it so the decision is obvious."
 Branch A "Brand script" → Hero (founders and leaders, want: a clear yes) · Villain (clutter) · Guide (empathy + 3 authority lines) · Plan (Talk, Shape, Win) · CTA (Book a call / weekly carousel) · Failure (judged in seconds) · Success (you win the day)
 Branch B "Personas" → Founders · Executives and teams · Speakers · Creative directors (each node in its persona color)
-Branch C "Pillars" → Work that won · Before and after · Win the room · How I work · My path · My thinking (Arabic)
+Branch C "Pillars" → The Work · The Change · The Lesson · Working with me · My Story · My Thinking (Arabic)
 Branch D "Goals and formats" → Educate: carousel · Prove: text + real slides · Connect: text or photo · Sell: branded image or video · Spark: text only
 Branch E "Brand look" → One Light: dark room, one lit form, amber line, serif headline, mono label
 
@@ -444,13 +444,13 @@ Hook · Tension · Specificity · The turn · Voice · Rhythm · Ending. Each ro
 
 ### Framework 5. Persona x pillar matrix (grid, rows = 4 personas in their colors, columns = 5 pillars)
 Each cell: one ready angle in 8 words or fewer, taken from the persona's "Ready angles" or myths. Empty cells say "Add an angle".
-Founders: Work that won "The $413B opening slide" · Before and after "Problem or solution first?" · Win the room "More slides show more effort" · How I work "AI is faster? Not the decisions" · My path "Listen fully before you decide".
-Executives and teams: Work that won "The bid book's second read" · Before and after "Which chart should we use?" · Win the room "Executives want all the data" · How I work "Our data is confidential" · My path "Add an angle".
-Speakers: Work that won "Add an angle" · Before and after "How much text per slide?" · Win the room "Slides are my notes" · How I work "Add an angle" · My path "Add an angle".
-Creative directors: Work that won "Add an angle" · Before and after "Add an angle" · Win the room "Add an angle" · How I work "AI will replace deck designers" · My path "Add an angle".
+Founders: The Work "The $413B opening slide" · The Change "Problem or solution first?" · The Lesson "More slides show more effort" · Working with me "AI is faster? Not the decisions" · My Story "Listen fully before you decide".
+Executives and teams: The Work "The bid book's second read" · The Change "Which chart should we use?" · The Lesson "Executives want all the data" · Working with me "Our data is confidential" · My Story "Add an angle".
+Speakers: The Work "Add an angle" · The Change "How much text per slide?" · The Lesson "Slides are my notes" · Working with me "Add an angle" · My Story "Add an angle".
+Creative directors: The Work "Add an angle" · The Change "Add an angle" · The Lesson "Add an angle" · Working with me "AI will replace deck designers" · My Story "Add an angle".
 
 ### Framework 6. Weekly rhythm as a calendar strip (5 day columns Sun to Thu)
-Each day: pillar (colored chip), format, Egypt time. Sun: Win the room or My path, 08:30 · Mon: Work that won, 08:30 · Tue: Win the room, 08:30 · Wed: How I work, 15:30 · Thu: Before and after carousel, 08:30. Under the strip: "+1 Arabic post any day 08:30. No Friday."
+Each day: pillar (colored chip), format, Egypt time. Sun: The Lesson or My Story, 08:30 · Mon: The Work, 08:30 · Tue: The Lesson, 08:30 · Wed: Working with me, 15:30 · Thu: The Change carousel, 08:30. Under the strip: "+1 Arabic post any day 08:30. No Friday."
 
 =====================================================================
 ## DAILY FRAMEWORK FLOWCHART (first and largest block in "How to make a post")
@@ -461,11 +461,11 @@ PHASE 1 CHOOSE (blue #1E5BB8) · PHASE 2 FIND (orange #B5530C) · PHASE 3 WRITE 
 
 Start: "Open the Persona bank and today's slot"
 Decision "What day is it?"
-  Sun → Win the room, or My path every other week · 08:30
-  Mon → Work that won · 08:30
-  Tue → Win the room · 08:30 (also build Thursday's carousel today, 90 min)
-  Wed → How I work · 15:30
-  Thu → Before and after carousel (already built Tue) → jump to PHASE 4
+  Sun → The Lesson, or My Story every other week · 08:30
+  Mon → The Work · 08:30
+  Tue → The Lesson · 08:30 (also build Thursday's carousel today, 90 min)
+  Wed → Working with me · 15:30
+  Thu → The Change carousel (already built Tue) → jump to PHASE 4
   Fri or Sat → No post. Capture lines and rest → End
 PHASE 1 CHOOSE
   Decision "Anything new from yesterday? (call, DM, comment, Upwork)" yes → "Add it to the bank in their words" (3 min) → continue; no → continue
@@ -474,10 +474,10 @@ PHASE 1 CHOOSE
   "Pick ONE goal" (1 min) → Decision "Goal?" Educate → carousel or takeaway card · Prove → real slides · Connect → text or photo · Sell → branded image or video · Spark → text only
 PHASE 2 FIND
   "Answer today's pillar question" (5 min):
-    Work that won: what did the deck have to win, and what was the turn?
-    Win the room: what do they believe, why does it fail, what instead?
-    How I work: which decision did I make that AI would not?
-    My path: which scene from medicine shows this?
+    The Work: what did the deck have to win, and what was the turn?
+    The Lesson: what do they believe, why does it fail, what instead?
+    Working with me: which decision did I make that AI would not?
+    My Story: which scene from medicine shows this?
   Decision "Do I have real proof (slide, result, quote)?" no → "Pick another bank line" → back to "Pick one bank line"; yes → continue
 PHASE 3 WRITE
   "Write 5 hooks, pick the strongest" (5 min)
@@ -502,7 +502,7 @@ left cell = number + DECISION (Extra Bold 32), middle cell = "Ask yourself" (Med
 1 PERSONA (blue) · Ask: Who sat in the client's chair?
    Founders: a startup raising money or selling · Executives and teams: a board, bid, report or company profile · Speakers: a keynote, talk or webinar · Creative directors: craft, files, process, AI
 2 PILLAR (orange) · Ask: What am I showing?
-   Work that won: a result · Before and after: a fix on a slide · Win the room: advice or a myth · How I work: my process or a decision · My path: me, medicine, values · Arabic lane: an opinion in Arabic
+   The Work: a result · The Change: a fix on a slide · The Lesson: advice or a myth · Working with me: my process or a decision · My Story: me, medicine, values · Arabic lane: an opinion in Arabic
 3 GOAL (violet) · Ask: What should the reader do after reading?
    Educate: learn one rule · Prove: believe I deliver · Connect: feel close to me · Sell: contact me · Spark: react and discuss
 4 FORMAT (teal) · Ask: The goal decides
@@ -513,7 +513,7 @@ left cell = number + DECISION (Extra Bold 32), middle cell = "Ask yourself" (Med
 6 HOOK (yellow) · Ask: What stops a founder scrolling?
    A number + stakes · A myth they believe · A moment ("Slide 4. The investor stopped.") · A fear ("Months of work, judged in seconds.") · Never start with "I"
 7 CTA (green) · Ask: One action only
-   Sell: Book a call · Before and after: follow for Thursday · Educate, Prove, Spark: one soft question · Connect: none
+   Sell: Book a call · The Change: follow for Thursday · Educate, Prove, Spark: one soft question · Connect: none
 8 TIME (grey) · Ask: Which slot?
    Sun, Mon, Tue, Thu 08:30 Egypt · Wed 15:30 · Arabic any day 08:30 · No Friday
 Bottom strip (dark #2C2C2C, white text): "The 5 baby steps: WHO? · WHAT HURTS? · WHAT DID I SEE? · SAY IT SIMPLY · CHECK AND POST"
@@ -620,27 +620,27 @@ Relevance #B5530C / #FFEBD9 · Authority #1E5BB8 / #E3EDFB · Trust #1E7B34 / #E
 
 ### The five Builds (recipe data, used by every flow below)
 RELEVANCE · Reader thinks: "He gets my problem." · Brand script: empathy, villain (clutter), internal fear
-  Mine from: Trigger moments, Pains, Fears, Their words · Pillar: Win the room · Goal: Educate or Spark
+  Mine from: Trigger moments, Pains, Fears, Their words · Pillar: The Lesson · Goal: Educate or Spark
   Format: text only, or text + question card · Proof ingredient: their exact words or a real scene
   Hook: a fear or a moment ("Months of work, judged in seconds.") · CTA: one soft question
   Check: Would a founder say "that's me" by line 2?
 AUTHORITY · Reader thinks: "He knows how to fix it." · Brand script: authority lines, real work
-  Mine from: Beliefs and myths (the truth), Ready angles, real projects · Pillar: Work that won, Before and after · Goal: Prove or Educate
+  Mine from: Beliefs and myths (the truth), Ready angles, real projects · Pillar: The Work, The Change · Goal: Prove or Educate
   Format: text + real slide, or the Thursday carousel · Proof ingredient: a real slide, a before and after, or one authority line ($57M behind, 6 countries, Top 1%)
   Hook: a number + stakes · CTA: soft question, or follow for Thursday
   Check: Is there something on screen they could not have done themselves?
 TRUST · Reader thinks: "He's safe to hire." · Brand script: plan (Talk, Shape, Win), promises
-  Mine from: Objections to hiring, Questions they ask · Pillar: How I work · Goal: Sell or Prove
+  Mine from: Objections to hiring, Questions they ask · Pillar: Working with me · Goal: Sell or Prove
   Format: text + branded image (number or takeaway card), or 60 s video · Proof ingredient: one promise + a real moment it was kept (deadline, NDA, feedback window, scope before payment)
   Hook: the objection in their words ("What if I pay and hate the result?") · CTA: Book a call
   Check: Does it remove one risk of hiring me?
 LIKABILITY · Reader thinks: "I like how he thinks." · Brand script: identity (ex-doctor turned presentation strategist), philosophical line
-  Mine from: My path stories, values, learning, Arabic lane · Pillar: My path, Arabic lane · Goal: Connect
+  Mine from: My Story stories, values, learning, Arabic lane · Pillar: My Story, Arabic lane · Goal: Connect
   Format: text only, or text + personal photo · Proof ingredient: a real moment from medicine, learning or freelance life
   Hook: a lesson line · CTA: none
   Check: Would they know it's my voice without my name on it?
 ACTION · Reader thinks: "I know the next step." · Brand script: plan, CTA, success ("You win the day")
-  Mine from: Success picture, Questions they ask · Pillar: How I work · Goal: Sell
+  Mine from: Success picture, Questions they ask · Pillar: Working with me · Goal: Sell
   Format: text + branded image · Proof ingredient: Talk, Shape, Win + one promise
   Hook: a situation ("Have a document that needs to become a deck?") · CTA: Book a call, or Start a project
   Check: Is the next step one sentence and one click?
@@ -665,7 +665,7 @@ Use the recipe data above, short.
 ### Flow 7. The trust ladder (journey map, horizontal)
 Stranger (grey card) → Relevance "He gets my problem" → Authority "He knows how" → Likability "I like how he thinks" → Trust "He's safe to hire" → Action "I know the next step" → Booked call (dark card, white text).
 Under each step: one small line of example posts:
-  Relevance: myth post, fear post · Authority: case study, Thursday carousel · Likability: My path, Arabic post · Trust: promises, how a deadline was kept · Action: Talk, Shape, Win + Book a call.
+  Relevance: myth post, fear post · Authority: case study, Thursday carousel · Likability: My Story, Arabic post · Trust: promises, how a deadline was kept · Action: Talk, Shape, Win + Book a call.
 Caption above: "A founder climbs one step per post they read. Leave no step empty."
 
 ### Additions to existing blocks
@@ -685,18 +685,18 @@ PHASE 1 DECIDE (10 min)
 Start (dark): "Sunday, 45 min. Open the sheet and the board"
 → "Read Thursday's review: the weakest Builds + the ONE change" 
 → diamond "Any fresh client work this week?"
-   Yes (green, right) → "It becomes Monday's Work that won" 
+   Yes (green, right) → "It becomes Monday's The Work" 
    No (red, down) → "Pick the top-scored bank line" (small note: score Buyer, Proof, Sales use, Effort, 0 to 2 each)
    both join →
 → "Pick ONE theme for the week: one founder fear or myth" (example chip: "Too many slides")
 
 PHASE 2 PRIORITIZE (15 min): fill the 5 slots by importance, not by day
 Stacked priority chips, numbered, each with an arrow to its slot box on the same row:
-  P1 Thu carousel · Before and after · Educate + Authority · "the anchor, never cut"
-  P2 Wed How I work · Sell · Trust or Action · "the money post, never cut"
-  P3 Mon Work that won · Prove · Authority
-  P4 Tue Win the room · Educate · Relevance
-  P5 Sun Win the room or My path · Connect · Likability · "first to cut: post from the ready bank"
+  P1 Thu carousel · The Change · Educate + Authority · "the anchor, never cut"
+  P2 Wed Working with me · Sell · Trust or Action · "the money post, never cut"
+  P3 Mon The Work · Prove · Authority
+  P4 Tue The Lesson · Educate · Relevance
+  P5 Sun The Lesson or My Story · Connect · Likability · "first to cut: post from the ready bank"
 → "For each slot, pick the highest-scoring idea that fits"
 Note card beside: "Short on time? Cut from P5 upward. Never cut P1 or P2."
 
@@ -746,18 +746,18 @@ REMEMBER CARD (dark #2C2C2C, white text, read in 2 min):
 "North Star: help decision makers see the one insight that matters, and design it so the decision is obvious.
 Hero: founders and leaders with a high-stakes presentation. Want: a clear yes. Villain: clutter. Fear: looking unprepared.
 One-liner: Months of work get judged in seconds. I shape your story into a clear, human presentation, so you win the day.
-Week: Sun Win the room or My path · Mon Work that won · Tue Win the room · Wed How I work (Book a call) · Thu Before and after carousel · + 1 Arabic. No Friday.
+Week: Sun The Lesson or My Story · Mon The Work · Tue The Lesson · Wed Working with me (Book a call) · Thu The Change carousel · + 1 Arabic. No Friday.
 Every post: one persona, one goal, one Builds, one authority marker, one CTA."
 
 PHASE 0 RESET · 15 min (grey)
 "Open 4 things: this board, the Sheet (Persona bank), Content Studio, LinkedIn" → "Read the Remember card" → "Read last Thursday's note: weakest Builds + one change" (if none: "Weakest = Trust")
 
 PHASE 1 DECIDE · 30 min (blue)
-diamond "Any client work or result from last week?" Yes right → "It becomes Mon Work that won + Thu carousel material" · No down → "Sheet: filter Status = New, pick the top-scored line" (Buyer, Proof, Sales use, Effort, 0 to 2)
+diamond "Any client work or result from last week?" Yes right → "It becomes Mon The Work + Thu carousel material" · No down → "Sheet: filter Status = New, pick the top-scored line" (Buyer, Proof, Sales use, Effort, 0 to 2)
 → "Pick ONE theme: one founder fear or myth" → "Check the edge: my view, my proof, my signature?" diamond, No down → "Pick the next line"
 
 PHASE 2 PICK · 30 min (orange)
-Priority chips each to its slot: P1 Thu carousel · P2 Wed How I work · P3 Mon Work that won · P4 Tue Win the room · P5 Sun · + Arabic
+Priority chips each to its slot: P1 Thu carousel · P2 Wed Working with me · P3 Mon The Work · P4 Tue The Lesson · P5 Sun · + Arabic
 → "Fill the Week card: persona, pillar, goal, Builds, bank line, authority marker, hook idea"
 → 3 quick diamonds: "Founders in 3 of 5?" · "Exactly one Sell?" · "Weakest Builds included?" (No → own fix box each)
 Story arc chips under it: Sun name it → Mon show it solved → Tue teach the rule → Wed how we'd fix yours → Thu see it on a slide
@@ -782,7 +782,7 @@ PHASE 6 SHIP · 15 min (green)
 "Schedule all posts in LinkedIn at their slots (Wed 15:30, others 08:30 Egypt)" → "Sheet: Status = Drafted, add dates" → "Move one spare post to the ready bank" → End (dark): "Week done. Daily: 20 min of comments only."
 
 STUCK RULES strip (yellow #FFF4CC cards, Bold title + Regular line):
-"Stuck over 5 min on a choice? Take the default: Founders, their fear of looking amateur, Win the room."
+"Stuck over 5 min on a choice? Take the default: Founders, their fear of looking amateur, The Lesson."
 "No idea at all? Open the Sheet, sort by Score, take the top line. Don't think, pick."
 "Running over time? Cut P5, post it from the ready bank. Never cut P1 or P2."
 "Carousel too heavy this week? One before and after image instead."

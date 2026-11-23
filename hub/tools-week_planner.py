@@ -14,12 +14,12 @@ WR=Alignment(wrap_text=True,vertical="top")
 EX=Font(italic=True,color="8A8A8A")
 widths={"A":16,"B":20,"C":26,"D":30,"E":16,"F":16,"G":16,"H":22,"I":20,"J":14}
 for k,v in widths.items(): ws.column_dimensions[k].width=v
-DAY={"Sun":("A3195B","FBE4EF","My path","Who is this person?","Connect","Likability","none","Sun 08:30"),
-     "Mon":("1E5BB8","E3EDFB","Work that won","What did I do?","Prove","Authority","soft question","Mon 08:30"),
-     "Tue":("B5530C","FFEBD9","Win the room","What should you learn from it?","Educate","Relevance","soft question","Tue 08:30"),
-     "Wed":("1E7B34","E3F5E7","How I work","How would I do this for you?","Sell","Trust","Book a call","Wed 15:30"),
-     "Thu":("6B3FA0","EFE7FA","Before and after","Show me the change (carousel)","Educate","Authority","follow for next Thursday","Thu 08:30"),
-     "Arabic":("0F766E","DDF3F0","My thinking (Arabic)","My personal take on the theme","Connect","Likability","none","any day 08:30")}
+DAY={"Sun":("A3195B","FBE4EF","My Story","Who is this person?","Connect","Likability","none","Sun 08:30"),
+     "Mon":("1E5BB8","E3EDFB","The Work","What did I do?","Prove","Authority","soft question","Mon 08:30"),
+     "Tue":("B5530C","FFEBD9","The Lesson","What should you learn from it?","Educate","Relevance","soft question","Tue 08:30"),
+     "Wed":("1E7B34","E3F5E7","Working with me","How would I do this for you?","Sell","Trust","Book a call","Wed 15:30"),
+     "Thu":("6B3FA0","EFE7FA","The Change","Show me the change (carousel)","Educate","Authority","follow for next Thursday","Thu 08:30"),
+     "Arabic":("0F766E","DDF3F0","My Thinking (Arabic)","My personal take on the theme","Connect","Likability","none","any day 08:30")}
 ORDER=["Sun","Mon","Tue","Wed","Thu","Arabic"]
 r=1
 def title(text,color,sub=None):

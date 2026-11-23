@@ -22,11 +22,11 @@ A: Presentation strategist for founders and leaders | Decks behind $57M in fundi
 B: I shape founders' and leaders' stories into clear, human presentations | Decks behind $57M in funding rounds | Ex-doctor turned presentation strategist
 
 ## Featured, in this order (max 6, first 2 are seen first)
-1. Best case study: the $413B health-tech pitch deck post (Work that won). Proof first.
+1. Best case study: the $413B health-tech pitch deck post (The Work). Proof first.
 2. Free Slide Diagnosis / Book a call: one link with a One Light thumbnail: "Send me one slide. Get a 2-minute diagnosis." (offer + booking on the same page)
 3. Best before and after carousel. Shows the fix.
-4. How I work: Talk, Shape, Win + promises (the Wednesday post). Removes hiring risk.
-5. My path: ex-doctor to presentation strategist. The person behind the work.
+4. Working with me: Talk, Shape, Win + promises (the Wednesday post). Removes hiring risk.
+5. My Story: ex-doctor to presentation strategist. The person behind the work.
 6. Selected work PDF (8 to 10 decks, placeholder text where needed). For executives and agencies.
 Later: replace 6 with a testimonials carousel once you have 3 testimonials.
 Until the Foundation 10 exist: use the best posts you already have in each slot; leave a slot empty rather than weak.
@@ -119,7 +119,7 @@ Order of the page, top to bottom:
 | 2 | Proof strip | MOFU | Decks behind $57M in funding rounds · Founders in 6 countries · (client logos only with permission) |
 | 3 | 3 featured case studies | MOFU | One per deck type: pitch deck, company profile or board deck, keynote |
 | 4 | Before and after gallery | TOFU to MOFU | 6 to 9 slides, placeholder text where needed |
-| 5 | How I work | BOFU | Talk, Shape, Win + the promises |
+| 5 | Working with me | BOFU | Talk, Shape, Win + the promises |
 | 6 | Testimonials | BOFU | 3 short quotes with role and country |
 | 7 | About | MOFU | Ex-doctor to presentation strategist, the diagnosis habit |
 | 8 | FAQ (objections) | BOFU | Price, in-house, AI, time zones, confidentiality, timeline |
@@ -134,7 +134,7 @@ Each case study page follows the brand script (SB7), in this order:
 6. Result: only confirmed facts ("behind" unless the client confirms "raised").
 7. Client words: one quote (with permission).
 8. CTA: "Have a deck like this? Book a call" or "Send me one slide."
-The case study page is also the source for one Work that won post and one Before and after carousel (portfolio feeds TOFU and MOFU content).
+The case study page is also the source for one The Work post and one The Change carousel (portfolio feeds TOFU and MOFU content).
 
 ### Where each piece is used
 - DMs (BOFU): send the case study that matches their deck type.

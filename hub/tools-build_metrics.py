@@ -10,14 +10,14 @@ HEAD=F("2C2C2C"); WH=Font(color="FFFFFF",bold=True,size=11,name="Inter")
 B=lambda **k:Font(name="Inter",**k)
 thin=Side(style="thin",color="D0D0D0"); BOR=Border(bottom=thin)
 WR=Alignment(wrap_text=True,vertical="center")
-PILLARS=["Work that won","Before and after","Win the room","How I work","My path","My thinking (Arabic)"]
+PILLARS=["The Work","The Change","The Lesson","Working with me","My Story","My Thinking (Arabic)"]
 PERS=["Founders","Executives and teams","Speakers","Creative directors","New persona"]
 GOALS=["Educate","Prove","Connect","Sell","Spark"]
 BUILDS=["Relevance","Authority","Trust","Likability","Action"]
 BCOL={"Relevance":("B5530C","FFEBD9"),"Authority":("1E5BB8","E3EDFB"),"Trust":("1E7B34","E3F5E7"),"Likability":("A3195B","FBE4EF"),"Action":("2C2C2C","EDEDED")}
-PCOL={"Work that won":"E3EDFB","Before and after":"FFEBD9","Win the room":"FFF4CC","How I work":"E3F5E7","My path":"EFE7FA","My thinking (Arabic)":"DDF3F0"}
+PCOL={"The Work":"E3EDFB","The Change":"FFEBD9","The Lesson":"FFF4CC","Working with me":"E3F5E7","My Story":"EFE7FA","My Thinking (Arabic)":"DDF3F0"}
 FORMATS=["Text only","Text + real slide","Text + branded card","Text + personal photo","Carousel","Video"]
-DOORS=["Myth-buster","Mistake","Behind the scenes","Before and after","Question answered","Story","Number","Teardown","Framework"]
+DOORS=["Myth-buster","Mistake","Behind the scenes","The Change","Question answered","Story","Number","Teardown","Framework"]
 DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 wb=Workbook()
 
