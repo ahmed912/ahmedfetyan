@@ -37,7 +37,7 @@ Color and contrast (WCAG AA minimum):
 
 
 ### BUILD SPEC v3 (23 Nov, overrides every color and type rule above)
-Ahmed: the One Light monochrome page is hard to read. This page is a working document, not a brand asset: use FigJam colors and real hierarchy.
+Ahmed: the One Light monochrome page is hard to read. He likes LIGHT MODE, STRONG CONTRAST, COLORFUL. Body text #111111 (not grey), labels and titles in the strong colors only (never the tint), section tints visible but light enough for 7:1 body contrast, white row cards, 2 px borders in the strong color around each section block. This page is a working document, not a brand asset: use FigJam colors and real hierarchy.
 Background: FigJam's light canvas. Columns keep the same layout (6 columns side by side, top to bottom).
 Font: Inter. Four weights, used consistently:
 - L1 page title: 96 px, Extra Bold (or Black), #1E1E1E.
