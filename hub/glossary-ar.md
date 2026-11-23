@@ -20,6 +20,7 @@
 | Slide Diagnosis | Free one-slide review | تشخيص مجاني لشريحة واحدة |
 | Builds | What the reader concludes about you | ما يستنتجه القارئ عنك |
 | Nurture | Follow up later | قائمة المتابعة لاحقًا |
+| S0 to S4 | Sales flow 0 to 4 | خطوات البيع بالترتيب: من دخول الشخص إلى القمع حتى ما بعد التسليم |
 
 ## Arabic descriptions for the Sales funnel page (one small line under each block title)
 - The Clear Yes funnel: الطريق من أول مرة يراك فيها شخص حتى يصبح عميلًا يرشّحك لغيره.
