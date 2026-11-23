@@ -13,4 +13,4 @@
 - Only his word "vital" overrides the queue.
 - Vital means: loses or hides data or billable time, breaks sync, blocks him from working, security.
 ## Next window
-- Tue 24 Nov 18:00 Cairo: Gym round (items 13, 13b, 16, 17, 18) and Today touch-ups (14).
+- THIS WEEK ONLY: Wed 25 Nov 13:00 Cairo (his decision 23 Nov, quota at 78%). Gym round (items 13, 13b, 16, 17, 18, 19) first, then Today touch-ups (14) and project timer (15). Other weeks: ask him to confirm first.

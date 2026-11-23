@@ -4,6 +4,7 @@ Weekly usage limit resets Wednesday 18:00 (user's local time). Reserve tokens fo
 - VITAL, do now: anything that loses or hides data or billable time, breaks sync, blocks him from working, or is a security problem.
 - NOT VITAL, queue only: new features, polish, refinements, anything that can wait. Record it below. Even if he asks "do it now", answer in one line that it is not vital and queued; he can only override by saying the word "vital".
 - RESET: Wednesday 18:00 Egypt time (16:00 UTC in November). Everything queued must be finished and published BEFORE the reset so it is not charged to the new week. Window starts Tuesday 18:00 Egypt (scheduled trigger trig_01PhaggYN1jYhQ8tbmfQvEYg for 2026-11-17).
+- THIS WEEK ONLY (his words, 23 Nov: quota at 78%, delay to Wednesday about 1 pm instead of Tuesday night): the window starts Wednesday 25 Nov 13:00 Egypt (11:00 UTC) and ends before the 18:00 reset. Only this week. Other weeks: ask him to confirm before starting the queue. At 13:00 start the queue in priority order (gym round items 13, 13b, 16, 17, 18, 19 first, then 14, 15), one regression, one publish; stop early if quota runs out and report.
 - WINDOW: run the queue Tuesday evening and Wednesday up to 18:00 (last 2 days before reset), in order, architect plan first, builder follows, one full regression, one publish.
 - Planning cost stays small: architect plans may be written any time (cheap), builders and regressions wait for the window.
 
