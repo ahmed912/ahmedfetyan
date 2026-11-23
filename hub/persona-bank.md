@@ -577,3 +577,8 @@ Apply to the 5 persona columns (Founders, Executives and teams, Speakers, Creati
 7. New persona column: same structure with empty bullets ("• ...") and the + add line; New field block stays one small card.
 Target: each persona column roughly one third of its current height. Keep every line of text exactly (only the labels are removed). Re-run the no-crop check over all text nodes.
 Do not change the Decision board, Start here, Maps and frameworks or Flowcharts, except moving columns left to close gaps after the persona columns shrink.
+
+### v4.1 TRANSVERSE (overrides v4 point 6 layout)
+Each persona is a HORIZONTAL ROW, read left to right: the persona header card first (name, Who, Wants), then its section cards side by side in this order: Trigger moments, Goals, Pains, Fears, Beliefs and myths, Questions, Objections, Their words, Success picture, Ready angles. Card width 520, 24 px gap, all cards in a row top-aligned and the same height as the tallest card in that row.
+Personas stacked as rows, 120 px apart: Founders, Executives and teams, Speakers, Creative directors, New persona (+ New field card at the end of its row).
+Place the persona rows below the Flowcharts section. Decision board, Start here and Maps and frameworks stay as columns, placed to the left of the persona rows (or above them if that reads better), no overlaps.
