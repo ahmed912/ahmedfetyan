@@ -608,3 +608,68 @@ Rules for ALL flowcharts (Daily framework, Flows 1 to 4, mind maps):
 4. Straight or single-elbow connectors only. No connector crosses another connector or passes behind a shape. Loops run above or below the main line with clear space.
 5. Daily framework day chips in calendar order: Sun, Mon, Tue, Wed, Thu, Fri or Sat. The Thu jump to CHECK starts from the Thu chip and runs along the top.
 Verify with close crops of every decision area, then run the no-crop check.
+
+=====================================================================
+## v4.5 BUILDS DIMENSION (23 Nov): what the reader concludes about Ahmed
+=====================================================================
+Goal = what the post DOES. Builds = what the reader CONCLUDES about Ahmed after reading. One main Builds per post.
+Founders hire a remote freelancer only when all five are filled. Ahmed's usual gap is Trust.
+
+Builds colors (strong / tint), light mode, Inter 4 weights as v3:
+Relevance #B5530C / #FFEBD9 · Authority #1E5BB8 / #E3EDFB · Trust #1E7B34 / #E3F5E7 · Likability #A3195B / #FBE4EF · Action #2C2C2C / #EDEDED
+
+### The five Builds (recipe data, used by every flow below)
+RELEVANCE · Reader thinks: "He gets my problem." · Brand script: empathy, villain (clutter), internal fear
+  Mine from: Trigger moments, Pains, Fears, Their words · Pillar: Win the room · Goal: Educate or Spark
+  Format: text only, or text + question card · Proof ingredient: their exact words or a real scene
+  Hook: a fear or a moment ("Months of work, judged in seconds.") · CTA: one soft question
+  Check: Would a founder say "that's me" by line 2?
+AUTHORITY · Reader thinks: "He knows how to fix it." · Brand script: authority lines, real work
+  Mine from: Beliefs and myths (the truth), Ready angles, real projects · Pillar: Work that won, Before and after · Goal: Prove or Educate
+  Format: text + real slide, or the Thursday carousel · Proof ingredient: a real slide, a before and after, or one authority line ($57M behind, 6 countries, Top 1%)
+  Hook: a number + stakes · CTA: soft question, or follow for Thursday
+  Check: Is there something on screen they could not have done themselves?
+TRUST · Reader thinks: "He's safe to hire." · Brand script: plan (Talk, Shape, Win), promises
+  Mine from: Objections to hiring, Questions they ask · Pillar: How I work · Goal: Sell or Prove
+  Format: text + branded image (number or takeaway card), or 60 s video · Proof ingredient: one promise + a real moment it was kept (deadline, NDA, feedback window, scope before payment)
+  Hook: the objection in their words ("What if I pay and hate the result?") · CTA: Book a call
+  Check: Does it remove one risk of hiring me?
+LIKABILITY · Reader thinks: "I like how he thinks." · Brand script: identity (ex-doctor turned presentation strategist), philosophical line
+  Mine from: My path stories, values, learning, Arabic lane · Pillar: My path, Arabic lane · Goal: Connect
+  Format: text only, or text + personal photo · Proof ingredient: a real moment from medicine, learning or freelance life
+  Hook: a lesson line · CTA: none
+  Check: Would they know it's my voice without my name on it?
+ACTION · Reader thinks: "I know the next step." · Brand script: plan, CTA, success ("You win the day")
+  Mine from: Success picture, Questions they ask · Pillar: How I work · Goal: Sell
+  Format: text + branded image · Proof ingredient: Talk, Shape, Win + one promise
+  Hook: a situation ("Have a document that needs to become a deck?") · CTA: Book a call, or Start a project
+  Check: Is the next step one sentence and one click?
+
+Monthly balance (20 posts): Authority 6 · Relevance 5 · Trust 5 · Likability 3 · Action 1 to 2.
+
+### Placement
+New chapter "Builds" in the horizontal strip, placed right after the Flowcharts chapter (Section 1, 61:2993), same chapter divider card style as the others. Inside it, left to right: Flow 5, Flow 6, Flow 7. Follow v4.4 connector rules and the no-crop check.
+
+### Flow 5. Which Builds next? (horizontal, run at the Thursday review, feeds Sunday card 1)
+Start (dark): "Thursday review" → "Open the sheet tab 'Builds balance'" → diamond "Any Builds at 0 this month?"
+  Yes (green, right) → "Plan that one first" → joins "Plan Sunday card 1 with it"
+  No (red, down) → "Pick the one furthest below its target" → joins the same step
+→ diamond "Which Builds?" → option chips stacked (Relevance, Authority, Trust, Likability, Action in their colors), one arrow from each chip to "Use its recipe (Flow 6)" boxes on the same row (or one merged box)
+→ "Plan Sunday card 1 with it" → End (dark): "Card ready".
+
+### Flow 6. The five recipes (5 horizontal lanes stacked, one per Builds, each lane in its color)
+Each lane, left to right, 7 boxes joined by straight arrows:
+  [Builds chip] → "They think: ..." → "Mine: ..." → "Pillar + goal: ..." → "Format: ..." → "Proof: ..." → "Hook: ..." → "CTA: ..." → diamond "Check: ..." (Yes → "Write it", No → back above the lane to "Mine", loop above)
+Use the recipe data above, short.
+
+### Flow 7. The trust ladder (journey map, horizontal)
+Stranger (grey card) → Relevance "He gets my problem" → Authority "He knows how" → Likability "I like how he thinks" → Trust "He's safe to hire" → Action "I know the next step" → Booked call (dark card, white text).
+Under each step: one small line of example posts:
+  Relevance: myth post, fear post · Authority: case study, Thursday carousel · Likability: My path, Arabic post · Trust: promises, how a deadline was kept · Action: Talk, Shape, Win + Book a call.
+Caption above: "A founder climbs one step per post they read. Leave no step empty."
+
+### Additions to existing blocks
+- Decision board: insert a new row after 3 GOAL: "BUILDS · Ask: What should they conclude about me?" chips: Relevance: he gets my problem · Authority: he knows how · Trust: he's safe to hire · Likability: I like how he thinks · Action: I know the next step. Renumber the rows below (9 rows total). Row color: use the 5 Builds colors on the chips, neutral row card.
+- Flow 1: after "Pick ONE goal", add a box "Pick ONE Builds (what should they conclude?)".
+- Daily framework, CHOOSE phase: after the Goal chips merge, add one box "Pick ONE Builds" before FIND. Shift right, keep connectors clean.
+- Brand mind map: add Branch F "Builds" → Relevance · Authority · Trust · Likability · Action (in Builds colors).
