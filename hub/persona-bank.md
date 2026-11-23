@@ -673,3 +673,50 @@ Caption above: "A founder climbs one step per post they read. Leave no step empt
 - Flow 1: after "Pick ONE goal", add a box "Pick ONE Builds (what should they conclude?)".
 - Daily framework, CHOOSE phase: after the Goal chips merge, add one box "Pick ONE Builds" before FIND. Shift right, keep connectors clean.
 - Brand mind map: add Branch F "Builds" → Relevance · Authority · Trust · Likability · Action (in Builds colors).
+
+=====================================================================
+## v4.6 FLOW 8. PLAN THE WEEK (Sunday, 45 min): decide, prioritize, connect
+=====================================================================
+Place it as the FIRST flow in the "Builds" chapter (before Flow 5), largest block, horizontal, 4 phase bands like the Daily framework:
+DECIDE (blue #1E5BB8) · PRIORITIZE (orange #B5530C) · CONNECT (violet #6B3FA0) · CHECK (red #B42318), then a dark End card.
+Follow v4.4 connector rules. Time chip under each phase.
+
+PHASE 1 DECIDE (10 min)
+Start (dark): "Sunday, 45 min. Open the sheet and the board"
+→ "Read Thursday's review: the weakest Builds + the ONE change" 
+→ diamond "Any fresh client work this week?"
+   Yes (green, right) → "It becomes Monday's Work that won" 
+   No (red, down) → "Pick the top-scored bank line" (small note: score Buyer, Proof, Sales use, Effort, 0 to 2 each)
+   both join →
+→ "Pick ONE theme for the week: one founder fear or myth" (example chip: "Too many slides")
+
+PHASE 2 PRIORITIZE (15 min): fill the 5 slots by importance, not by day
+Stacked priority chips, numbered, each with an arrow to its slot box on the same row:
+  P1 Thu carousel · Before and after · Educate + Authority · "the anchor, never cut"
+  P2 Wed How I work · Sell · Trust or Action · "the money post, never cut"
+  P3 Mon Work that won · Prove · Authority
+  P4 Tue Win the room · Educate · Relevance
+  P5 Sun Win the room or My path · Connect · Likability · "first to cut: post from the ready bank"
+→ "For each slot, pick the highest-scoring idea that fits"
+Note card beside: "Short on time? Cut from P5 upward. Never cut P1 or P2."
+
+PHASE 3 CONNECT (10 min): the week tells one story about the theme
+A 5-step arc, chips left to right, each with day + role:
+  Sun "Name it" (Relevance or Likability: why this fear matters, a story)
+  → Mon "Show it solved" (Authority: a case where fixing it won)
+  → Tue "Teach the rule" (Relevance: the myth and the truth)
+  → Wed "How we'd fix yours" (Trust: Talk, Shape, Win + Book a call)
+  → Thu "See it on a slide" (Authority: the before and after carousel)
+  Arabic post: "My take on the theme, in Arabic" (Likability), side chip.
+Under the arc, 3 small "connect" tactics cards:
+  "Reuse one line from Their words in 2 posts" · "End Tue with: Thursday I'll show the slide" · "Comment the previous post's link under the new one"
+
+PHASE 4 CHECK (10 min)
+4 diamonds in a row, Yes right (green), No down (red) to its own fix box:
+  "Founders in at least 3 of 5?" → No: "Swap the weakest slot to a founder angle"
+  "Exactly one Sell (Wed)?" → No: "Keep Wed, soften the rest"
+  "Weakest Builds from Thursday is in?" → No: "Put it in P4 or P5"
+  "Proof ready for every slot?" → No: "Swap that slot with a ready bank post"
+End (dark): "5 cards on the Decision board. Sheet Status = Idea. Write Monday."
+
+Under the whole flow, a "Week card" template row (one table, 10 columns, light): Theme · Slot · Priority · Persona · Pillar · Goal · Builds · Bank line · Proof ready? · Hook. 5 empty rows (Sun to Thu) + 1 Arabic row. Editable text, not cropped.
