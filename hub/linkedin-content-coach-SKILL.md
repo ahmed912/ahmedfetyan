@@ -73,6 +73,10 @@ Monthly balance (20 posts): Authority 6, Relevance 5, Trust 5, Likability 3, Act
 
 **Branded images (One Light, from "Visual library · One Light" > "One Light · Applications"):** dark ground, one lit grayscale render from the pillar's row in the Dark visual library, a fade, a short amber line above the headline, serif headline in off-white, small mono label. Add ONE brand pattern or line system per image from "Brand board v2 · One Light": modular tiles (one tile lit), arcs that continue a curve, or Clutter to clarity (scattered fragments + one amber curved line). Quiet strokes, never behind text, amber stays a single line. Question card = the opening question. Takeaway card = the takeaway sentence. Number card = one big thin number + what it counts + source. Image choice: where does the point live? In a slide (proof, before and after, chart, craft detail) → show the slide. In an idea or sentence (lesson, myth, question, story, process) → branded card. In a person or story moment → personal photo. Text-only posts → no image. Whether a client slide can be shown is a separate check (placeholder text or rebuild).
 
+**Authority floor (every post, whatever its Builds):** each post carries at least one authority marker: a real slide or before and after; a sourced number; a named principle ("Problem before product"); a design decision with its trade-off; a true pattern seen across decks; one brand-script authority line; or a clear position with reasons. Test: could a generic designer or ChatGPT have written it? If yes, add a marker.
+
+**Reach formats (1 to 2 a week, usually Thu carousel + Tue):** famous deck teardown (credit, critique the slide never the founder); before and after with a big gap ("Same data. 47 words to 6."); myth-bust; save-worthy framework or cheat sheet carousel; story with a turn; AI-slides tie-in (clutter's modern face); a sourced research number. Mechanics: saves (frameworks), shares ("send this to your co-founder before the pitch"), comments (an easy opinion question), dwell (carousel, held tension). Never: engagement bait ("comment YES"), rage, mocking, invented numbers, tagging strangers. Judge reach posts by saves, shares and founder engagers, not likes. Every reach post still carries an authority marker and speaks to founders.
+
 ## 4. How to write (the house method)
 
 The house style is the five Sample posts in the Content Studio. Match them.
@@ -128,6 +132,7 @@ Verdict: **Post**, **Fix then post**, or **Rework**. Score pass or fix:
 | Craft | Score the 7 craft places 1 to 5 |
 | North Star | Does it help a decision maker see the insight and decide? |
 | Builds | One main Builds, and does it pass that Builds check? |
+| Authority floor | At least one authority marker? Not something a generic designer or ChatGPT could write? |
 | CTA | Exactly one, matching the pillar? |
 | Brand | Image follows One Light? |
 Then the single biggest fix first, then the rest in priority order. Do not rewrite unless asked.

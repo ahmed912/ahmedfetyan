@@ -720,3 +720,17 @@ PHASE 4 CHECK (10 min)
 End (dark): "5 cards on the Decision board. Sheet Status = Idea. Write Monday."
 
 Under the whole flow, a "Week card" template row (one table, 10 columns, light): Theme · Slot · Priority · Persona · Pillar · Goal · Builds · Bank line · Proof ready? · Hook. 5 empty rows (Sun to Thu) + 1 Arabic row. Editable text, not cropped.
+
+=====================================================================
+## v4.7 AUTHORITY FLOOR + REACH FORMATS
+=====================================================================
+1. Flow 3 Pre-publish check: add a diamond after "Visual proof, not post words?": "Authority marker in it?" Yes right, No down to "Add one: real slide, sourced number, named principle, decision + why, true pattern, one authority line, a position with reasons". Small test line under it: "Could a generic designer or ChatGPT write this? Then add a marker."
+2. Builds chapter: add a card grid "Reach formats (1 to 2 a week)", 7 cards in one row, each = format (Bold) + example hook (Regular) + what it earns (chip: Saves / Shares / Comments / Dwell):
+   Famous deck teardown · "Airbnb's first deck has one slide I'd change." · Shares
+   Big-gap before and after · "Same data. 47 words to 6." · Saves
+   Myth-bust · "Stop putting your logo on every slide." · Comments
+   Framework carousel · "The slide order investors read in." · Saves
+   Story with a turn · "The investor stopped at slide 4." · Dwell
+   AI-slides tie-in · "AI made this pitch deck. Here is what it hid." · Comments
+   Sourced number · "Investors spend minutes, not hours, on your deck." (cite the source) · Shares
+   Under the grid, a red-outline card "Never": engagement bait, rage, mocking, invented numbers, tagging strangers.
