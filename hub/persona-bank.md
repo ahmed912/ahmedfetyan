@@ -517,3 +517,48 @@ left cell = number + DECISION (Extra Bold 32), middle cell = "Ask yourself" (Med
 8 TIME (grey) · Ask: Which slot?
    Sun, Mon, Tue, Thu 08:30 Egypt · Wed 15:30 · Arabic any day 08:30 · No Friday
 Bottom strip (dark #2C2C2C, white text): "The 5 baby steps: WHO? · WHAT HURTS? · WHAT DID I SEE? · SAY IT SIMPLY · CHECK AND POST"
+
+=====================================================================
+## UPDATE: FLOWCHARTS HORIZONTAL + PERSONA MIND MAP
+=====================================================================
+1. All flowcharts (Daily framework and Flows 1 to 4) run LEFT TO RIGHT, not top to bottom. Phases of the Daily framework become colored horizontal lanes or bands in order: CHOOSE, FIND, WRITE, CHECK, SHIP. Decisions branch up and down; loops return with curved connectors above or below the main line. Because they are wide, place the flowcharts in their own wide section ABOVE all the columns (full board width), one flowchart per row, Daily framework first.
+
+2. Persona mind map (place in "Maps and frameworks", or as a wide block next to the brand map). Center node: "Who I write for" (dark #2C2C2C, white, Extra Bold). Four branches in persona colors, each with the same 7 leaves (one short line each, max 8 words):
+
+Founders (#1E5BB8)
+- Who: startup founders and CEOs, pre-seed to Series A
+- Wants: get the next meeting, then funding
+- Trigger: "Send me your deck"
+- Pain: slides crammed with everything they know
+- Fear: looking amateur in front of investors
+- Myth: "More slides show more effort"
+- Best angle: problem first, investor questions in order
+
+Executives and teams (#6B3FA0)
+- Who: C-level, strategy and BD teams, government
+- Wants: approval and a clear decision
+- Trigger: board meeting, bid deadline, VIP visit
+- Pain: 60 slides of data, no message
+- Fear: the board nods and decides nothing
+- Myth: "Executives want all the data"
+- Best angle: one insight, then the proof
+
+Speakers (#B5530C)
+- Who: keynote, TEDx and webinar speakers
+- Wants: the audience remembers one idea
+- Trigger: talk accepted, slides due
+- Pain: slides full of speaker notes
+- Fear: the audience looks at their phones
+- Myth: "Slides are my notes"
+- Best angle: one idea, one strong image
+
+Creative directors (#0F766E, peers)
+- Who: studio leads hiring or sending overflow
+- Wants: a freelancer at their standard
+- Trigger: too much deck work this week
+- Pain: designers who skip the story
+- Fear: their name on weak work
+- Myth: "AI will replace deck designers"
+- Best angle: craft decisions AI can't make
+
+Leaves use the same section colors as the bank (Trigger yellow, Pain red, Fear purple, Myth orange) as small colored tags before the text, so the map and the columns speak the same color code.
