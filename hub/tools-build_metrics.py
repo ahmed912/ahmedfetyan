@@ -28,7 +28,7 @@ lines=[("Content metrics: free tracker",None),
 ("When","Every Thursday review (20 min): log last week's posts. LinkedIn numbers settle after about 7 days, so log each post a week after it went out."),
 ("Where the numbers are (free)","On each post: 'View analytics' (impressions, members reached, reactions, comments, reposts, saves, sends, profile viewers and followers from this post). On your profile: Analytics shows profile views and followers. If you see an Export button there, you can copy numbers from the export instead of typing."),
 ("What you count yourself","Founder engagers: open reactions and comments, count founders, CEOs and decision makers. DMs from post, Used in sales (sent in a DM or proposal), Calls booked."),
-("Step 1","Posts log: one row per post. Grey columns calculate themselves. Pick from the dropdowns."),
+("Step 1","Posts log: one row per post. Grey columns calculate themselves. Pick from the dropdowns, including Funnel layer (TOFU, MOFU, BOFU). Monthly mix target: 40% TOFU, 40% MOFU, 20% BOFU."),
 ("Step 2","Weekly: fill one row per week (comments you made, followers, profile views, DMs, calls, the ONE change)."),
 ("Step 3","Dashboard: read it at the Thursday review. Weakest Builds this month = plan it first on Sunday."),
 ("Judge by","Saves, founder engagers, DMs and calls. Not likes. Under 10 posts, every conclusion is early."),
@@ -53,7 +53,7 @@ P=wb.create_sheet("Posts log",1)
 cols=[("Date",12,"in"),("Day",7,"f"),("Time (Egypt)",10,"in"),("Pillar",20,"in"),("Persona",18,"in"),("Goal",11,"in"),("Builds",12,"in"),("Format",19,"in"),("Door / hook type",17,"in"),("Reach post?",9,"in"),("Theme of the week",22,"in"),("Hook (first line)",36,"in"),("Link",22,"in"),
 ("Impressions",12,"in"),("Members reached",11,"in"),("Reactions",10,"in"),("Comments",10,"in"),("Reposts",9,"in"),("Saves",8,"in"),("Sends",8,"in"),("Profile viewers from post",11,"in"),("Followers from post",11,"in"),
 ("Founder engagers",11,"in"),("DMs from post",9,"in"),("Used in sales",9,"in"),("Calls booked",9,"in"),
-("Engagement rate",11,"f"),("Save rate",9,"f"),("Founder share",10,"f"),("Value score",10,"f"),("Notes",30,"in")]
+("Engagement rate",11,"f"),("Save rate",9,"f"),("Founder share",10,"f"),("Value score",10,"f"),("Notes",30,"in"),("Funnel layer",12,"in")]
 for i,(n,w,t) in enumerate(cols,1):
     c=P.cell(1,i,n); c.fill=F("1E5BB8") if t=="in" else F("555555"); c.font=WH; c.alignment=Alignment(wrap_text=True,vertical="center",horizontal="center")
     P.column_dimensions[c.column_letter].width=w
@@ -71,7 +71,7 @@ for r in range(2,N+2):
     P[f"A{r}"].number_format="yyyy-mm-dd"
     for col in ["AA","AB","AC"]: P[f"{col}{r}"].number_format="0.0%"
     for i in range(1,len(cols)+1): P.cell(r,i).border=BOR
-for col,vals in [("D",PILLARS),("E",PERS),("F",GOALS),("G",BUILDS),("H",FORMATS),("I",DOORS),("J",["Yes","No"])]:
+for col,vals in [("D",PILLARS),("E",PERS),("F",GOALS),("G",BUILDS),("H",FORMATS),("I",DOORS),("J",["Yes","No"]),("AF",["TOFU","MOFU","BOFU","Post-funnel"])]:
     dv=DataValidation(type="list",formula1='"'+",".join(vals)+'"',allow_blank=True); dv.showErrorMessage=False
     P.add_data_validation(dv); dv.add(f"{col}2:{col}{N+1}")
 dd=DataValidation(type="date",allow_blank=True); P.add_data_validation(dd); dd.add(f"A2:A{N+1}")
@@ -83,7 +83,9 @@ for col in ["AA","AB","AC","AD"]:
     P.conditional_formatting.add(f"{col}2:{col}{N+1}",FormulaRule(formula=[f'AND({col}2<>"",{col}2>=AVERAGE(${col}$2:${col}${N+1}))'],fill=F("D7F0DC"),font=Font(bold=True,color="1E5B2E")))
     P.conditional_formatting.add(f"{col}2:{col}{N+1}",FormulaRule(formula=[f'AND({col}2<>"",{col}2<AVERAGE(${col}$2:${col}${N+1}))'],fill=F("FBDDDA"),font=Font(color="8A1C12")))
 P.conditional_formatting.add(f"N2:N{N+1}",DataBarRule(start_type="min",end_type="max",color="5B8DEF"))
-P.freeze_panes="C2"; P.auto_filter.ref=f"A1:AE{N+1}"; P.sheet_properties.tabColor="1E5BB8"
+P.freeze_panes="C2"; P.auto_filter.ref=f"A1:AF{N+1}"
+for lay,(fg,bg) in {"TOFU":("B5530C","FFEBD9"),"MOFU":("1E5BB8","E3EDFB"),"BOFU":("1E7B34","E3F5E7"),"Post-funnel":("2C2C2C","EDEDED")}.items():
+    P.conditional_formatting.add(f"AF2:AF{N+1}",FormulaRule(formula=[f'$AF2="{lay}"'],fill=F(bg),font=Font(bold=True,color=fg))); P.sheet_properties.tabColor="1E5BB8"
 
 # Weekly
 W=wb.create_sheet("Weekly",2)
@@ -165,6 +167,7 @@ nt=table(nt,"Results by pillar","D",PILLARS,"B5530C")
 nt=table(nt,"Results by format","H",FORMATS,"6B3FA0")
 nt=table(nt,"Results by builds","G",BUILDS,"1E7B34")
 nt=table(nt,"Results by persona","E",PERS,"1E5BB8")
+nt=table(nt,"Results by funnel layer","AF",["TOFU","MOFU","BOFU","Post-funnel"],"2C2C2C")
 nt=table(nt,"Results by door","I",DOORS,"A3195B")
 nt=table(nt,"Results by day","B",DAYS,"0F766E")
 for col,w in zip("ABCDEFGH",[24,10,15,15,14,15,12,15]): D.column_dimensions[col].width=w

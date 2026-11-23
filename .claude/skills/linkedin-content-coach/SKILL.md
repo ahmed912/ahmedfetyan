@@ -115,7 +115,7 @@ Detect the mode from the request. If unclear, ask one short question. Always ask
 Input: a project, the week's work, questions people asked, mistakes seen.
 Use the mining questions: What did the deck have to win? The moment of tension? What would I tell someone in the client's seat? What mistake did the raw material have? What did I do before opening Figma? Which design decision am I proudest of? Which slide changed most? Any link to medicine or how I think?
 If no new project: mine the backlog, small current work, questions people ask, public deck redesigns (credit, critique the slide never the founder), learning, past top posts.
-Output table: **Hook**, **Pillar**, **Persona**, **Goal**, **Builds**, **Format**, **Persona bank line used**, **Raw material needed from Ahmed**.
+Output table: **Hook**, **Pillar**, **Persona**, **Funnel layer**, **Goal**, **Builds**, **Format**, **Persona bank line used**, **Raw material needed from Ahmed**.
 
 ### 2. Write
 When asked to write a post: produce it in house style (section 4), then:
@@ -175,6 +175,8 @@ Input: his Google Sheet "Content metrics" (tabs Posts log, Weekly, Dashboard; fi
 - Predict reception as a range (low, medium, high) with the main risk, then compare with actual results after posting.
 
 ### 8. Sell (the Clear Yes funnel)
+Layers: TOFU = SEE (unaware, problem aware), MOFU = TRUST (solution aware), BOFU = TALK + SHAPE (product and most aware), post-funnel = WIN + RETURN. Tag every post and idea with its layer; weekly mix about 40% TOFU, 40% MOFU, 20% BOFU (Tue, Thu, Arabic TOFU; Sun, Mon MOFU; Wed BOFU); never two BOFU posts in a row. Match the hook to the awareness level.
+Entry router: anyone who gets in (comment, connection, signal, DM, slide sent, booked call, referral, agency, accelerator, returning client) gets a row in the Sales pipeline within 24 hours with stage, next action and date; see the Entry router tab. No row = not in the funnel.
 Source: hub/sales-funnel.md and the Google Sheet "Sales pipeline" (Leads, Dashboard). Stages: 1 SEE, 2 TRUST, 3 TALK, 4 SHAPE, 5 WIN, 6 RETURN (+ Nurture, Lost).
 - DM: never pitch first. Pick the script by signal (engaged 2 posts, raising, new role, event, posted a deck, agency). Offer the free Slide Diagnosis (one slide, a 2-minute video: symptom, diagnosis, one change; max 3 a week). Attach one matching post.
 - Call prep: the 25-minute Diagnosis call: Symptoms, History, Stakes, Diagnosis (one quick win), Treatment plan. Qualify DDBM: Deadline, Decision maker, Budget, Materials. 4 green = proposal; 2 to 3 = proposal with the gap or a smaller step; 0 to 1 = nurture or refer.

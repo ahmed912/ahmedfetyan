@@ -76,3 +76,42 @@ G. Cards: Slide Diagnosis offer, 4 DM scripts, Objections (with a note "full lis
 H. Yellow explanation callouts on: Signal, Slide Diagnosis, DDBM, Nurture list, Close the loop, Permission to show.
 Also: on the Master flow page, add a card inside the GROW petal: "Sales funnel → see the 'Sales funnel' page" (dark chip), no other change.
 Verify per the skill. Report under 6 lines.
+
+## FUNNEL LAYERS (TOFU, MOFU, BOFU, post-funnel) and awareness levels
+| Layer | Clear Yes stages | Awareness level (Schwartz) | Builds | Pillars and assets | Formats | CTA | Metrics |
+|---|---|---|---|---|---|---|---|
+| TOFU top | 1 SEE | Unaware, problem aware | Relevance, Likability | Win the room myths, Before and after carousel, reach formats, Arabic lane, comments on founders' posts | Text, carousel, takeaway card | Soft question, follow | Impressions, saves, shares, new followers |
+| MOFU middle | 2 TRUST | Solution aware | Authority, Likability, Trust | Work that won, My path, deep Before and after, Featured, About, recommendations | Text + real slides, case carousel | Soft, mention the Slide Diagnosis | Founder engagers, profile views, accepted connections, DM replies |
+| BOFU bottom | 3 TALK, 4 SHAPE | Product aware, most aware | Trust, Action | How I work, offer posts (Slide Diagnosis), objection and FAQ posts, testimonials; 1:1: DMs, Diagnosis call, proposal | Text + branded image, 60 s video | Book a call, send me one slide | DMs, calls, proposals, close rate |
+| Post-funnel (retain, advocate) | 5 WIN, 6 RETURN | Customer | Trust | Updates, video walkthrough, testimonial, referral ask, check-ins, case study that feeds TOFU and MOFU | 1:1 | Referral, review | Testimonials, referrals, repeat |
+
+Hooks by awareness level:
+- Unaware: "Your investor decides in the first three slides."
+- Problem aware: "Three ideas on one slide? That's where investors stop."
+- Solution aware: "How a 47-word slide became 6 words."
+- Product aware: "What working with me looks like: Talk, Shape, Win."
+- Most aware: "Send me one slide. I'll send the diagnosis." (any scarcity line only if true)
+
+Content mix: weekly Tue + Thu (+ Arabic) TOFU, Sun + Mon MOFU, Wed BOFU = about 40% TOFU, 40% MOFU, 20% BOFU. Never two BOFU posts in a row. Weeks 1 to 4 lean MOFU (Foundation 10).
+
+## ENTRY ROUTER: everyone who gets in lands in the funnel
+Rule: every new person gets a row in the Sales pipeline (Leads) within 24 hours with Stage, Next action and date. No row = not in the funnel. The Funnel layer fills itself from the Stage.
+| How they got in | Start at | Layer | First action within 24 h |
+|---|---|---|---|
+| Reacted or commented (founder or decision maker) | 2 TRUST | MOFU | Reply, view profile, connect |
+| Accepted my connection | 2 TRUST | MOFU | Comment on their latest post |
+| Showed a signal | 3 TALK | BOFU | Matching DM script, offer the Slide Diagnosis |
+| DM or "Request services" | 3 TALK | BOFU | Reply the same day, offer a 20-minute call |
+| Sent a slide for diagnosis | 3 TALK | BOFU | 2-minute video in 48 h + call link |
+| Booked a call | 3 TALK | BOFU | Confirm, ask for the current deck |
+| Referral | 3 TALK | BOFU | Thank the referrer, DM within 24 h |
+| Agency replied | 3 TALK | BOFU | Short call about overflow, NDA ready |
+| Accelerator or VC platform | 3 TALK | BOFU | Offer a clinic date; each founder in the cohort gets a row at 2 TRUST |
+| Past client came back | 4 SHAPE | BOFU | Ask what's coming, send a proposal |
+| Not ready now | Nurture | | Note the reason and a check-in date |
+
+## BUILD ADD-ON (Sales funnel page 132:520)
+1. Above the 6 stage bands, 4 wide brackets with labels (Extra Bold): TOFU over SEE (orange), MOFU over TRUST (blue), BOFU over TALK + SHAPE (green), POST-FUNNEL over WIN + RETURN (dark). Under each bracket label one line: the awareness level.
+2. A "Funnel layers" grid under the funnel: 4 columns (TOFU, MOFU, BOFU, Post-funnel) x rows Builds, Pillars and assets, Formats, CTA, Metrics, Hook example (from the table above).
+3. A new flow "S0 Entry router" placed first (before S1): 11 entry chips on the left (stacked, one arrow each) → each to its stage chip (2 TRUST, 3 TALK, 4 SHAPE, Nurture) → all merge into one card "Add a row in the Sales pipeline within 24 h: stage, next action, date" → "In the funnel". Yellow callout: "No row = not in the funnel."
+4. A content mix strip: Sun MOFU · Mon MOFU · Tue TOFU · Wed BOFU · Thu TOFU · Arabic TOFU, "about 40 / 40 / 20".

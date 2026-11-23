@@ -37,13 +37,15 @@ L=wb.create_sheet("Leads")
 cols=[("Name or initials",16,1),("Company",18,1),("Persona",16,1),("Source",15,1),("Signal",16,1),("First touch",11,1),("Stage",11,1),("Next action",28,1),("Next action date",11,1),
 ("Deck type",14,1),("Room date (deadline)",11,1),("Deadline real?",8,1),("Decision maker?",8,1),("Budget fits?",8,1),("Materials exist?",8,1),("Green lights",8,0),
 ("Proposal value",11,1),("Proposal sent",11,1),("Follow up day 2",11,0),("Follow up day 5",11,0),("Close the loop day 10",11,0),
-("Outcome / won value",11,1),("Lost reason",14,1),("Post that helped",22,1),("Testimonial asked?",9,1),("Permission to show?",9,1),("Referral asked?",9,1),("Notes",30,1)]
+("Outcome / won value",11,1),("Lost reason",14,1),("Post that helped",22,1),("Testimonial asked?",9,1),("Permission to show?",9,1),("Referral asked?",9,1),("Notes",30,1),("Funnel layer",12,0)]
 for i,(n,w,inp) in enumerate(cols,1):
     c=L.cell(1,i,n); c.fill=F("0F766E") if inp else F("555555"); c.font=WH; c.alignment=Alignment(wrap_text=True,vertical="center",horizontal="center")
     L.column_dimensions[c.column_letter].width=w
 L.row_dimensions[1].height=46
 N=300
 for r in range(2,N+2):
+    L[f"AC{r}"]=f'=IF(G{r}="","",IF(G{r}="1 SEE","TOFU",IF(G{r}="2 TRUST","MOFU",IF(OR(G{r}="3 TALK",G{r}="4 SHAPE"),"BOFU",IF(OR(G{r}="5 WIN",G{r}="6 RETURN"),"Post-funnel",G{r})))))'
+    L[f"AC{r}"].fill=F("F2F2F2")
     L[f"P{r}"]=f'=IF(A{r}="","",COUNTIF(L{r}:O{r},"Yes"))'
     L[f"S{r}"]=f'=IF(R{r}="","",R{r}+2)'; L[f"T{r}"]=f'=IF(R{r}="","",R{r}+5)'; L[f"U{r}"]=f'=IF(R{r}="","",R{r}+10)'
     for col in "FIKRSTU": L[f"{col}{r}"].number_format="yyyy-mm-dd"
@@ -61,7 +63,7 @@ for col in "STU":
     L.conditional_formatting.add(f"{col}2:{col}{N+1}",FormulaRule(formula=[f'AND({col}2<>"",{col}2<=TODAY(),$G2="4 SHAPE")'],fill=F("FBDDDA"),font=Font(bold=True,color="8A1C12")))
 L.conditional_formatting.add(f"P2:P{N+1}",FormulaRule(formula=['AND(P2<>"",P2=4)'],fill=F("D7F0DC"),font=Font(bold=True,color="1E5B2E")))
 L.conditional_formatting.add(f"P2:P{N+1}",FormulaRule(formula=['AND(P2<>"",P2<=1)'],fill=F("FBDDDA"),font=Font(bold=True,color="8A1C12")))
-L.freeze_panes="B2"; L.auto_filter.ref=f"A1:AB{N+1}"; L.sheet_properties.tabColor="0F766E"
+L.freeze_panes="B2"; L.auto_filter.ref=f"A1:AC{N+1}"; L.sheet_properties.tabColor="0F766E"
 
 D=wb.create_sheet("Dashboard",1); D.sheet_properties.tabColor="1E7B34"
 D["A1"]="Pipeline dashboard"; D["A1"].font=B(bold=True,size=20,color="FFFFFF"); D["A1"].fill=F("2C2C2C"); D.merge_cells("A1:F1"); D.row_dimensions[1].height=40
@@ -100,7 +102,12 @@ for j,s in enumerate(SOURCES):
     D.cell(r,4,f'=COUNTIFS({LR}$D:$D,$A{r},{LR}$G:$G,"5 WIN")+COUNTIFS({LR}$D:$D,$A{r},{LR}$G:$G,"6 RETURN")')
     D.cell(r,5,f'=SUMIFS({LR}$V:$V,{LR}$D:$D,$A{r})'); D.cell(r,5).number_format="#,##0"
     for c in range(1,6): D.cell(r,c).border=BOR
-lr=sr+len(SOURCES)+3
+fl=sr+len(SOURCES)+3
+for i,x in enumerate(["Funnel layer","People now"],1):
+    c=D.cell(fl,i,x); c.fill=F("2C2C2C"); c.font=WH
+for j,s2 in enumerate(["TOFU","MOFU","BOFU","Post-funnel"]):
+    r=fl+1+j; D.cell(r,1,s2).font=B(bold=True); D.cell(r,2,f'=COUNTIF({LR}$AC:$AC,$A{r})')
+lr=fl+7
 for i,x in enumerate(["Lost reason","Count"],1):
     c=D.cell(lr,i,x); c.fill=F("B42318"); c.font=WH
 for j,s in enumerate(LOST):
@@ -110,5 +117,32 @@ ch=BarChart(); ch.type="bar"; ch.title="Funnel: reached stage or later"; ch.heig
 ch.add_data(Reference(D,min_col=3,min_row=4,max_row=10),titles_from_data=True); ch.set_categories(Reference(D,min_col=1,min_row=5,max_row=10))
 ch.y_axis.scaling.orientation="minMax"; ch.x_axis.scaling.orientation="maxMin"
 D.add_chart(ch,"J4")
-wb.move_sheet("Leads",offset=0)
+R2=wb.create_sheet("Entry router",2); R2.sheet_properties.tabColor="B5530C"
+R2["A1"]="Entry router: everyone who gets in lands in the funnel"; R2["A1"].font=B(bold=True,size=18,color="FFFFFF"); R2["A1"].fill=F("2C2C2C"); R2.merge_cells("A1:F1"); R2.row_dimensions[1].height=38
+R2["A2"]="Rule: every new person gets a row in Leads within 24 hours, with a Stage, a Next action and a date. No row = not in the funnel."; R2["A2"].font=B(italic=True,color="B42318",bold=True)
+hd=["How they got in","Source (Leads col D)","Start at stage","Funnel layer","First action within 24 h","Then"]
+for i,x in enumerate(hd,1):
+    c=R2.cell(4,i,x); c.fill=F("B5530C"); c.font=WH; c.alignment=Alignment(wrap_text=True,vertical="center")
+routes=[
+("Reacted or commented on a post (a founder or decision maker)","LinkedIn comment","2 TRUST","MOFU","Reply to the comment, view their profile, connect","On a 2nd engagement or a signal: DM script 1"),
+("Accepted my connection request","Outbound DM","2 TRUST","MOFU","Comment on their latest post","DM when a signal shows"),
+("Showed a signal (raising, new role, event, posted a deck)","Outbound DM","3 TALK","BOFU","Send the matching DM script, offer the Slide Diagnosis","Replied: diagnosis or call. No reply: Nurture"),
+("Sent me a DM or a 'Request services'","LinkedIn post","3 TALK","BOFU","Reply the same day, offer a 20-minute call","Diagnosis call"),
+("Sent one slide for the Slide Diagnosis","Slide Diagnosis","3 TALK","BOFU","2-minute video within 48 h + call link","Book the call"),
+("Booked a call (website or link)","Website","3 TALK","BOFU","Confirm, ask for the current deck before the call","Diagnosis call, then 4 SHAPE"),
+("Referred by a past client","Referral","3 TALK","BOFU","Thank the referrer, DM the new person within 24 h","Book the call"),
+("Agency or consultancy replied","Agency","3 TALK","BOFU","Short call about overflow work, NDA ready","Test project or keep on the list"),
+("Accelerator or VC platform interested","Accelerator or VC","3 TALK","BOFU","Offer a pitch-deck clinic date","Each founder in the cohort gets their own row at 2 TRUST"),
+("Past client came back","Referral","4 SHAPE","BOFU","Ask what's coming up, send a proposal","Proposal follow-ups"),
+("Not ready now (any route)","any","Nurture","(nurture)","Note the reason and a check-in date","Back to 3 TALK when a new signal shows")]
+for j,row in enumerate(routes):
+    r=5+j
+    for i,v in enumerate(row,1):
+        c=R2.cell(r,i,v); c.alignment=Alignment(wrap_text=True,vertical="center"); c.border=BOR
+    fg,bg=SC.get(row[2],("9A6B00","FFF4CC"))
+    R2.cell(r,3).fill=F(bg); R2.cell(r,3).font=Font(bold=True,color=fg)
+    R2.row_dimensions[r].height=44
+for col,w in zip("ABCDEF",[44,18,12,12,44,40]): R2.column_dimensions[col].width=w
+R2.freeze_panes="A5"
+wb._sheets=[wb["How to use"],wb["Leads"],wb["Entry router"],wb["Dashboard"]]
 wb.save(out); print("ok")
