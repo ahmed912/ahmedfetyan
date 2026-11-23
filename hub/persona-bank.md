@@ -562,3 +562,18 @@ Creative directors (#0F766E, peers)
 - Best angle: craft decisions AI can't make
 
 Leaves use the same section colors as the bank (Trigger yellow, Pain red, Fear purple, Myth orange) as small colored tags before the text, so the map and the columns speak the same color code.
+
+=====================================================================
+## v4 SIMPLIFY (23 Nov, overrides row and card layout above; same data, same colors)
+=====================================================================
+Problem: persona columns are huge (one card per line, a label on every row, two Add new rows per section, duplicate titles, truncated names).
+Apply to the 5 persona columns (Founders, Executives and teams, Speakers, Creative directors, New persona):
+1. Header: one band per persona. Persona name in full (no truncation, wrap if needed), then "Who:" line and "Wants:" line inside the band. Delete the separate "Who" and "Brand script want" sections. Remove duplicate titles: if a FigJam section name shows above the band, either rename the section to the same name and drop the extra chip, or rebuild the column as a plain frame so only one title shows.
+2. One card per section, not one card per line. Card = colored title bar (section name, Bold 26, white on the strong color) + ONE text block listing the lines as bullets ("•"), Regular 20, #111111, line height 140%, 8 px between bullets.
+3. Myths, questions and objections: each bullet is the line, then a second indented line in Medium 18 #444444 starting with "→ " plus the truth or answer. No "Truth:" or "Answer:" labels needed.
+4. Delete all per-row labels (TRIGGER, GOAL, etc.). The section title already says it.
+5. Replace the two Add new rows with ONE dashed line at the bottom of each card: "+ add a line" in #6B6B6B, 16 px.
+6. Column width 900, card padding 24, 24 px between cards. Columns hug their content.
+7. New persona column: same structure with empty bullets ("• ...") and the + add line; New field block stays one small card.
+Target: each persona column roughly one third of its current height. Keep every line of text exactly (only the labels are removed). Re-run the no-crop check over all text nodes.
+Do not change the Decision board, Start here, Maps and frameworks or Flowcharts, except moving columns left to close gaps after the persona columns shrink.
