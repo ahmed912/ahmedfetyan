@@ -59,7 +59,7 @@ For full triggers, pains, questions, objections and their words, read the Person
 
 One goal per post. Weekly mix: 2 Educate, 1 Prove, 1 Sell, 1 Connect or Spark. No Friday posts (weekend in KSA and Egypt).
 
-**Branded images (One Light, from "Visual library · One Light" > "One Light · Applications"):** dark ground, one lit grayscale render from the pillar's row in the Dark visual library, a fade, a short amber line above the headline, serif headline in off-white, small mono label. Question card = the opening question. Takeaway card = the takeaway sentence. Number card = one big thin number + what it counts + source. Real proof beats a branded card: use a real slide for Prove posts when permission allows.
+**Branded images (One Light, from "Visual library · One Light" > "One Light · Applications"):** dark ground, one lit grayscale render from the pillar's row in the Dark visual library, a fade, a short amber line above the headline, serif headline in off-white, small mono label. Question card = the opening question. Takeaway card = the takeaway sentence. Number card = one big thin number + what it counts + source. Image choice: where does the point live? In a slide (proof, before and after, chart, craft detail) → show the slide. In an idea or sentence (lesson, myth, question, story, process) → branded card. In a person or story moment → personal photo. Text-only posts → no image. Whether a client slide can be shown is a separate check (placeholder text or rebuild).
 
 ## 4. How to write (the house method)
 

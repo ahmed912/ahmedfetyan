@@ -108,7 +108,7 @@ Use when a text post has no real slide to show. Built on the One Light Applicati
 - Question card: the post's opening question as the serif headline. Example: "What does a winning deck feel like?" Mono label: the topic in 3 words.
 - Takeaway card: the post's takeaway sentence as the serif headline. Example: "Put your slides in the order your investor asks." Mono label: "WIN THE ROOM".
 - Number card: one big number in Plex Sans Thin (96 px and up) + one line saying what it counts + a mono source line. Use only with a source.
-Rules: one idea per card. 12 words max on the headline. Real proof beats a branded card: never use a card for a Prove post if a real slide exists. Arabic posts get the Arabic mirror cover.
+Rules: one idea per card. 12 words max on the headline. Choose by where the point lives: in a slide → show the slide; in an idea or sentence → branded card. Showing permission is a separate check (placeholder text if needed). Arabic posts get the Arabic mirror cover.
 
 =====================================================================
 ## PERSONA 1. FOUNDERS
@@ -389,13 +389,17 @@ Start: raw material (a project, a question someone asked, a comment, a DM, an ol
 → Post, stay online 60 min, reply to every comment
 End: log results, mark the bank line "Posted"
 
-### Flow 2. Which image?
+### Flow 2. Which image? (slide or branded image)
 Start: the post needs an image
-→ Decision "Real slide and client permission?" yes → use the real slide (placeholder text if needed) → End
-no → Decision "Does the post open with a question?" yes → Question card
-no → Decision "One sourced number carries the post?" yes → Number card
-no → Takeaway card
-All cards → One Light layout 01 or 04, render from the pillar row, amber line above the headline → End
+→ Decision "Where does the point live?"
+   In a slide (proof, a before and after, a chart, a craft detail) → SLIDE → then "Can this slide be shown as is?" no → use placeholder text or rebuild it → End
+   In an idea or a sentence (lesson, myth, question, story, process) → BRANDED IMAGE → Decision "How does the post work?"
+      Opens with a question → Question card
+      One sourced number carries it → Number card
+      Ends on a lesson → Takeaway card
+      All cards → One Light layout 01 or 04, render from the pillar row, amber line above the headline → End
+   In a person or a moment of my story → PERSONAL PHOTO → End
+   Text-only post (Win the room, Spark) → NO IMAGE → End
 
 ### Flow 3. Pre-publish check
 Start: draft ready
@@ -486,3 +490,30 @@ PHASE 4 CHECK (each a yes/no diamond; every no → "Fix this one thing" → back
 PHASE 5 SHIP
   "Post at the slot" → "Stay 60 min, reply to every comment" (20 min active) → "5 comments on founders' posts" (10 min) → "Mark the bank line Posted (Sheet + FigJam)" (1 min) → End: "Tomorrow: check the numbers, change one thing on Thursday"
 Side note box (yellow #FFF4CC, border #9A6B00): "Stuck at any step? Go back one step, not to the start. No proof means a different line, not a weaker post."
+
+
+=====================================================================
+## DECISION BOARD (new FIRST column, left of "Start here")
+=====================================================================
+Title: "Decision board". Caption: "Every choice for a post, on one board. Read a row, pick, move down."
+Layout: 8 horizontal rows stacked top to bottom, each row a colored card (v3 colors, light mode, strong contrast):
+left cell = number + DECISION (Extra Bold 32), middle cell = "Ask yourself" (Medium 22, italic), right cell = options as colored chips, each chip = option (Bold) + "pick when..." (Regular 18).
+
+1 PERSONA (blue) · Ask: Who sat in the client's chair?
+   Founders: a startup raising money or selling · Executives and teams: a board, bid, report or company profile · Speakers: a keynote, talk or webinar · Creative directors: craft, files, process, AI
+2 PILLAR (orange) · Ask: What am I showing?
+   Work that won: a result · Before and after: a fix on a slide · Win the room: advice or a myth · How I work: my process or a decision · My path: me, medicine, values · Arabic lane: an opinion in Arabic
+3 GOAL (violet) · Ask: What should the reader do after reading?
+   Educate: learn one rule · Prove: believe I deliver · Connect: feel close to me · Sell: contact me · Spark: react and discuss
+4 FORMAT (teal) · Ask: The goal decides
+   Educate: carousel, or text + takeaway card · Prove: text + 1 or 2 slides · Connect: text only or personal photo · Sell: text + branded image, or 60 s video · Spark: text only
+5 IMAGE (pink) · Ask: Where does the point live?
+   In a slide: SLIDE (proof, before and after, chart, craft detail) · In an idea or sentence: BRANDED IMAGE (question card if it opens with a question, number card if one number carries it, takeaway card if it ends on a lesson) · In my story: PERSONAL PHOTO · Text-only post: NO IMAGE
+   Small note under the row: "Can the slide be shown? If not, placeholder text or rebuild. This is a check, not the choice."
+6 HOOK (yellow) · Ask: What stops a founder scrolling?
+   A number + stakes · A myth they believe · A moment ("Slide 4. The investor stopped.") · A fear ("Months of work, judged in seconds.") · Never start with "I"
+7 CTA (green) · Ask: One action only
+   Sell: Book a call · Before and after: follow for Thursday · Educate, Prove, Spark: one soft question · Connect: none
+8 TIME (grey) · Ask: Which slot?
+   Sun, Mon, Tue, Thu 08:30 Egypt · Wed 15:30 · Arabic any day 08:30 · No Friday
+Bottom strip (dark #2C2C2C, white text): "The 5 baby steps: WHO? · WHAT HURTS? · WHAT DID I SEE? · SAY IT SIMPLY · CHECK AND POST"
