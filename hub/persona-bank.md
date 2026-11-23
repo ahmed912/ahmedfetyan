@@ -447,3 +447,42 @@ Creative directors: Work that won "Add an angle" · Before and after "Add an ang
 
 ### Framework 6. Weekly rhythm as a calendar strip (5 day columns Sun to Thu)
 Each day: pillar (colored chip), format, Egypt time. Sun: Win the room or My path, 08:30 · Mon: Work that won, 08:30 · Tue: Win the room, 08:30 · Wed: How I work, 15:30 · Thu: Before and after carousel, 08:30. Under the strip: "+1 Arabic post any day 08:30. No Friday."
+
+=====================================================================
+## DAILY FRAMEWORK FLOWCHART (first and largest block in "How to make a post")
+=====================================================================
+Title: "Daily framework: a post from scratch". Caption: "About 60 minutes. Follow the arrows every posting day."
+Top to bottom flow. Each step node shows the step name (Bold) + time chip (e.g. "5 min"). Grouped into 5 colored phases with a phase label on the left:
+PHASE 1 CHOOSE (blue #1E5BB8) · PHASE 2 FIND (orange #B5530C) · PHASE 3 WRITE (violet #6B3FA0) · PHASE 4 CHECK (red #B42318) · PHASE 5 SHIP (green #1E7B34).
+
+Start: "Open the Persona bank and today's slot"
+Decision "What day is it?"
+  Sun → Win the room, or My path every other week · 08:30
+  Mon → Work that won · 08:30
+  Tue → Win the room · 08:30 (also build Thursday's carousel today, 90 min)
+  Wed → How I work · 15:30
+  Thu → Before and after carousel (already built Tue) → jump to PHASE 4
+  Fri or Sat → No post. Capture lines and rest → End
+PHASE 1 CHOOSE
+  Decision "Anything new from yesterday? (call, DM, comment, Upwork)" yes → "Add it to the bank in their words" (3 min) → continue; no → continue
+  "Pick the persona: who sat in the client's chair?" (2 min)
+  "Pick one bank line: trigger, pain, fear, myth, question or objection" (3 min)
+  "Pick ONE goal" (1 min) → Decision "Goal?" Educate → carousel or takeaway card · Prove → real slides · Connect → text or photo · Sell → branded image or video · Spark → text only
+PHASE 2 FIND
+  "Answer today's pillar question" (5 min):
+    Work that won: what did the deck have to win, and what was the turn?
+    Win the room: what do they believe, why does it fail, what instead?
+    How I work: which decision did I make that AI would not?
+    My path: which scene from medicine shows this?
+  Decision "Do I have real proof (slide, result, quote)?" no → "Pick another bank line" → back to "Pick one bank line"; yes → continue
+PHASE 3 WRITE
+  "Write 5 hooks, pick the strongest" (5 min)
+  "Dump: write it badly, all of it" (10 min)
+  "Cut: one idea, 120 to 200 words, delete the warm-up paragraph" (10 min)
+  "Shape: one idea per line, turn on its own line, one CTA" (5 min)
+  "Image: real slide, or question / takeaway / number card" (5 min)
+PHASE 4 CHECK (each a yes/no diamond; every no → "Fix this one thing" → back to the diamond)
+  "Hero's problem in lines 1 and 2?" → "Lines 1 to 3 earn the ...more?" → "Visual proof?" → "One guide line only?" → "Helps a decision maker decide?" → "One CTA?"
+PHASE 5 SHIP
+  "Post at the slot" → "Stay 60 min, reply to every comment" (20 min active) → "5 comments on founders' posts" (10 min) → "Mark the bank line Posted (Sheet + FigJam)" (1 min) → End: "Tomorrow: check the numbers, change one thing on Thursday"
+Side note box (yellow #FFF4CC, border #9A6B00): "Stuck at any step? Go back one step, not to the start. No proof means a different line, not a weaker post."
