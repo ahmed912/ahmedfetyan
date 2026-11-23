@@ -25,15 +25,21 @@ Open with their problem, never with you. You appear in one line only: empathy OR
 5. CTA: one only.
 
 ### A3. Weekly rhythm
-| Day | Pillar | Format | CTA |
-|---|---|---|---|
-| Mon | Work that won | Text + 1 or 2 images. Once a month: 5-slide case carousel | Soft |
-| Tue | Win the room | Text only | Soft |
-| Wed | How I work | 60 to 90 s video, or a process screenshot | Direct: Book a call |
-| Thu | Before and after | 8-slide carousel | Transitional: follow for next week's carousel |
-| Fri | Win the room, or My path every other week | Text only, or text + personal photo | Soft |
+| Day | Pillar | Format | CTA | Egypt time |
+|---|---|---|---|---|
+| Sun | Win the room, or My path every other week | Text only, or text + personal photo | Soft | 08:30 |
+| Mon | Work that won | Text + 1 or 2 images. Once a month: 5-slide case carousel | Soft | 08:30 |
+| Tue | Win the room | Text only | Soft | 08:30 |
+| Wed | How I work | 60 to 90 s video, or a process screenshot | Direct: Book a call | 15:30 |
+| Thu | Before and after | 8-slide carousel | Transitional: follow for next week's carousel | 08:30 |
+| Any day | My thinking (Arabic) | Text, or text + image | Soft or none | 08:30 |
 
-Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Daily publish + 10 replies, 20 min. Fri review 20 min.
+Why: no Friday post, it is the weekend in Saudi Arabia and Egypt. Sunday is a workday there.
+08:30 Egypt = 09:30 KSA, 10:30 UAE. 15:30 Egypt = 16:30 KSA, 14:30 Europe, 08:30 New York.
+Stay online 60 min after posting and reply to every comment. Test 08:30 vs 15:30 for 4 weeks, then trust your own analytics.
+Ramadan (from about 8 Feb 2027): move the morning slot to about 21:00 Egypt, after iftar.
+
+Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Daily publish + 10 replies, 20 min. Thu afternoon review 20 min.
 
 ### A4. The five pillars
 
@@ -92,7 +98,7 @@ Time: Sun plan 45 min (5 cards). Sun or Mon write 2 h. Tue carousel 90 min. Dail
 - Story shape: one scene from medicine, what it taught you, how it shows up in a deck today.
 - Craft focus: voice and the scene (open in the middle of a moment).
 - Guide line: the story itself is the empathy.
-- Format: text only, or text + one personal photo.
+- Format: text only, or text + one personal photo. Every other Sunday.
 - CTA: soft.
 - Card: the scene, the lesson, the deck moment where it shows up.
 - Avoid: a CV summary. Opening with "I".
@@ -130,13 +136,24 @@ Build: 15 min card and permission, 20 min text in a doc, 40 min template, 10 min
 3. North Star filter: does this help a decision maker see the insight and decide?
 4. Exactly one CTA?
 
-### A9. Friday review
+### A9. Weekly review (Thursday afternoon)
 Posts: saves, comments from heroes, profile views, DMs or calls. Carousels: saves, shares, follows that day, "can you do mine?" comments (reply with Book a call). Change one thing per week.
 
 ### A10. Coaching prompts
 Post: "Review this draft against my brand script. Score hook, hero focus, proof, guide line, CTA and the 7 craft places 1 to 5. Single biggest fix. Don't rewrite it."
 Carousel: "Review this carousel card and slide text. Is the hidden point clear, do the 3 fixes build to it, is the cover hook strong? Score 1 to 5. Single biggest fix. Don't rewrite it."
-Stages: weeks 1 to 2 every draft; weeks 3 to 4 hooks and CTAs only; week 5 on, Friday numbers only.
+Stages: weeks 1 to 2 every draft; weeks 3 to 4 hooks and CTAs only; week 5 on, weekly numbers only.
+
+### A11. My thinking (Arabic lane)
+- What it is: my thinking, opinions and general design and presentation advice, in Arabic. Looser than the pillars, still inside the brand.
+- Bridge to the brand script: "Effort deserves a confident voice. A good idea should never lose because it was explained badly."
+- Can say: how I think about design, presentation and clarity. Opinions with a reason. Arabic design craft (RTL, Arabic type, presenting to Arab audiences). What I am learning now. Freelance working life, discipline, planning, long-term decisions. Medicine to design, told freely. Advice for designers and career changers.
+- Do not say: client names, numbers or slides without permission. Unconfirmed results. Politics, religion debates, comparing countries. Complaints about clients, pricing or other designers. Hot takes for reactions. Translated English posts. Hard selling.
+- Filter: would a founder who reads this trust me more with their deck? If not, do not post it.
+- Language: simple Modern Standard Arabic for advice. Light Egyptian only inside a personal story, never mixed in one paragraph.
+- RTL: start every line with an Arabic word. Keep English terms short, never at the start of a line.
+- Visuals: English on the image is fine. Add one Arabic line saying what it shows.
+- Hashtags: max 2 Arabic + 1 English. Frequency: 1 a week, 08:30 Egypt.
 
 ---------------------------------------------------------------------
 ## PART B. FigJam redesign (fileKey 5AMqs2LbPEP9JHxBqoHity)
@@ -149,14 +166,16 @@ Hard rule: never change, shorten or delete any existing text. Restyle, resize, r
    - Navigation strip under it: one labeled chip per area, in order: 1 Character, 2 Problem, 3 Guide, 4 Plan, 5 Call to action, 6 Failure, 7 Success, One-liner, Content pillars, LinkedIn headline, Content system. This is the "tabs" row.
    - One section per area, same width, same header style: number + name (large), then the one-line prompt from the old template (for example "Who is your hero? What do they want? One want only."). Areas without an old prompt get none.
    - Inside each section, three labeled groups in this order: PICKS (green stickies), NOTES (yellow), ALTERNATES (gray, smaller, lower). Group labels are small caps text.
-   - Make stickies wide enough that text reads in 3 to 6 lines, consistent sizes, consistent gaps.
+   - NO STICKY NOTES anywhere in the redesign. Replace every sticky with a rounded rectangle + a text layer holding the exact same text, character for character. Picks, notes and alternates are told apart by a small label and a muted fill, not by sticky colors. Delete the original sticky only after its text copy is verified identical (the backup keeps the originals).
+   - Blocks wide enough that text reads in 3 to 6 lines, consistent sizes, consistent gaps.
    - The legend sticky (6:97) sits next to the nav strip as a small key.
 3. Old working area (sections 1:6, 1:13, 1:20, 1:27, 1:34, 1:41, 1:48, 1:57, 2:35, the loose shapes 4:118 to 4:445, stickies 4:52, 4:45, 2:38, texts 1:55, 1:56): move all of it into one section "Earlier working draft (archive)" placed below everything. Do not delete.
 4. New section "Content system: read before every writing session", right after LinkedIn headline, with Part A as readable blocks:
    - A0 and A1 at the top as a banner.
    - A3 as a table (shapes in a grid).
    - A4 as five sub-sections, one per pillar, each with a big title, a one-line description, then the fields as label + text rows.
-   - A2, A5, A6, A7, A8, A9, A10 as separate titled blocks below.
+   - A2, A5, A6, A7, A8, A9, A10, A11 as separate titled blocks below. A11 sits right after the five pillars as a sixth lane card.
+   - Text and rounded rectangles only. No sticky notes.
 5. Style: Content Studio palette. Basalt #1A1B1D for headers, Slate #404B50 secondary text, Cream #E8E2D0 light fills, Amber #FEA307 only as a thin line on dark, never a fill. Clear size steps: board title, section title, group label, body.
 6. Verify with screenshots of each area. Report section ids.
 
@@ -171,11 +190,11 @@ Create page "Backup 23 Nov (before alignment)" and clone into it the frames 9:2,
 ### C2. New page structure (rename and rebuild pages, then move post frames by id)
 | New page | Header title | Header description | Format line (new text under the description) |
 |---|---|---|---|
-| P1 Work that won | Work that won | Case studies of decks that did their job. Proof that I am the guide. | FORMAT: Monday. Text + 1 or 2 images. Once a month a 5-slide case carousel. Soft CTA. |
-| P2 Before and after | Before and after | The weekly carousel. Clutter beaten on screen. | FORMAT: Thursday. 8-slide carousel, 1080 x 1350 PDF. Write slide text first. CTA: follow for next week's carousel. |
-| P3 Win the room | Win the room | Advice for founders and leaders: what I'd tell a founder. | FORMAT: Tuesday, and Friday on alternate weeks. Text only, 120 to 200 words. Soft CTA. |
-| P4 How I work | How I work | Talk, Shape, Win. What AI never decides. Craft posts for creative directors. | FORMAT: Wednesday. 60 to 90 s video or a process screenshot. Direct CTA: Book a call. Alternate process (founders) and craft (creative directors). |
-| P5 My path | My path | Medicine to design. Who the guide is. | FORMAT: every other Friday. Text only, or text + one personal photo. Soft CTA. |
+| P1 Work that won | Work that won | Case studies of decks that did their job. Proof that I am the guide. | FORMAT: Monday, 08:30 Egypt. Text + 1 or 2 images. Once a month a 5-slide case carousel. Soft CTA. |
+| P2 Before and after | Before and after | The weekly carousel. Clutter beaten on screen. | FORMAT: Thursday, 08:30 Egypt. 8-slide carousel, 1080 x 1350 PDF. Write slide text first. CTA: follow for next week's carousel. |
+| P3 Win the room | Win the room | Advice for founders and leaders: what I'd tell a founder. | FORMAT: Tuesday, and Sunday on alternate weeks. 08:30 Egypt. Text only, 120 to 200 words. Soft CTA. |
+| P4 How I work | How I work | Talk, Shape, Win. What AI never decides. Craft posts for creative directors. | FORMAT: Wednesday, 15:30 Egypt. 60 to 90 s video or a process screenshot. Direct CTA: Book a call. Alternate process (founders) and craft (creative directors). |
+| P5 My path | My path | Medicine to design. Who the guide is. | FORMAT: every other Sunday, 08:30 Egypt. Text only, or text + one personal photo. Soft CTA. |
 | Parked | Parked for a later brand script | Good work whose hero is not in the current brand script (marketing leads, portfolio tour). Keep for brand script 2. | none |
 
 Header label text becomes "PILLAR N / CONTENT PLAN" with the new N.
@@ -250,4 +269,5 @@ All other draft copy stays as it is. Ahmed writes his own versions in column B.
 - Add under it: "TAGLINE" label + "Effort deserves a confident voice."
 - Page index (11:73 to 11:77) → new page names and counts, plus "Parked - 3 posts, 1 carousel".
 - How each post row works (11:70): append "Each post has a COACH NOTE: hero, problem layer, format, CTA and the one fix. Each page header has a FORMAT line."
-- Add a frame "Weekly rhythm" after "How it works" with the A3 table as text rows.
+- Add a frame "Weekly rhythm" after "How it works" with the A3 table and its notes as text rows.
+- Add a frame "My thinking (Arabic lane)" after "Weekly rhythm" with the A11 text.
