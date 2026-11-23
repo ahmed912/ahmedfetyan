@@ -39,6 +39,9 @@ Builds and audits the visual side of Ahmed's LinkedIn content system. Content co
 - Text is never rotated, even in radial layouts.
 - Master flow is a flower: core (Foundation) in the middle, 5 petals on a pentagon clockwise from top (WHO, COLLECT, PLAN, MAKE AND SHIP, GROW), ring arrows outside, spokes from the core.
 
+## Every page explains itself
+Each page has: a PAGE GUIDE card top-left (What this is, When to open it, How to read it, Legend, Next, plus an Arabic line); under every block title a "Use it when:" line and an Arabic line; START HERE and NEXT chips on every flowchart; an Example card beside the main flows; a Glossary card (English term, full name, Arabic meaning). Arabic: Noto Sans Arabic, right aligned, never English inside an Arabic line. Spec and texts: hub/self-explaining.md, hub/glossary-ar.md. Any new block gets its "Use it when" line, Arabic line and glossary terms when it is built.
+
 ## Connector rules
 1. No shared trunks: every branch has its own connector.
 2. More than 2 branches: a stack of colored option chips, one short straight arrow from each chip to its target on the same row.
