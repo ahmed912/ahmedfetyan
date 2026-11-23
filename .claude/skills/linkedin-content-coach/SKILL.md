@@ -59,6 +59,18 @@ For full triggers, pains, questions, objections and their words, read the Person
 
 One goal per post. Weekly mix: 2 Educate, 1 Prove, 1 Sell, 1 Connect or Spark. No Friday posts (weekend in KSA and Egypt).
 
+**Builds (what the reader concludes about Ahmed), one main Builds per post:**
+
+| Builds | Reader thinks | Mine from | Usual pillar | Check |
+|---|---|---|---|---|
+| Relevance | "He gets my problem." | Triggers, pains, fears, their words | Win the room | Would a founder say "that's me" by line 2? |
+| Authority | "He knows how to fix it." | Myths (truth), ready angles, real projects | Work that won, Before and after | Something on screen they could not do themselves? |
+| Trust | "He's safe to hire." | Objections, questions | How I work | Does it remove one risk of hiring me? |
+| Likability | "I like how he thinks." | My path, values, Arabic lane | My path, Arabic | Would they know my voice without my name? |
+| Action | "I know the next step." | Success picture, plan | How I work | Is the next step one sentence, one click? |
+
+Monthly balance (20 posts): Authority 6, Relevance 5, Trust 5, Likability 3, Action 1 to 2. Trust is usually the gap. Trust ladder: Relevance, Authority, Likability, Trust, Action, booked call.
+
 **Branded images (One Light, from "Visual library · One Light" > "One Light · Applications"):** dark ground, one lit grayscale render from the pillar's row in the Dark visual library, a fade, a short amber line above the headline, serif headline in off-white, small mono label. Add ONE brand pattern or line system per image from "Brand board v2 · One Light": modular tiles (one tile lit), arcs that continue a curve, or Clutter to clarity (scattered fragments + one amber curved line). Quiet strokes, never behind text, amber stays a single line. Question card = the opening question. Takeaway card = the takeaway sentence. Number card = one big thin number + what it counts + source. Image choice: where does the point live? In a slide (proof, before and after, chart, craft detail) → show the slide. In an idea or sentence (lesson, myth, question, story, process) → branded card. In a person or story moment → personal photo. Text-only posts → no image. Whether a client slide can be shown is a separate check (placeholder text or rebuild).
 
 ## 4. How to write (the house method)
@@ -92,7 +104,7 @@ Detect the mode from the request. If unclear, ask one short question. Always ask
 Input: a project, the week's work, questions people asked, mistakes seen.
 Use the mining questions: What did the deck have to win? The moment of tension? What would I tell someone in the client's seat? What mistake did the raw material have? What did I do before opening Figma? Which design decision am I proudest of? Which slide changed most? Any link to medicine or how I think?
 If no new project: mine the backlog, small current work, questions people ask, public deck redesigns (credit, critique the slide never the founder), learning, past top posts.
-Output table: **Hook**, **Pillar**, **Persona**, **Goal**, **Format**, **Persona bank line used**, **Raw material needed from Ahmed**.
+Output table: **Hook**, **Pillar**, **Persona**, **Goal**, **Builds**, **Format**, **Persona bank line used**, **Raw material needed from Ahmed**.
 
 ### 2. Write
 When asked to write a post: produce it in house style (section 4), then:
@@ -115,6 +127,7 @@ Verdict: **Post**, **Fix then post**, or **Rework**. Score pass or fix:
 | Fold | Do lines 1 to 3 earn the "...more"? |
 | Craft | Score the 7 craft places 1 to 5 |
 | North Star | Does it help a decision maker see the insight and decide? |
+| Builds | One main Builds, and does it pass that Builds check? |
 | CTA | Exactly one, matching the pillar? |
 | Brand | Image follows One Light? |
 Then the single biggest fix first, then the rest in priority order. Do not rewrite unless asked.
@@ -130,12 +143,18 @@ Filter: would a founder who reads this trust Ahmed more with their deck?
 
 ### 6. Plan the week
 Rhythm: Sun (Win the room or My path) 08:30, Mon Work that won 08:30, Tue Win the room 08:30, Wed How I work 15:30, Thu carousel 08:30, plus one Arabic post. Egypt time; 08:30 Egypt = 09:30 KSA = 10:30 UAE; 15:30 Egypt = 08:30 New York. Ramadan: morning slot moves to about 21:00 Egypt.
+Run Flow 8 (Sunday, 45 min):
+1. Decide (10 min): read Thursday's weakest Builds and one change; fresh client work becomes Monday, else the top-scored bank line (Buyer, Proof, Sales use, Effort, 0 to 2 each); pick ONE theme (one founder fear or myth).
+2. Prioritize (15 min): P1 Thu carousel, P2 Wed How I work, P3 Mon Work that won, P4 Tue Win the room, P5 Sun. Short on time: cut from P5 up, never P1 or P2.
+3. Connect (10 min): the week tells one story: Sun name it, Mon show it solved, Tue teach the rule, Wed how we'd fix yours, Thu see it on a slide; Arabic post = my take on the theme. Reuse one "their words" line twice; end Tue pointing to Thursday.
+4. Check (10 min): founders in 3 of 5, exactly one Sell, weakest Builds included, proof ready for every slot.
 Session order: Persona bank → pillar cards → Content Studio. Sunday plan 45 min, writing 2 h, carousel 90 min.
-Output table: **Day**, **Time**, **Pillar**, **Persona**, **Goal**, **Format**, **Hook draft**, **Status**.
+Output: the week theme, then a table: **Day**, **Time**, **Priority**, **Pillar**, **Persona**, **Goal**, **Builds**, **Format**, **Bank line**, **Hook draft**, **Status**.
 Keep a bank of 5 ready posts. If he is behind, cut volume before quality.
 
 ### 7. Assess results
-Input: his metrics log (ask if missing): date, pillar, format, persona, impressions, reactions, comments, saves, reposts, new followers, who engaged, DMs or calls, posts sent to prospects.
+Input: his metrics log (ask if missing): date, pillar, format, persona, builds, impressions, reactions, comments, saves, reposts, new followers, who engaged, DMs or calls, posts sent to prospects.
+- Count Builds posted this month against the balance; name the weakest one for Sunday.
 - Trends over single posts. Track buyer share (founders and decision makers among engagers).
 - Early months: judge content by its use in sales (posts sent in DMs and proposals, profile views after outreach, deals helped), not by founder likes.
 - Never fabricate numbers. Under 10 posts, say conclusions are early.
