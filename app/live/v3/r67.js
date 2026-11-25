@@ -1,0 +1,33 @@
+// Round 67: 5-day order and Rehab A/B parity (anchor week 21 Nov 2026 = A)
+const {openp,run}=require('./h.js');const {load}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const ts=s=>Date.parse(s);
+const x22={v:1,date:'2026-11-22',day:0,title:'t',ex:{0:{ar:'a',en:'a'},1:{ar:'b',en:'b'},2:{ar:'c',en:'c'},3:{ar:'d',en:'d'},4:{ar:'e',en:'e'}},at:ts('2026-11-22T18:00:00')};
+const s23={day:1,title:'ضهر وباي',start:ts('2026-11-23T18:00:00'),end:ts('2026-11-23T18:40:00'),minutes:40,date:'2026-11-23',items:[],sets:3,planned:15,skipped:0,overMin:0};
+const seed=g=>{const d=load();d.gym=g;return JSON.stringify(d);};
+const J=(pg,e)=>pg.evaluate(`JSON.stringify(${e})`);
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const open=async(when,g)=>{const pg=await openp(b,w,{when,sb:true,real:seed(g)});await pg.evaluate("__g5.open()");await pg.clock.runFor(800);await pg.waitForTimeout(200);return pg;};
+  let pg=await open('2026-11-25T10:00:00',{});
+  ok('map week A',await J(pg,"__g5.map('2026-11-25')")==='[0,1,2,3,4]');
+  ok('map week B',await J(pg,"__g5.map('2026-11-28')")==='[0,1,5,3,4]');
+  ok('map previous week B',await J(pg,"__g5.map('2026-11-14')")==='[0,1,5,3,4]');
+  ok('posOf',await pg.evaluate("__g5.posOf(5)===2&&__g5.posOf(2)===2&&__g5.posOf(6)===-1"));
+  ok('default day 0',await pg.evaluate("__g5.def()===0"));
+  ok('week strip 1..5',await pg.evaluate("JSON.stringify([...document.querySelectorAll('.g5-week button')].map(b=>b.textContent))")==='["1","2","3","4","5"]');
+  ok('no errors p1',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0);await pg.context().close();
+  pg=await open('2026-11-25T10:00:00',{'x_2026-11-22':x22});
+  ok('after Sunday full day, next is 1',await pg.evaluate("__g5.def()===1"));
+  ok('no errors p2',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0);await pg.context().close();
+  pg=await open('2026-11-25T10:00:00',{'x_2026-11-22':x22,s_r67:s23});
+  ok('next is Rehab day',await pg.evaluate("__g5.def()===2"));
+  ok('head says Rehab A',(await pg.textContent('.g5-head h2')).includes('تأهيل أ'));
+  ok('chip says Rehab A',(await pg.textContent('.g5-par')).includes('تأهيل أ'));
+  ok('no errors p3',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0);await pg.context().close();
+  pg=await open('2026-11-28T10:00:00',{'x_2026-11-22':x22,s_r67:s23});
+  ok('new week resets to day 1',await pg.evaluate("__g5.def()===0"));
+  await pg.click('.g5-week button[data-pos="2"]');await pg.clock.runFor(300);await pg.waitForTimeout(200);
+  ok('Rehab B week',(await pg.textContent('.g5-par')).includes('تأهيل ب'));
+  ok('Today mini says day 1',await pg.evaluate("__g5.mini().includes('اليوم 1')"));
+  ok('no errors p4',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0);await pg.context().close();}
+});
