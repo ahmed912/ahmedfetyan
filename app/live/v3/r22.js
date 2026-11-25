@@ -39,7 +39,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate(()=>__r2.psClose());await R(200);
   // 4 Today on a buffer day: visible note, work target stays on screen, nothing planned
   { const p2=await openp(b,w,{when:'2026-11-25T10:00:00',real:JSON.stringify(base())});await p2.clock.runFor(800);
-    const note=await p2.evaluate(()=>{const n=document.querySelector('.sp-note');return n?n.innerText:'';}),hd=await p2.evaluate("document.querySelector('.dbar-focus').innerText.replace(/\\s+/g,' ')");
+    const note=await p2.evaluate(()=>{const n=document.querySelector('.sp-note');return n?n.textContent:'';}),hd=await p2.evaluate("document.querySelector('.dbar-focus').textContent.replace(/\\s+/g,' ')");
     ok('Today on 25 Nov says buffer day, no planned load',/Buffer day\. No planned load/.test(note),note);
     ok('work target and Gate stay on screen',/Work 0 of 8 h/.test(hd)&&/Gate 1/.test(hd),hd);
     await shot(p2,'r22_today_'+w);await p2.close();

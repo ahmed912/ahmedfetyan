@@ -69,7 +69,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('stop logs time on the task',((await T()).brief1.spent||0)>=5,JSON.stringify((await T()).brief1.spent));
   await pg.evaluate(()=>{__r2.closeFull();});await R(300);
   // hold menu has Start for 5 minutes
-  const cb=await pg.locator('.cs-card[data-id="brief1"] .cs-head').boundingBox();await pg.mouse.move(cb.x+24,cb.y+10);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);
+  await pg.locator('.cs-card[data-id="brief1"] .cs-head').scrollIntoViewIfNeeded();const cb=await pg.locator('.cs-card[data-id="brief1"] .cs-head').boundingBox();await pg.mouse.move(cb.x+24,cb.y+10);await pg.mouse.down();await R(700);await pg.mouse.up();await R(400);
   ok('hold menu offers Start for 5 minutes',await pg.locator('.ps-sheet button:has-text("Start for 5 minutes")').count()===1);
   await pg.evaluate(()=>__r2.psClose());await R(300);
   // Projects page: old cards link gone, counts line, 3 plus more

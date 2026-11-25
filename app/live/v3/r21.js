@@ -41,7 +41,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   ok('Block 1 and 2 chunks, Block 1 says from Sat',C[0].k==='b1'&&/Mugassam/.test(C[0].t)&&/from Sat/.test(C[0].txt)&&C[1].k==='b2'&&/HASM/.test(C[1].t),C.map(c=>c.t).join('|'));
   ok('no learning or shallow item inside a deep block',!/Read chapter|Comment batch/.test(C.filter(c=>c.k==='b1'||c.k==='b2').map(c=>c.txt).join(' ')));
   ok('miss history visible on the card',/Missed Sat/.test(C[0].txt),C[0].txt.slice(0,160));
-  const hdr=await pg.evaluate("document.querySelector('.dbar-focus').innerText.replace(/\\s+/g,' ')");
+  const hdr=await pg.evaluate("document.querySelector('.dbar-focus').textContent.replace(/\\s+/g,' ')");
   ok('header: work, learning, gate stay on screen',/Work 0 of 8 h/.test(hdr)&&/Learning 0 of 30 min/.test(hdr)&&/Gate 1/.test(hdr),hdr);
   // 2 the Waiting tray is one collapsed line
   ok('Waiting tray: one collapsed line with 4',(await pg.locator('#rlWait .ce-head').innerText()).replace(/\s+/g,' ').trim()==='Waiting 4');

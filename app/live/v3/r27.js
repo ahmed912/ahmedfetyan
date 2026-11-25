@@ -30,7 +30,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate(()=>__r2.setPage('today'));await R(500);
   const card=await pg.evaluate(()=>{const c=document.querySelector('.ch-card[data-ch="b1"]');return c?{cls:c.className,t:c.getAttribute('aria-label')}:null;});
   ok('Mugassam 5 h in Block 1 is amber, over by 1 h',card&&/ch-over/.test(card.cls)&&/over by/.test(card.t),JSON.stringify(card));
-  const hd=await pg.evaluate("document.querySelector('.dbar-focus').innerText.replace(/\\s+/g,' ')");
+  const hd=await pg.evaluate("document.querySelector('.dbar-focus').textContent.replace(/\\s+/g,' ')");
   ok('header: Work 1 of 8 h, Stretch 10 h, Learning, Gate',/Work 1 of 8 h/.test(hd)&&/Stretch 10 h/.test(hd)&&/Learning 0 of 30 min/.test(hd)&&/Gate 1/.test(hd),hd);
   ok('week fact: work 1 of 48 h, a heroic 23.5 h/day needed is shown as a fact',/Week: work 1 of 48 h, 23\.5 h\/day needed\. Learning 0 of 180 min/.test(hd),hd);
   ok('sleep facts: work 40 min past 21:30 and sleep 5 of 7 h',/Work ran 40 min past 21:30/.test(hd)&&/Sleep 5 of 7 h last night/.test(hd),hd);

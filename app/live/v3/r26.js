@@ -28,7 +28,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate(()=>__r2.setPage('today'));await R(400);
   const hc=await pg.evaluate(()=>[...document.querySelectorAll('#headChips span')].filter(x=>!x.hidden&&x.offsetParent).map(x=>x.innerText).join('|'));
   ok('off: no sprint chip on Today',!/Sprint|days left/.test(hc),hc);
-  const hd=await pg.evaluate("document.querySelector('.dbar-focus').innerText.replace(/\\s+/g,' ')");
+  const hd=await pg.evaluate("document.querySelector('.dbar-focus').textContent.replace(/\\s+/g,' ')");
   ok('off: Work and Gate stay on screen',/Work \d/.test(hd)&&/Gate 1/.test(hd),hd);
   await shot(pg,'r26_today_off_'+w);
   // 4 a date outside every sprint: reschedule sheet moves without a block, no sprint stamp
