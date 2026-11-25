@@ -112,7 +112,7 @@ The house style is the five Sample posts in the Content Studio. Match them.
 **Writing feel (Ahmed's feedback, 25 Nov 2026):** write in full natural sentences he would say out loud, in short paragraphs. Hooks are one plain sentence, no fragments, no drum-roll pauses. At most one punch line per post. Name Ahmed's role directly ("My job was..."), never "someone". Cut slogan endings; prefer his own words.
 
 **Brush it (the last step before posting, after the words are final):**
-1. Hook alone on line 1, then an empty line right after it, so LinkedIn's "...see more" cuts after the hook. Keep the hook under about 200 characters.
+1. Hook alone on line 1, then an empty line right after it, so LinkedIn's "...see more" cuts after the hook. Keep the hook under about 200 characters. The hook is one complete thought (the stakes in plain words); every list, detail or context goes below the line, in the body. Numbers in the hook must say exactly what they count ("only 30% of the content their proposal should have", not "30% of the content they needed").
 2. Lists of 2 or more parallel items become bullets with ▪️, one per line, an empty line before and after the list.
 3. Bold 2 or 3 phrases at most: the hook, the turn, the last line. LinkedIn has no bold button, so use Unicode bold letters (𝗯𝗼𝗹𝗱), never on a whole paragraph.
 4. Empty line between every paragraph.
