@@ -117,7 +117,9 @@ The house style is the five Sample posts in the Content Studio. Match them.
 3. Bold 2 or 3 phrases at most: the hook, the turn, the last line. LinkedIn has no bold button, so use Unicode bold letters (𝗯𝗼𝗹𝗱), never on a whole paragraph.
 4. Empty line between every paragraph.
 5. 3 hashtags on the last line, after an empty line (English posts: e.g. #PresentationDesign #DataVisualization #Storytelling; Arabic: 2 Arabic + 1 English).
-6. Deliver it in a plain box (code block) so it pastes exactly.
+6. Deliver it in two plain boxes (code blocks), HOOK and BODY, with a line between them, so the split is visible and each pastes exactly.
+
+**Body shape (storytelling):** after the hook, take one step back (the context or the principle behind the hook, one or two sentences), then tell the story in order: situation, what I did, the turn, the lesson in the client's or reader's terms.
 
 ## 5. Modes
 
