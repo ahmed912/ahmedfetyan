@@ -119,6 +119,8 @@ The house style is the five Sample posts in the Content Studio. Match them.
 5. 3 hashtags on the last line, after an empty line (English posts: e.g. #PresentationDesign #DataVisualization #Storytelling; Arabic: 2 Arabic + 1 English).
 6. Deliver it in two plain boxes (code blocks), HOOK and BODY, with a line between them, so the split is visible and each pastes exactly.
 
+**Client dignity:** write every post as if the client will read it and want to share it. Gaps are a normal starting point ("still in the client's head", "not on paper yet"), never a failure ("they only had", "incomplete", "missing"). Credit the client with knowing their audience; my role is to ask and decode.
+
 **Body shape (storytelling):** after the hook, take one step back (the context or the principle behind the hook, one or two sentences), then tell the story in order: situation, what I did, the turn, the lesson in the client's or reader's terms.
 
 ## 5. Modes
