@@ -1,0 +1,31 @@
+// Round 69: Today card touch-ups (chips, actions row, Details fold); numbers unchanged
+const {openp,shot,run}=require('./h.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const when='2026-11-25T10:00:00';
+const rd="(()=>{const f=document.querySelector('.dbar-focus');return f?f.textContent:''})()";
+const nav=async pg=>{await pg.evaluate("document.getElementById('prevDay').click()");await pg.clock.runFor(800);await pg.evaluate("document.getElementById('nextDay').click()");await pg.clock.runFor(800);await pg.waitForTimeout(200);};
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const A=await openp(b,w,{when});
+  await A.evaluate("window.__v37off=true;document.querySelectorAll('.v37-chips').forEach(n=>n.remove())");
+  await nav(A);const ta=await A.evaluate(rd);
+  ok('A original layout has no chips',await A.locator('.dbar-focus .v37-chips').count()===0);
+  await A.context().close();
+  const pg=await openp(b,w,{when});const tb=await pg.evaluate(rd);
+  const toks=ta.match(/\d+(\.\d+)?/g)||[];const miss=toks.filter(t=>!tb.includes(t));
+  ok('every number of old card in new card ('+toks.length+')',toks.length>0&&miss.length===0,JSON.stringify(miss));
+  ok('chips >= 1',await pg.locator('.dbar-focus .v37-chips .v37-chip').count()>=1);
+  ok('details closed',await pg.evaluate("(()=>{const d=document.querySelector('.dbar-focus details.v37-more');return !!d&&d.open===false})()"));
+  ok('.v37-more .ch-hdr',await pg.locator('.v37-more .ch-hdr').count()>=1);
+  for(const s of ['.v3-fill','.v3-plan']){ok(s+' in acts btn ghost',await pg.evaluate(`(()=>{const e=document.querySelector('.v37-acts ${s}');return !!e&&e.classList.contains('btn')&&e.classList.contains('ghost')})()`));}
+  const ov=await pg.evaluate(`(()=>{const f=document.querySelector('.dbar-focus'),p=f.querySelector('.v3-plan').getBoundingClientRect(),bad=[];
+    f.querySelectorAll('p,span.hint,.v37-chip').forEach(n=>{const r=n.getBoundingClientRect();if(!r.width||!r.height)return;if(!(r.right<=p.left||r.left>=p.right||r.bottom<=p.top||r.top>=p.bottom))bad.push(n.className||n.tagName)});return bad})()`);
+  ok('no overlap with Edit plan',ov.length===0,JSON.stringify(ov));
+  await pg.evaluate("document.querySelector('.v37-more summary').click()");await pg.clock.runFor(300);
+  ok('details open, week visible',await pg.evaluate("(()=>{const d=document.querySelector('.v37-more'),c=document.querySelector('.cap-week');return d.open&&(!c||c.getBoundingClientRect().height>0)})()"));
+  await nav(pg);
+  ok('stays open after re-render',await pg.evaluate("document.querySelector('details.v37-more').open===true"));
+  await pg.evaluate("document.querySelector('.v37-acts .v3-plan').click()");await pg.clock.runFor(400);
+  ok('plan sheet opens',(await pg.textContent('.ps-sheet h2')).trim().startsWith('Plan for'),await pg.textContent('.ps-sheet h2'));
+  await shot(pg,'today14_'+w,true);
+  ok('no errors',pg.errs.filter(x=>!x.includes('ERR_FAILED')).length===0,JSON.stringify(pg.errs.slice(0,3)));
+  await pg.context().close();}});

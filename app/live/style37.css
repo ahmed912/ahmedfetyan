@@ -1,0 +1,19 @@
+.dbar-focus .v37-chips,.dbar-focus .v37-acts,.dbar-focus .v37-more{grid-column:1/-1}
+.v37-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.v37-chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dbar-focus .v37-chips .v3-planned{grid-column:auto}
+.v37-acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.dbar-focus .v37-acts .btn.ghost{margin:0;padding:6px 14px;font-size:13px;background:none;border:1px solid var(--line);border-radius:999px;color:var(--ink)}
+.v37-more summary{cursor:pointer;font-size:12px;color:var(--muted);list-style:none}
+.v37-more summary::-webkit-details-marker{display:none}
+.v37-more p{margin:4px 0 0;font-size:12px;line-height:1.5}
+/* 14d cards: one padding and height for every chunk card head */
+#taskList .ch-card>.ch-head{min-height:48px;padding:12px 16px;box-sizing:border-box;align-items:center}
+/* 14c War row neutral like the other tiles, same surface, no re-theme */
+body.cut1 #popCards .war-card{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+body.cut1 #popCards .war-card .fc-t{color:var(--ink)}
+body.cut1 #popCards .war-card .wr-cs{color:var(--muted)}
+#popCards .pop-card .fc-ic{width:36px;height:36px;flex:none}
+#popCards .pop-card .fc-t{font-size:15px;font-weight:600}
+/* 14e Done and Shipped sits right under the tiles */
+#dmRow{margin-top:10px}
