@@ -24,3 +24,5 @@
 ## Primary palette (Ahmed's decision, 26 Nov 2026)
 - Only three colours: black (Canvas), white, one accent (amber). No other colours. Greys = white at lower opacity.
 - Minimalist always: 1 to 2 shapes per frame, at least 70% empty black, no dot grids or patterns, no stacked layers. When in doubt, remove.
+- Brand words (design filter): Premium, Minimal, Clear, Energetic.
+- Amber marks (26 Nov 2026): one hand-drawn amber marker stroke per frame (circle, underline, strike, slash, arrow, bracket) marks the one insight; it replaces the thin amber curve, never both. Perfect geometry or b/w photo + one imperfect stroke.
