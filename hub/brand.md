@@ -23,3 +23,4 @@
 - 3D lit renders are optional extras, not the default.
 ## Primary palette (Ahmed's decision, 26 Nov 2026)
 - Only three colours: black (Canvas), white, one accent (amber). No other colours. Greys = white at lower opacity.
+- Minimalist always: 1 to 2 shapes per frame, at least 70% empty black, no dot grids or patterns, no stacked layers. When in doubt, remove.
