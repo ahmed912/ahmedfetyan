@@ -21,3 +21,5 @@
 - Serif headline in off-white, short, centred, 2 lines.
 - Optional black and white architectural photo with one hard light shape, blended into the black.
 - 3D lit renders are optional extras, not the default.
+## Primary palette (Ahmed's decision, 26 Nov 2026)
+- Primary: black (Canvas), white, one accent (amber). Everything else is optional.
