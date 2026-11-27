@@ -1,28 +1,16 @@
 /* r39: colour tags and matrix custom tasks. Muted, no new icons. */
-.tg-mark{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--tg,var(--muted));opacity:.9;flex:none;margin-right:7px;vertical-align:middle}
+.tg-mark{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--tg,var(--muted));opacity:.9;flex:none;margin-right:8px;vertical-align:middle}
 .tg-mark.tg-none{background:transparent;box-shadow:inset 0 0 0 1px var(--line);opacity:.6}
-.cs-head .tg-mark{align-self:center;margin-right:8px}
+.cat-chip .tg-mark{width:8px;height:8px;margin-right:4px}
 .mx-c .tg-mark.tg-cell{position:absolute;left:4px;bottom:4px;margin:0;width:7px;height:7px;pointer-events:none}
 .tg-pick{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
-.tg-chip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:6px 12px;border-radius:999px;font-size:13px;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
-.tg-chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--tg);opacity:.85}
+.tg-chip{all:unset;box-sizing:border-box;cursor:pointer;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:28px;min-height:36px;padding:4px 12px;border-radius:999px;font-size:13px;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.tg-chip::before{content:"";display:inline-block;vertical-align:middle;margin-right:8px;width:8px;height:8px;border-radius:50%;background:var(--tg);opacity:.85}
 .tg-chip[aria-pressed="true"]{background:color-mix(in srgb,var(--tg) 14%,transparent);box-shadow:inset 0 0 0 1px var(--tg)}
 .tg-list{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:6px}
-.tg-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px solid var(--line)}
+.tg-row{flex-wrap:wrap;display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px solid var(--line)}
 .tg-row .tg-name{flex:1;min-width:0}.tg-row .tg-nm{flex:1}
 .tg-sw{display:inline-flex;gap:4px;flex-wrap:wrap}
 .tg-swb{all:unset;box-sizing:border-box;cursor:pointer;width:20px;height:20px;border-radius:50%;background:var(--tg);opacity:.6}
 .tg-swb[aria-pressed="true"]{opacity:1;box-shadow:0 0 0 2px var(--bg,#fff),0 0 0 3px var(--tg)}
 .tg-form{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}.tg-form .tg-new{flex:1;min-width:140px}
-.mxc{margin-top:20px;padding-top:8px;border-top:1px solid var(--line)}
-.mxc-h{font-size:13px;font-weight:400;color:var(--muted);margin:14px 0 6px;text-transform:none}
-.mxc-form{display:flex;gap:8px;align-items:center}.mxc-form .mxc-add{flex:1;min-width:0}
-.mxc-list{list-style:none;margin:6px 0;padding:0}
-.mxc-row{display:flex;align-items:center;gap:6px;padding:8px 2px;border-top:1px solid var(--line);touch-action:pan-y}
-.mxc-row .mxc-t{all:unset;flex:1;min-width:0;cursor:pointer;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mxc-row.mxc-sp .mxc-t{cursor:default}
-.mxc-row.done .mxc-t{opacity:.55;text-decoration:line-through}
-.mxc-ck{margin:0;width:16px;height:16px;accent-color:var(--good)}
-.mxc-m{white-space:nowrap}
-.mxc-hid{all:unset;cursor:pointer;display:block;margin-top:8px;font-size:13px;color:var(--muted);padding:6px 0}
-.mxc-note,.mxc-empty{margin:6px 0}
