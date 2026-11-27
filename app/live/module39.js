@@ -52,7 +52,7 @@ function tgSheet(){let nm="",nc=TG_PAL[tgCfg().list.length%TG_PAL.length];
     const ul=el("ul",{class:"tg-list"},...tgAll().map(rowFor));
     v3dragList(ul,".tg-row[data-custom]",ids=>{const c=tgCfg(),cur=c.list.filter(x=>!x.deleted).sort((a,b)=>(a.ord??1e9)-(b.ord??1e9)).map(x=>x.id);if(ids.join()===cur.join())return;tgSave({list:c.list.map(x=>{const i=ids.indexOf(x.id);return i<0?x:{...x,ord:i,upd:Date.now()};})},"Tags reordered");});
     return [el("p",{class:"ps-sh-sum",text:"Colour tags"}),ul,form,el("p",{class:"hint",text:"Hold a custom tag by its dot to drag it. Swipe left to delete. Set a task's tag from its hold menu."})];});}
-function tgRow(){const rows=document.querySelector('.page[data-page="settings"] .set-rows');if(!rows||document.getElementById("tgRow"))return;
+function tgRow(){if(document.body.classList.contains("m33"))return;const rows=document.querySelector('.page[data-page="settings"] .set-rows');if(!rows||document.getElementById("tgRow"))return;
   rows.append(el("div",{class:"set-row",id:"tgRow"},el("div",{},el("b",{text:"Tags"}),el("span",{class:"hint",text:"Work, Learning, Personal brand and your own colour tags"})),el("button",{type:"button",class:"btn ghost",id:"tgBtn",onclick:tgSheet},"Open")));}
 {const _r=render;render=function(){_r();try{tgRow();}catch(e){}};}
 window.__tags={get:x=>{if(!x)return null;let g=null;if(typeof x==="string"){const t=state.tasks[x.indexOf("tasks:")===0?x.slice(6):x];g=t?tgFor(t,x.indexOf("tasks:")===0?x.slice(6):x):tgGet(x);}else if(x.id&&state.tasks[x.id])g=tgFor(state.tasks[x.id],x.id);else g=tgGet(x.tag)||tgFor(x,x.id);return g?{id:g.id,name:g.name,color:g.color}:null;},list:()=>tgAll().map(g=>({id:g.id,name:g.name,color:g.color})),dot:tgDot};

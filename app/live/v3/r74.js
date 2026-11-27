@@ -1,0 +1,84 @@
+// Round 74: matrix block tags in the cell sheet (cells[k].tag)
+const {openp,run}=require('./h.js');const {load}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+const W0='2026-11-14';
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const d=load();d.plans=d.plans||{};delete d.plans['mx-default'];delete d.plans['mx-'+W0];
+  const pg=await openp(b,w,{when:'2026-11-19T11:00:00',real:JSON.stringify(d)});
+  const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
+  const nums=()=>pg.evaluate("(()=>{const c=__mx.calc('"+W0+"');return JSON.stringify({a:c.alloc,ach:c.ach,p:c.pct,b:c.buf,o:c.off,cm:c.cm})})()");
+  const plan=()=>pg.evaluate("JSON.stringify(window.__data.plans||{})").then(JSON.parse);
+  const openCell=async k=>{await pg.click('.mx-c[data-k="'+k+'"] .mx-cn',{force:true});await R(500);};
+  await pg.evaluate("__r2.setPage('projects')");await R(800);
+  await pg.click('#planMatrix .mx-open');await R(600);
+  const n0=await nums();
+  await openCell('0|0');
+  ok('tag row in sheet',await pg.locator('.m42-pick .m42-chip').count()>=4);
+  await pg.click('.m42-chip[data-tag="learning"]');await R(500);
+  let p=await plan();ok('stored c.tag',p['mx-'+W0]&&p['mx-'+W0].cells['0|0'].tag==='learning');
+  ok('undo toast',await pg.locator('#v3ut').isVisible());
+  ok('numbers same',(await nums())===n0);
+  await pg.screenshot({path:'v3/shots/r74-sheet-'+w+'.png'});
+  await pg.evaluate("__r2.psClose()");await R(500);
+  ok('mark shown',await pg.locator('.mx-c[data-k="0|0"] .tg-mark').count()===1);
+  await pg.screenshot({path:'v3/shots/r74-'+w+'.png'});
+  await pg.click('#v3ut .ub-b');await R(500);
+  p=await plan();ok('undo clears',!(p['mx-'+W0]&&p['mx-'+W0].cells['0|0'].tag)&&await pg.locator('.mx-c[data-k="0|0"] .tg-mark').count()===0);
+  // custom tag
+  await openCell('1|0');
+  await pg.click('.m42-plus');await R(300);await pg.fill('.m42-new','R74 Custom');await pg.click('.m42-form .tg-add');await R(600);
+  p=await plan();const cid=(p['tg-tags']||{list:[]}).list.filter(x=>x.name==='R74 Custom')[0];
+  ok('custom tag created',!!cid);
+  ok('custom applied',cid&&p['mx-'+W0].cells['1|0'].tag===cid.id);
+  ok('numbers same 2',(await nums())===n0);
+  await pg.evaluate("__r2.psClose()");await R(500);
+  // buffer/off cell taggable
+  const ko=await pg.evaluate("Object.keys(__mx.doc('"+W0+"').cells).find(k=>__mx.doc('"+W0+"').cells[k].t==='b')");
+  await openCell(ko);await pg.click('.m42-chip[data-tag="work"]');await R(500);
+  ok('buffer taggable',(await plan())['mx-'+W0].cells[ko].tag==='work');
+  ok('numbers same 3',(await nums())===n0);
+  await pg.evaluate("__r2.psClose()");await R(500);
+  // sheet has no task list; Choose and Add
+  await openCell('2|0');
+  ok('no task list',await pg.locator('.ps-sheet .mx-opts,.ps-sheet .mx-find').count()===0&&await pg.locator('.m42-choose').isVisible()&&await pg.locator('.m42-addt').isVisible());
+  await pg.screenshot({path:'v3/shots/r74-sheet2-'+w+'.png'});
+  await pg.click('.m42-choose');await R(500);
+  ok('choose opens projects',await pg.locator('.m42-bk').count()>=1);
+  await pg.locator('.m42-bk').first().click();await R(400);
+  const tk=pg.locator('.m42-tk').first();const tid=await tk.getAttribute('data-id');
+  await tk.click();await R(600);
+  ok('picked attaches',(await plan())['mx-'+W0].cells['2|0'].ref==='tasks:'+tid);
+  ok('back on matrix',await pg.locator('#mxView .mx-grid').isVisible());
+  ok('numbers same 4',(await nums())===n0);
+  await openCell('3|0');await pg.click('.m42-addt');await R(300);await pg.fill('.m42-title','R74 New task');await pg.click('.m42-addsave');await R(700);
+  const nt=await pg.evaluate("Object.entries(__data.tasks).filter(([i,t])=>t.title==='R74 New task').map(([i,t])=>i+'|'+t.date).join()");
+  ok('add creates task today',nt.split('|')[1]==='2026-11-19',nt);
+  ok('add attaches',(await plan())['mx-'+W0].cells['3|0'].ref==='tasks:'+nt.split('|')[0]);
+  ok('numbers same 5',(await nums())===n0);
+  await openCell('3|0');ok('current task shown',await pg.locator('.m42-curn:has-text("R74 New task")').isVisible());
+  await pg.click('.m42-rm');await R(500);ok('remove detaches',!(await plan())['mx-'+W0].cells['3|0'].ref);
+  await pg.evaluate("__r2.psClose()");await R(500);
+  // reload persistence
+  const snap=await pg.evaluate("JSON.stringify(window.__data)");
+  await pg.evaluate("sessionStorage.setItem('__mockdata',"+JSON.stringify(JSON.stringify({plans:(JSON.parse(snap)).plans}))+")");
+  await pg.reload();await pg.clock.runFor(2500);await R(800);
+  await pg.evaluate("__r2.setPage('projects')");await R(800);await pg.click('#planMatrix .mx-open');await R(600);
+  ok('persist after reload',await pg.locator('.mx-c[data-k="1|0"] .tg-mark').count()===1&&await pg.locator('.mx-c[data-k="'+ko+'"] .tg-mark').count()===1);
+  ok('numbers after reload',(await nums())===n0);
+  ok('no errors',pg.errs.filter(x=>!/Failed to load resource/.test(x)).length===0,pg.errs.join('|'));
+  await pg.close();}
+  {console.log('== phone layout 390');
+  const d=load();const pg=await openp(b,390,{when:'2026-11-19T11:00:00',real:JSON.stringify(d),m33:true});
+  const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
+  ok('phone layout on',await pg.evaluate("document.body.classList.contains('m33')"));
+  const SEL='.tg-mark,.tg-pick,.tg-chip,.tg-row,#tgRow,.m42-chip-c,.m42-pick,.m42-plus,.mx-c[data-tag]';
+  for(const p of ['gym','money','projects','today','settings']){await pg.evaluate("__r2.setPage('"+p+"')");await R(800);
+    const pgname=await pg.evaluate("document.body.className");
+    ok('phone '+p+' no tag elements',await pg.locator(SEL).count()===0,pgname);}
+  const tabs=await pg.evaluate("[...document.querySelectorAll('.m-nav button,.m-nav a')].map(x=>x.textContent.trim()).join(',')");
+  console.log('tabs:',tabs);
+  ok('only gym/money reachable',await pg.evaluate("(__r2.setPage('projects'),document.querySelector('.page[data-page=\"projects\"]').hidden)"));
+  ok('capture bar present',await pg.locator('#m33Bar').count()===1);
+  await pg.screenshot({path:'v3/shots/r74-phone.png'});
+  ok('no errors',pg.errs.filter(x=>!/Failed to load resource/.test(x)).length===0,pg.errs.join('|'));await pg.close();}
+});

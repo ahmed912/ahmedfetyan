@@ -36,8 +36,8 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   // 4
   await pg.click(cell('5|0'));await R(600);
   ok('picker open',await vis('.ps-sheet[aria-label="Pick for block"]')&&(await pg.textContent('.ps-sh-sum')).includes('Thu Block 1'));
-  await pg.fill('.mx-find','R61 Al');await R(200);
-  await pg.click('.mx-opt:has-text("R61 Alpha")');await R(600);
+  ok('r74 no long list',(await cnt('.ps-sheet .mx-find'))===0);
+  await pg.evaluate("__r2.psClose()");await R(300);await pg.evaluate("__mx.pick('2026-11-14','5|0','tasks:r61t')");await R(600);
   ok('back on board',await vis('#mxView.in'));
   ok('cell name',(await pg.textContent(cell('5|0')+' .mx-cn'))==='R61 Alpha');
   ok('toast pick',(await pg.textContent('#v3ut')).includes('Thu Block 1: R61 Alpha'));

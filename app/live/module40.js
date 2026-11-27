@@ -1,3 +1,4 @@
+// unused, removed 27 Nov by user order
 // ===== Matrix custom tasks: own doc plans/mxc-<sat>. Never in tasks, not in sprints, not in sprint load. =====
 const mcId=w0=>"mxc-"+w0;
 function mcDoc(w0){const d=(state.plans||{})[mcId(w0)];return d&&!d.deleted&&Array.isArray(d.items)?d:{kind:"matrix-custom",week:w0,items:[],hidden:[]};}
