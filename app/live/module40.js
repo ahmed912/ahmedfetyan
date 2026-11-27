@@ -4,7 +4,7 @@ function mcDoc(w0){const d=(state.plans||{})[mcId(w0)];return d&&!d.deleted&&Arr
 function mcPut(w0,fn,msg){const id=mcId(w0),raw=(state.plans||{})[id],old=raw?mxClone(raw):null,doc=mxClone(mcDoc(w0)),now=Date.now();
   doc.hidden=doc.hidden||[];fn(doc);doc.deleted=null;doc.upd=now;doc.created=doc.created||now;
   state.plans={...(state.plans||{}),[id]:doc};store.set("plans/"+id,doc).catch(fail);mxMemo=null;render();try{sheetRefresh();}catch(e){}
-  if(msg)v3undoToast(msg,()=>{const p={...(state.plans||{})};if(old){p[id]=old;store.set("plans/"+id,old).catch(fail);}else{const e={kind:"matrix-custom",week:w0,items:[],hidden:[],created:now,upd:Date.now()};p[id]=e;store.set("plans/"+id,e).catch(fail);}state.plans=p;mxMemo=null;render();try{sheetRefresh();}catch(e){}});}
+  if(msg)v3undoToast(msg,()=>{const p={...(state.plans||{})};if(old){const b={...old,upd:Date.now()};p[id]=b;store.set("plans/"+id,b).catch(fail);}else{const e={kind:"matrix-custom",week:w0,items:[],hidden:[],created:now,upd:Date.now()};p[id]=e;store.set("plans/"+id,e).catch(fail);}state.plans=p;mxMemo=null;render();try{sheetRefresh();}catch(e){}});}
 const mcLive=w0=>mcDoc(w0).items.filter(x=>!x.deleted);
 function mcAdd(w0,o){const t=String(o.title||"").trim();if(!t)return;
   mcPut(w0,d=>{d.items.push({id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),title:t,day:Math.max(0,Math.min(6,Number(o.day)||0)),min:Math.max(0,Number(o.min)||0),tag:o.tag||null,done:false,ord:mcLive(w0).length,created:Date.now(),upd:Date.now()});},"Added: "+t);}

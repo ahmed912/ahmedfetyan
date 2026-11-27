@@ -1,4 +1,4 @@
-// ===== Colour tags (settings/tags) and matrix custom tasks (plans/mxc-<week>) =====
+// ===== Colour tags (plans/tg-tags) and matrix custom tasks (plans/mxc-<week>) =====
 const TG_BUILT=[{id:"work",name:"Work",color:"#7f9fc4",b:1},{id:"learning",name:"Learning",color:"#c9a978",b:1},{id:"brand",name:"Personal brand",color:"#a994c9",b:1}];
 const TG_PAL=["#7fb5a8","#c98f8f","#c9c27f","#8fa3c9","#b58fa9","#9fb58f","#c9a07f","#8fb0b8"];
 const TG_DEF={portfolio:"work",client:"work",setup:"work",review:"work",learning:"learning",brand:"brand",linkedin:"brand"};
