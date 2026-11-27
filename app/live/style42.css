@@ -13,3 +13,7 @@ body:not(.m33) .mx-c .m42-nm{overflow:hidden;text-overflow:ellipsis;white-space:
 .m42-back{margin:0 0 8px}
 .m42-bar{display:flex;align-items:center;gap:12px}.m42-bar .m42-bt{flex:1;min-width:0}
 body.m42-picking .bk-row .ur-t,body.m42-picking .pl-row .ur-t{cursor:pointer}
+body:not(.m33) .m42-tot{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 18px;padding-top:10px;border-top:1px solid var(--line)}
+.m42-tr{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.m42-tr .tg-mark{margin:0}.m42-nd{width:9px;height:9px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);opacity:.7}
+.m42-tn{color:var(--muted)}.m42-th{font-variant-numeric:tabular-nums}

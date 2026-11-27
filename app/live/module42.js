@@ -39,3 +39,10 @@ async function m42Create(w0,k,title){title=String(title||"").trim();if(!title)re
 {const _c=mxCellEl;mxCellEl=function(w0,k,v){const td=_c(w0,k,v);if(m42Ph())return td;try{td.querySelectorAll(".tg-mark").forEach(x=>x.remove());
   const c=v.doc.cells[k],g=c&&c.tag&&tgGet(c.tag);if(g){td.append(el("span",{class:"m42-chip-c",title:g.name},tgDot(g,"m42-dot"),el("span",{class:"m42-nm"},g.name)));td.dataset.tag=g.id;td.style.setProperty("--tg",g.color);}}catch(e){console.warn(e);}return td;};}
 window.__mxtag={set:m42Set,create:m42Create};
+// ---- tag totals under the matrix (hours = sum of block hours per tag, this week) ----
+function m42Totals(w0){const v=mxCalc(w0),doc=v.doc,by={},ord=[];let none=0;
+  for(let i=0;i<7;i++)for(let b=0;b<4;b++){const k=i+"|"+b,c=doc.cells[k]||{t:"o"},g=c.tag&&tgGet(c.tag),h=Number(v.H[b])||0;
+    if(g){if(!by[g.id]){by[g.id]=0;}by[g.id]+=h;}else if(c.t==="w")none+=h;}
+  const rows=tgAll().filter(g=>by[g.id]>0).map(g=>({id:g.id,name:g.name,color:g.color,h:by[g.id]}));if(none>0)rows.push({id:"none",name:"No tag",color:null,h:none});return rows;}
+{const _bd=mxBody;mxBody=function(re){const out=_bd(re);if(m42Ph())return out;try{const rows=m42Totals(mxS.w0);
+  out.push(el("div",{class:"m42-tot","aria-label":"Hours by tag"},...(rows.length?rows.map(r=>el("div",{class:"m42-tr","data-tag":r.id,style:r.color?"--tg:"+r.color:""},r.color?el("span",{class:"tg-mark"}):el("span",{class:"m42-nd"}),el("span",{class:"m42-tn"},r.name),el("span",{class:"num m42-th"},mxHs(r.h)))):[el("span",{class:"hint m42-te"},"No tagged blocks")])));}catch(e){console.warn(e);}return out;};}

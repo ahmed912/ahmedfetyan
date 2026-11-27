@@ -62,6 +62,22 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await openCell('3|0');ok('current task shown',await pg.locator('.m42-curn:has-text("R74 New task")').isVisible());
   await pg.click('.m42-rm');await R(500);ok('remove detaches',!(await plan())['mx-'+W0].cells['3|0'].ref);
   await pg.evaluate("__r2.psClose()");await R(500);
+  // tag totals
+  const th=id=>pg.locator('.m42-tr[data-tag="'+id+'"] .m42-th').first().textContent({timeout:1500}).then(x=>x.trim()).catch(()=>null);
+  ok('totals strip shown',await pg.locator('.m42-tot').isVisible());
+  ok('no tag row',(await th('none'))!==null);
+  for(const k of ['3|1','4|1','5|1','6|1'])await pg.evaluate("__mxtag.set('"+W0+"','"+k+"','brand')");
+  await R(400);
+  ok('brand 4 x 4h = 16 h',(await th('brand'))==='16 h',await th('brand'));
+  await pg.evaluate("__mxtag.set('"+W0+"','6|1','learning')");await R(400);
+  ok('moved hours',(await th('brand'))==='12 h'&&(await th('learning'))==='4 h',(await th('brand'))+'|'+(await th('learning')));
+  await pg.screenshot({path:'shots/r74-totals-'+w+'.png',fullPage:true});
+  await pg.click('#v3ut .ub-b');await R(500);
+  ok('undo restores',(await th('brand'))==='16 h'&&(await th('learning'))===null);
+  ok('numbers same 6',(await nums())===n0);
+  await pg.evaluate("__mx.S.w0='2026-11-21'");await pg.evaluate("__mx.open()");await R(500);
+  ok('other week has none of it',(await th('brand'))===null);
+  await pg.evaluate("__mx.S.w0='"+W0+"'");await pg.evaluate("__mx.open()");await R(500);
   // reload persistence
   const snap=await pg.evaluate("JSON.stringify(window.__data)");
   await pg.evaluate("sessionStorage.setItem('__mockdata',"+JSON.stringify(JSON.stringify({plans:(JSON.parse(snap)).plans}))+")");
@@ -69,6 +85,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   await pg.evaluate("__r2.setPage('projects')");await R(800);await pg.click('#planMatrix .mx-open');await R(600);
   await R(1500);
   ok('persist after reload',await pg.locator('.mx-c[data-k="1|0"] .tg-mark').count()===1&&await pg.locator('.mx-c[data-k="'+ko+'"] .tg-mark').count()===1);
+  ok('totals after reload',(await th('brand'))==='16 h');
   ok('numbers after reload',(await nums())===n0);
   ok('no errors',pg.errs.filter(x=>!/Failed to load resource/.test(x)).length===0,pg.errs.join('|'));
   await pg.close();}
@@ -83,6 +100,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const tabs=await pg.evaluate("[...document.querySelectorAll('.m-nav button,.m-nav a')].map(x=>x.textContent.trim()).join(',')");
   console.log('tabs:',tabs);
   ok('only gym/money reachable',await pg.evaluate("(__r2.setPage('projects'),document.querySelector('.page[data-page=\"projects\"]').hidden)"));
+  ok('no totals strip on phone',await pg.locator('.m42-tot').count()===0);
   ok('capture bar present',await pg.locator('#m33Bar').count()===1);
   await pg.screenshot({path:'v3/shots/r74-phone.png'});
   ok('no errors',pg.errs.filter(x=>!/Failed to load resource/.test(x)).length===0,pg.errs.join('|'));await pg.close();}
