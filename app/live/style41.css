@@ -1,0 +1,4 @@
+/* v02 refinements: off on phone layout (body.m33) */
+body:not(.m33) .mx-grid .mx-dh.today{color:var(--accent)}
+body:not(.m33) .undo-bar .ub-b{color:var(--accent)}
+body:not(.m33) .mx-head .mx-wk{max-width:none;min-width:150px;width:auto}

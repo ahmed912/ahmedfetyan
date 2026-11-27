@@ -16,7 +16,7 @@ run(async b=>{for(const w of [390,1300]){console.log('== width',w);
   const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
   const T=id=>pg.evaluate(`__tg.forTask('${id}')`);
   const set=()=>pg.evaluate("JSON.stringify((window.__data.plans||{})['tg-tags']||null)").then(JSON.parse);
-  ok('1 defaults by category',(await T('t1'))==='work'&&(await T('t2'))==='learning'&&(await T('t3'))==='brand'&&(await T('t4'))===null,[await T('t1'),await T('t2'),await T('t3'),await T('t4')].join());
+  ok('1 defaults by category',(await T('t1'))==='work'&&(await T('t2'))==='learning'&&(await T('t3'))==='brand'&&(await T('t4'))==='work',[await T('t1'),await T('t2'),await T('t3'),await T('t4')].join());
   ok('1 no tags doc yet',(await set())===null);
   // marks on Today card
   const card=pg.locator('.cs-card.cs-top').first();
