@@ -4,7 +4,7 @@
 .mc-list{list-style:none;margin:0;padding:0}
 .mc-row{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);touch-action:pan-y}
 .mc-row.done .mc-t{text-decoration:line-through;opacity:.55}
-.mc-d{min-width:36px;font-size:12px;opacity:.7}.mc-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mc-tag{flex:0 1 auto;max-width:40%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;opacity:.75;border:1px solid var(--line);border-radius:8px;padding:0 8px}
+.mc-d{min-width:36px;font-size:12px;opacity:.7}.mc-t{text-align:left;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mc-tag{flex:0 1 auto;max-width:40%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;opacity:.75;border:1px solid var(--line);border-radius:8px;padding:0 8px}
 .mc-tag::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--tg,var(--muted));opacity:.85;margin-right:4px;vertical-align:middle}
 .mc-row.mc-s .mc-d{opacity:.45}
 .mc-m{flex:none;white-space:nowrap}.mc-d{flex:none}
