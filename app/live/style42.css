@@ -11,3 +11,5 @@ body:not(.m33) .mx-c .m42-nm{overflow:hidden;text-overflow:ellipsis;white-space:
 .m42-btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
 .m42-addf{display:flex;gap:8px;margin:6px 0}.m42-addf .m42-title{flex:1;min-width:0}
 .m42-back{margin:0 0 8px}
+.m42-bar{display:flex;align-items:center;gap:12px}.m42-bar .m42-bt{flex:1;min-width:0}
+body.m42-picking .bk-row .ur-t,body.m42-picking .pl-row .ur-t{cursor:pointer}
