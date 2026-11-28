@@ -1,0 +1,12 @@
+body[data-page="today"] #headChips .x26-sp,body[data-page="roadmap"] #headChips .x26-sp,body[data-page="today"] .sp-note,body[data-page="roadmap"] .sp-note{display:none!important}
+.rm-task>div:not(.x26-acts){flex:1;min-width:0}
+.x26-acts{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none}
+.x26-start{font:inherit;font-size:12px;line-height:18px;padding:2px 10px;border-radius:999px;border:1px solid var(--rm-wire);background:transparent;color:var(--ink);cursor:pointer}
+.x26-x{width:24px;height:24px;padding:0;border:0;background:transparent;color:var(--muted);font-size:16px;line-height:1;cursor:pointer}
+.x26-subs{list-style:none;margin:6px 0 0;padding:0}
+.x26-srow{display:flex;align-items:center;gap:8px;min-height:28px;font-size:13px;font-weight:300;color:var(--ink)}
+.x26-scheck{flex:none;width:14px;height:14px;padding:0;border-radius:50%;border:1px solid var(--rm-ink3,var(--muted));background:transparent;cursor:pointer}
+.x26-srow.done .x26-scheck{background:var(--rm-gold,#c9a978);border-color:var(--rm-gold,#c9a978)}
+.x26-srow.done .x26-stt{color:var(--muted);text-decoration:line-through}
+.x26-srow .x26-x{margin-left:auto;width:20px;height:20px;font-size:14px}
+.x26-sin{width:100%;font:inherit;font-size:13px;background:transparent;border:0;border-bottom:1px solid var(--rm-wire);color:var(--ink);padding:4px 0;outline:none}

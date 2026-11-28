@@ -70,3 +70,30 @@ body #workView button.rm-hday{font:var(--rm-t5)}
 body #workView input.rm-in{font:var(--rm-t3)}
 .rm-task .rm-tag{display:inline-block;border:1px solid var(--rm-line);border-radius:6px;padding:0 6px;margin-top:4px}
 .rm-today-sec .rm-branch{position:relative}
+/* colour layering: panel (parent tone, faint) > branch card (tone tint) > task rows */
+.rm-canvas .rm-panel{position:absolute;z-index:0;pointer-events:none;border-radius:28px;background:color-mix(in srgb,var(--tone) 11%,transparent);border:1px solid color-mix(in srgb,var(--tone) 16%,transparent)}
+.rm-canvas .rm-world>svg.rm-wires{z-index:1}
+.rm-canvas .rm-world .rm-node,.rm-canvas .rm-world .rm-tree{z-index:2}
+.rm-canvas .rm-world .rm-parent,.rm-canvas .rm-world .rm-tparent,.rm-canvas .rm-world .rm-hparent{background:color-mix(in srgb,var(--tone) 46%,var(--rm-s1))!important;border:1.5px solid var(--tone)!important;color:var(--rm-ink)}
+.rm-canvas .rm-world .rm-branch,.rm-canvas .rm-world .rm-tbranch,.rm-canvas .rm-world .rm-hb{background:color-mix(in srgb,var(--tone) 24%,var(--rm-s2))!important;border:1px solid color-mix(in srgb,var(--tone) 38%,transparent)!important;border-left:4px solid var(--tone)!important}
+.rm-canvas .rm-world .rm-cnt{background:color-mix(in srgb,var(--tone,#888) 24%,transparent)!important;color:var(--rm-ink)!important}
+.rm-canvas .rm-world .rm-check{border-color:var(--tone,var(--rm-ink3))!important}
+.rm-canvas .rm-wires path{stroke-width:1.75;opacity:1}
+.rm-canvas .rm-world .rm-prog span{background:var(--tone)!important}
+.rm-canvas .rm-world .rm-prog{background:color-mix(in srgb,var(--tone) 18%,transparent)!important}
+/* contrast: explicit ink ladder, WCAG AA on every layer (checked by v3/contrast.js) */
+/* the board canvas is dark in every theme, so its ink ladder is light in every theme */
+.rm-canvas{--rm-ink:#F2F3F5;--rm-ink2:#C4C8CF;--rm-ink3:#A2A8B2}
+.rm-canvas .rm-task .rm-tt,.rm-canvas .rm-bname,.rm-canvas .rm-pname,.rm-canvas .rm-tparent,.rm-canvas .rm-parent{color:var(--rm-ink)!important}
+.rm-canvas .rm-tag,.rm-canvas .rm-addt,.rm-canvas .rm-addb,.rm-canvas .rm-more,.rm-canvas .rm-brange,.rm-canvas .rm-status,.rm-canvas .rm-hint,.rm-canvas .rm-newp,.rm-canvas .rm-sub,.rm-canvas .rm-task.done .rm-tt{color:var(--rm-ink3)!important}
+.rm-canvas .rm-world .rm-cnt{color:var(--rm-ink)!important}
+/* one page: no second tab row; wider task column so titles read on one or two lines */
+body.oh-on #hubSub .hsub{display:none}
+.rm-canvas .rm-world .rm-tree{min-width:340px;max-width:400px}
+.rm-canvas,.rm-canvas .rm-world{background-image:none!important}
+.rm-canvas{background-color:#101215!important}
+.rm-canvas .rm-world .rm-tree{border-left:0!important;box-shadow:none!important}
+.rm-canvas .rm-world .rm-tree::before,.rm-canvas .rm-world .rm-tree::after{display:none!important}
+.rm-canvas .rm-world .rm-tag{background:none!important;border:0!important;padding:0!important}
+.rm-canvas .rm-allc{position:absolute;right:16px;top:14px;z-index:5;font:var(--rm-t4);color:var(--rm-ink2);background:var(--rm-s2);border:1px solid var(--rm-line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.rm-canvas .rm-allc[aria-pressed="true"]{color:var(--rm-ink);border-color:var(--rm-accent)}

@@ -49,6 +49,8 @@ const rmTone=id=>{try{const g=tgGet(id);if(g&&g.color)return g.color;}catch(e){}
 function rmTint(e,c){e.style.setProperty("--tone",c);e.dataset.tone=c;return e;}
 const RM_GX=88,RM_CP=380,RM_RG=28,RM_BG=64,RM_LH=16,RM_TG=72,RM_BW=256;
 function rmSat(world,e,node,dx,dy){e.dataset.for=node;e.dataset.dx=dx;e.dataset.dy=dy;world.append(e);return e;}
+function rmAllC(){return rmLS("rm-allc")==="1";}
+function rmAllToggle(){try{localStorage.setItem("rm-allc",rmAllC()?"0":"1");}catch(e){}rmView=null;rmBoard();}
 function rmBranchBlock(world,b,bc,pos,tone){const t=state.tasks[b.id]||{},id=b.id,node="b:"+id;
   const k=rmTasks(id),dn=k.filter(x=>x.done).length;
   const st=t.bState==="paused"?"Paused":t.bState==="done"?"Finished":"";
@@ -59,7 +61,7 @@ function rmBranchBlock(world,b,bc,pos,tone){const t=state.tasks[b.id]||{},id=b.i
   sats.push([el("div",{class:"rm-prog","data-bid":id,style:"width:"+be.offsetWidth+"px"},el("span",{style:"width:"+(k.length?Math.round(100*dn/k.length):0)+"%"})),0,ph+3]);
   if(st)sats.push([el("span",{class:"rm-status","data-bid":id,text:st}),8,ph+9]);
   const colH=RM_LH+ph+(st?26:8);let ul=null,th=0;
-  if(!bc.has(id)){ul=rmTree(id);world.append(ul);th=ul.offsetHeight;}
+  if(!bc.has(id)&&!rmAllC()){ul=rmTree(id);world.append(ul);th=ul.offsetHeight;}
   const h=Math.max(colH,th);
   return {be,h,ul,place(x,top){const o=pos[node],px=o?o.x:x,py=o?o.y:top+(h-colH)/2+RM_LH;rmPut(be,px,py);
     sats.forEach(([e,dx,dy])=>{if(!e.parentNode)world.append(e);rmSat(world,e,node,dx,dy);});
@@ -100,6 +102,7 @@ function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag
   const svg=document.createElementNS(RM_NS,"svg");svg.setAttribute("class","rm-wires");svg.id="rmWires";
   const world=el("div",{class:"rm-world",id:"rmWorld"});world.append(svg);
   const canvas=el("div",{class:"rm-canvas",id:"rmCanvas"},world);
+  canvas.append(el("button",{type:"button",class:"rm-allc","aria-pressed":String(rmAllC()),title:"Show or hide all tasks",onclick:e=>{e.stopPropagation();rmAllToggle();}},rmAllC()?"Show tasks":"Hide tasks"));
   if(!rmLS("rm-hint"))canvas.append(el("p",{class:"rm-hint",text:"Drag to look around. Pinch or Ctrl and scroll to zoom. Double tap to fit. Hold a box to move it."}));
   const oi=document.querySelector("#rmBody .rm-ttree .rm-in");const tIn={had:!!oi&&document.activeElement===oi,v:oi?oi.value:""};
   body.replaceChildren(canvas);rmLinks=[];
@@ -135,7 +138,11 @@ function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag
       if(bd.today||b.link||b.be.classList.contains("rm-branch")){const lk={a:bd.pe,b:b.be,t:"h",lane:ci>0?rt-RM_RG/2:null};
         lk.ax=bd.pe.offsetLeft+bd.pe.offsetWidth;lk.ay=bd.pe.offsetTop+bd.pe.offsetHeight/2;lk.bx=b.be.offsetLeft;lk.by=b.be.offsetTop+b.be.offsetHeight/2;rmLinks.push(lk);}});
       rt+=rowH[ri]+RM_RG;});
-    y+=bandH+RM_BG;});
+    bd.pTop=y;bd.pH=bandH;y+=bandH+RM_BG;});
+  bands.forEach(bd=>{if(bd.pTop==null)return;let r=bd.pe.offsetLeft+bd.pe.offsetWidth;bd.blocks.forEach(b=>{r=Math.max(r,b.be.offsetLeft+b.be.offsetWidth);if(b.ul)r=Math.max(r,b.ul.offsetLeft+b.ul.offsetWidth);});
+    const lo=Math.min(bd.pTop,bd.pe.offsetTop),hi=Math.max(bd.pTop+bd.pH,bd.pe.offsetTop+bd.pe.offsetHeight+60);
+    [...world.children].forEach(n=>{if(n.tagName==="svg"||n.classList.contains("rm-panel")||n===bd.pe)return;if(n.offsetTop>=lo-4&&n.offsetTop<hi&&n.offsetLeft>bd.pe.offsetLeft+bd.pe.offsetWidth)r=Math.max(r,n.offsetLeft+n.offsetWidth);});
+    const pn=el("div",{class:"rm-panel","aria-hidden":"true"});pn.style.cssText="left:"+(bd.pe.offsetLeft-20)+"px;top:"+(lo-12)+"px;width:"+(r-bd.pe.offsetLeft+60)+"px;height:"+(hi-lo+24)+"px";pn.style.setProperty("--tone",bd.pe.dataset.tone||"#8E949E");world.insertBefore(pn,world.firstChild);});
   // below-parent elements follow their parent when dragged
   bands.forEach(bd=>{if(!bd.pid)return;bd.below.forEach(([e,g,k])=>{if(k==="addb"){e.dataset.for="p:"+bd.pid;e.dataset.dx=e.offsetLeft-bd.pe.offsetLeft;e.dataset.dy=e.offsetTop-bd.pe.offsetTop;}});});
   rmPut(np,40,y);

@@ -30,6 +30,6 @@ function rmTodayBlocks(world,tIn){const d=iso(new Date()),L=rmTodayTasks(d),hidd
         const br=rmBranches(pid)[0],body={title,cat:"setup",parent:br?br.id:null,date:d,due:d,done:false,order:Date.now()};
         try{const ref=await store.add("tasks",body);state.tasks[ref.id]=body;render();v3undoToast("Added: "+title,()=>patchTask(ref.id,{cut:true}));}catch(err){fail(err);}}});
       inp.addEventListener("blur",()=>{if(!inp.value.trim())setTimeout(render,0);});};
-    world.append(tree);const th=tree.offsetHeight,colH=RM_LH+ph+8,h=Math.max(colH,th);
-    return {be,h,place(x,top){rmPut(be,x,top+(h-colH)/2+RM_LH);rmSat(world,tree,node,be.offsetWidth+RM_TG,Math.round(top+(h-th)/2-(top+(h-colH)/2+RM_LH)));
+    if(!rmAllC())world.append(tree);const th=rmAllC()?0:tree.offsetHeight,colH=RM_LH+ph+8,h=Math.max(colH,th);
+    return {be,h,place(x,top){rmPut(be,x,top+(h-colH)/2+RM_LH);if(rmAllC()){rmFollow(be);return;}rmSat(world,tree,node,be.offsetWidth+RM_TG,Math.round(top+(h-th)/2-(top+(h-colH)/2+RM_LH)));
       tree.querySelectorAll("li.rm-task").forEach(li=>rmLinks.push({a:be,b:li,ul:tree,t:"li"}));rmFollow(be);}};});}
