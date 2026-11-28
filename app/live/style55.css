@@ -97,3 +97,13 @@ body.oh-on #hubSub .hsub{display:none}
 .rm-canvas .rm-world .rm-tag{background:none!important;border:0!important;padding:0!important}
 .rm-canvas .rm-allc{position:absolute;right:16px;top:14px;z-index:5;font:var(--rm-t4);color:var(--rm-ink2);background:var(--rm-s2);border:1px solid var(--rm-line);border-radius:999px;padding:6px 14px;cursor:pointer}
 .rm-canvas .rm-allc[aria-pressed="true"]{color:var(--rm-ink);border-color:var(--rm-accent)}
+/* readable sizes: nobody should squint. Task 16, branch 18, parent 26, meta 14. Names: 2 lines, about 20 letters each */
+.rm-canvas{--rm-t1:500 26px/32px var(--f-body,system-ui);--rm-t2:500 18px/24px var(--f-body,system-ui);--rm-t3:400 16px/22px var(--f-body,system-ui);--rm-t4:400 14px/20px var(--f-body,system-ui);--rm-t5:500 13px/16px var(--f-body,system-ui)}
+.rm-canvas .rm-task .rm-tt,.rm-canvas .rm-bname,.rm-canvas .rm-pname,.x27-col .rm-tt{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;max-width:21ch;overflow-wrap:anywhere;white-space:normal;text-overflow:ellipsis}
+.rm-canvas .rm-world .rm-parent,.rm-canvas .rm-world .rm-tparent{white-space:normal}
+.rm-canvas .rm-world .rm-branch,.rm-canvas .rm-world .rm-tbranch{min-height:56px}
+.rm-canvas .rm-world .rm-tree{min-width:400px;max-width:460px}
+.rm-canvas .rm-world .rm-check{width:22px;height:22px}
+.x26-start{font-size:14px!important;line-height:22px!important;padding:3px 14px!important}
+.x26-x{font-size:20px!important}
+.x27-col .rm-tt{font:400 16px/22px var(--f-body,system-ui)!important}

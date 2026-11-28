@@ -15,7 +15,7 @@ function rmSize(){const c=document.getElementById("rmCanvas");if(!c)return;c.sty
 const rmClampK=k=>Math.max(.1,Math.min(4,k));
 function rmFit(){const c=document.getElementById("rmCanvas"),w=document.getElementById("rmWorld");if(!c||!w||!c.clientWidth)return;
   let a=1e9,b=1e9,r=-1e9;[...w.children].forEach(n=>{if(n.tagName==="svg"||n.classList.contains("rm-wires"))return;a=Math.min(a,n.offsetLeft);b=Math.min(b,n.offsetTop);r=Math.max(r,n.offsetLeft+n.offsetWidth);});
-  if(r<a)return;const k=Math.min(1,Math.max(.8,c.clientWidth/(r-a+64)));
+  if(r<a)return;const k=1;
   rmView={x:32-a*k,y:24-b*k,k};rmApply();}
 function rmTaskRow(t,opt){opt=opt||{};const id=t.id,bits=[];if(t.due)bits.push(plDue(t.due));if(opt.branch)bits.push(bkName(id));
   return el("li",{class:"rm-task"+(t.done?" done":""),"data-id":id},
@@ -47,7 +47,7 @@ function rmFollow(n){const w=n.parentNode;if(!w)return;
   w.querySelectorAll('[data-for="'+n.dataset.node+'"]').forEach(s=>rmPut(s,n.offsetLeft+Number(s.dataset.dx),n.offsetTop+Number(s.dataset.dy)));}
 const rmTone=id=>{try{const g=tgGet(id);if(g&&g.color)return g.color;}catch(e){}const m={others:"#8E949E",habits:"#9FB58F",today:"#C9A978"};if(m[id])return m[id];const i=rmParents().findIndex(p=>p.id===id);const pal=(typeof TG_PAL!=="undefined"&&TG_PAL.length)?TG_PAL:["#7F9FC4","#C9A978","#A994C9","#7FB5A8","#C98F8F","#9FB58F","#B58FA9","#8FB0B8"];return pal[(i<0?0:i)%pal.length];};
 function rmTint(e,c){e.style.setProperty("--tone",c);e.dataset.tone=c;return e;}
-const RM_GX=88,RM_CP=380,RM_RG=28,RM_BG=64,RM_LH=16,RM_TG=72,RM_BW=256;
+const RM_GX=88,RM_CP=380,RM_RG=28,RM_BG=64,RM_LH=16,RM_TG=72,RM_BW=288;
 function rmSat(world,e,node,dx,dy){e.dataset.for=node;e.dataset.dx=dx;e.dataset.dy=dy;world.append(e);return e;}
 function rmAllC(){return rmLS("rm-allc")==="1";}
 function rmAllToggle(){try{localStorage.setItem("rm-allc",rmAllC()?"0":"1");}catch(e){}rmView=null;rmBoard();}
