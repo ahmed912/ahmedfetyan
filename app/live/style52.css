@@ -1,0 +1,6 @@
+.oh-sname{font-size:20px;font-weight:300;width:100%;overflow:hidden;text-overflow:ellipsis}
+.oh-sstat{margin:8px 0 16px;font-size:13px;color:var(--muted);padding-left:12px;border-left:2px solid var(--bc)}
+.oh-field{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.oh-field .oh-from,.oh-field .oh-to{width:auto}
+.oh-sfoot{display:flex;gap:8px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--line);margin-top:16px}
+.oh-sfoot .oh-arch{margin-right:auto}
