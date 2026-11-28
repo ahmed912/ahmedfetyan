@@ -5,8 +5,17 @@
 .rm-wires{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none}
 .rm-wires path{fill:none;stroke:var(--rm-wire);stroke-width:1}
 .rm-node{position:absolute;color:var(--ink);font-weight:300;user-select:none;-webkit-user-select:none;cursor:pointer}
-.rm-parent{min-width:160px;padding:16px 24px;border:1px solid var(--rm-gold);border-radius:4px;font-size:20px}
+.rm-parent,.rm-tparent{box-sizing:border-box;min-width:160px;padding:16px 24px;border:1px solid var(--rm-gold);border-radius:4px;font-size:20px;line-height:1.25;overflow-wrap:anywhere}
+.rm-tparent{cursor:default}
 .rm-branch{padding:8px 24px;border:1px solid var(--rm-gold);border-radius:999px;font-size:15px;white-space:nowrap;max-width:290px;overflow:hidden;text-overflow:ellipsis}
+.rm-world .rm-branch,.rm-world .rm-tbranch{box-sizing:border-box;display:flex;align-items:baseline;gap:10px;padding:8px 22px;border:1px solid var(--rm-gold);border-radius:999px;font-size:15px;line-height:22px;white-space:nowrap;max-width:290px;overflow:hidden}
+.rm-tbranch{cursor:default}
+.rm-bname{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.rm-world .rm-branch .rm-cnt,.rm-world .rm-tbranch .rm-cnt{margin-left:0;flex:none}
+.rm-status{position:absolute;font-size:11px;line-height:14px;color:var(--muted);font-weight:300;white-space:nowrap;pointer-events:none}
+.rm-brange{line-height:14px}
+.rm-parent .rm-cnt,.rm-tparent .rm-cnt{margin-left:10px}
+.rm-parent .rm-sub{display:block;margin-top:2px}
 .rm-sub,.rm-tag{display:block;font-size:11px;color:var(--muted);margin-top:4px}
 .rm-tree{position:absolute;list-style:none;margin:0;padding:4px 0 0;border-left:1px solid var(--rm-wire);min-width:240px;max-width:290px}
 .rm-task,.rm-more,.rm-addt{position:relative;display:flex;align-items:flex-start;gap:12px;min-height:36px;padding:8px 0 8px 20px;color:var(--ink);font-weight:300}

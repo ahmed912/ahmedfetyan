@@ -8,17 +8,15 @@ const rmPtr=new Map();
 function rmLS(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function rmBc(){if(!rmBcSet){try{rmBcSet=new Set(JSON.parse(rmLS("rm-bc")||"[]"));}catch(e){rmBcSet=new Set();}}return rmBcSet;}
 function rmBcToggle(id){const s=rmBc();if(s.has(id))s.delete(id);else s.add(id);try{localStorage.setItem("rm-bc",JSON.stringify([...s]));}catch(e){}}
-function rmLoadView(){if(rmView)return;try{const v=JSON.parse(rmLS("rm-view")||"null");if(v&&isFinite(v.x)&&isFinite(v.y)&&isFinite(v.k))rmView={x:v.x,y:v.y,k:v.k};}catch(e){}}
-function rmApply(){const w=document.getElementById("rmWorld");if(!w||!rmView)return;w.style.transform="translate("+rmView.x+"px,"+rmView.y+"px) scale("+rmView.k+")";clearTimeout(rmVT);rmVT=setTimeout(()=>{try{localStorage.setItem("rm-view",JSON.stringify(rmView));}catch(e){}},300);}
-const rmClampK=k=>Math.max(.35,Math.min(2,k));
+function rmLoadView(){if(rmView)return;try{const v=JSON.parse(rmLS("rm-view2")||"null");if(v&&isFinite(v.x)&&isFinite(v.y)&&isFinite(v.k))rmView={x:v.x,y:v.y,k:v.k};}catch(e){}}
+function rmApply(){const w=document.getElementById("rmWorld");if(!w||!rmView)return;w.style.transform="translate("+rmView.x+"px,"+rmView.y+"px) scale("+rmView.k+")";clearTimeout(rmVT);rmVT=setTimeout(()=>{try{localStorage.setItem("rm-view2",JSON.stringify(rmView));}catch(e){}},300);}
 function rmZoomAt(px,py,k2){if(!rmView)rmView={x:0,y:0,k:1};k2=rmClampK(k2);const v=rmView,k=v.k;v.x=px-(px-v.x)*(k2/k);v.y=py-(py-v.y)*(k2/k);v.k=k2;rmApply();}
 function rmSize(){const c=document.getElementById("rmCanvas");if(!c)return;c.style.height=Math.max(420,innerHeight-c.getBoundingClientRect().top-16)+"px";}
+const rmClampK=k=>Math.max(.1,Math.min(4,k));
 function rmFit(){const c=document.getElementById("rmCanvas"),w=document.getElementById("rmWorld");if(!c||!w||!c.clientWidth)return;
-  let a=1e9,b=1e9,r=-1e9,d=-1e9;w.querySelectorAll(".rm-node,.rm-tree,.rm-addb,.rm-newp").forEach(n=>{a=Math.min(a,n.offsetLeft);b=Math.min(b,n.offsetTop);r=Math.max(r,n.offsetLeft+n.offsetWidth);d=Math.max(d,n.offsetTop+n.offsetHeight);});
-  if(r<a)return;const fx=a,fy=b;a-=40;b-=40;r+=40;d+=40;const bw=r-a,bh=d-b,kf=Math.min(c.clientWidth/bw,c.clientHeight/bh,1),k=Math.min(2,Math.max(.8,kf));
-  if(kf>=.8)rmView={x:(c.clientWidth-bw*k)/2-a*k,y:(c.clientHeight-bh*k)/2-b*k,k};
-  else{const p=w.querySelector(".rm-parent"),px=p?p.offsetLeft:fx,py=p?p.offsetTop:fy;rmView={x:40-px*k,y:40-py*k,k};}
-  rmApply();}
+  let a=1e9,b=1e9,r=-1e9;[...w.children].forEach(n=>{if(n.tagName==="svg"||n.classList.contains("rm-wires"))return;a=Math.min(a,n.offsetLeft);b=Math.min(b,n.offsetTop);r=Math.max(r,n.offsetLeft+n.offsetWidth);});
+  if(r<a)return;const k=Math.min(1,Math.max(.8,c.clientWidth/(r-a+64)));
+  rmView={x:32-a*k,y:24-b*k,k};rmApply();}
 function rmTaskRow(t,opt){opt=opt||{};const id=t.id,bits=[];if(t.due)bits.push(plDue(t.due));if(opt.branch)bits.push(bkName(id));
   return el("li",{class:"rm-task"+(t.done?" done":""),"data-id":id},
     el("button",{type:"button",class:"rm-check","aria-label":"Mark done: "+(t.title||""),"aria-pressed":String(!!t.done),onclick:e=>{e.stopPropagation();rmCheck(id);}}),
@@ -31,36 +29,110 @@ function rmTree(bid){const all=rmTasks(bid),open=all.filter(t=>!t.done),done=all
   ul.append(el("li",{class:"rm-addt"},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Add task"})));
   return ul;}
 function rmPut(e,x,y){e.style.left=x+"px";e.style.top=y+"px";}
+function rmRound(pts,r){let d="M"+pts[0][0]+" "+pts[0][1];
+  for(let i=1;i<pts.length-1;i++){const p=pts[i],a=pts[i-1],n=pts[i+1],l1=Math.hypot(p[0]-a[0],p[1]-a[1]),l2=Math.hypot(n[0]-p[0],n[1]-p[1]),rr=Math.min(r,l1/2,l2/2);
+    if(rr<1){d+=" L"+p[0]+" "+p[1];continue;}
+    d+=" L"+(p[0]+(a[0]-p[0])*rr/l1)+" "+(p[1]+(a[1]-p[1])*rr/l1)+" Q"+p[0]+" "+p[1]+" "+(p[0]+(n[0]-p[0])*rr/l2)+" "+(p[1]+(n[1]-p[1])*rr/l2);}
+  const z=pts[pts.length-1];return d+" L"+z[0]+" "+z[1];}
 function rmWires(){const s=document.getElementById("rmWires");if(!s)return;s.replaceChildren();
   const add=d=>{const p=document.createElementNS(RM_NS,"path");p.setAttribute("d",d);s.append(p);};
   rmLinks.forEach(l=>{const a=l.a,b=l.b;if(!a.isConnected||!b.isConnected)return;
-    if(l.t==="v"){const x=b.offsetLeft+9;add("M"+x+" "+(a.offsetTop+a.offsetHeight)+" L"+x+" "+b.offsetTop);}
-    else add("M"+(a.offsetLeft+a.offsetWidth)+" "+(a.offsetTop+a.offsetHeight/2)+" L"+b.offsetLeft+" "+(b.offsetTop+b.offsetHeight/2));});}
+    if(l.t==="v"){const x=b.offsetLeft+9;add("M"+x+" "+(a.offsetTop+a.offsetHeight)+" L"+x+" "+b.offsetTop);return;}
+    const ax=a.offsetLeft+a.offsetWidth,ay=a.offsetTop+a.offsetHeight/2,bx=b.offsetLeft,by=b.offsetTop+b.offsetHeight/2;
+    if(l.ax===ax&&l.ay===ay&&l.bx===bx&&l.by===by){const tx=ax+36;
+      add(rmRound(l.lane==null?[[ax,ay],[tx,ay],[tx,by],[bx,by]]:[[ax,ay],[tx,ay],[tx,l.lane],[bx-16,l.lane],[bx-16,by],[bx,by]],14));}
+    else{const m=(ax+bx)/2;add("M"+ax+" "+ay+" C"+m+" "+ay+" "+m+" "+by+" "+bx+" "+by);}});}
 function rmFollow(n){const w=n.parentNode;if(!w)return;
-  if(n.classList.contains("rm-branch")){const t=w.querySelector('.rm-tree[data-bid="'+n.dataset.bid+'"]');if(t)rmPut(t,n.offsetLeft+24,n.offsetTop+n.offsetHeight+12);}
-  else{const b=w.querySelector('.rm-addb[data-pid="'+n.dataset.pid+'"]');if(b)rmPut(b,n.offsetLeft+16,n.offsetTop+n.offsetHeight+40);}}
+  w.querySelectorAll('[data-for="'+n.dataset.node+'"]').forEach(s=>rmPut(s,n.offsetLeft+Number(s.dataset.dx),n.offsetTop+Number(s.dataset.dy)));}
+const RM_GX=88,RM_CP=380,RM_RG=40,RM_BG=80,RM_LH=16;
+function rmSat(world,e,node,dx,dy){e.dataset.for=node;e.dataset.dx=dx;e.dataset.dy=dy;world.append(e);return e;}
+function rmBranchBlock(world,b,bc,pos){const t=state.tasks[b.id]||{},id=b.id,node="b:"+id;
+  const k=rmTasks(id),dn=k.filter(x=>x.done).length;
+  const st=t.bState==="paused"?"Paused":t.bState==="done"?"Finished":"";
+  const be=el("div",{class:"rm-node rm-branch","data-node":node,"data-bid":id},el("span",{class:"rm-bname",dir:"auto",text:b.title||"Branch"}),el("span",{class:"rm-cnt",text:dn+"/"+k.length}));
+  world.append(be);const ph=be.offsetHeight,sats=[];
+  const rg=typeof rmRange==="function"?rmRange(t):"";
+  if(rg)sats.push([el("span",{class:"rm-brange","data-bid":id,text:rg}),0,-RM_LH]);
+  sats.push([el("div",{class:"rm-prog","data-bid":id,style:"width:"+be.offsetWidth+"px"},el("span",{style:"width:"+(k.length?Math.round(100*dn/k.length):0)+"%"})),0,ph+3]);
+  if(st)sats.push([el("span",{class:"rm-status","data-bid":id,text:st}),8,ph+9]);
+  let th=0;
+  if(!bc.has(id)){const ul=rmTree(id);sats.push([ul,24,ph+(st?30:14)]);world.append(ul);th=ul.offsetHeight;}
+  const h=RM_LH+ph+(th?(st?30:14)+th:(st?26:8));
+  return {be,h,place(x,top){const o=pos[node],px=o?o.x:x,py=o?o.y:top+RM_LH;rmPut(be,px,py);
+    sats.forEach(([e,dx,dy])=>{if(!e.parentNode)world.append(e);rmSat(world,e,node,dx,dy);});rmFollow(be);}};}
+function rmTodayLane(world,tIn){const d=iso(new Date()),L=rmTodayTasks(d);
+  const tree=el("ul",{class:"rm-tree rm-ttree"});
+  L.due.forEach(t=>tree.append(rmTaskRow(t,{branch:1})));
+  if(L.early.length){tree.append(el("li",{class:"rm-more rm-early",onclick:()=>{rmTodayEarly=!rmTodayEarly;render();}},L.early.length+" from earlier days"));
+    if(rmTodayEarly)L.early.forEach(t=>tree.append(rmTaskRow(t,{branch:1})));}
+  if(L.done.length){tree.append(el("li",{class:"rm-more rm-donec",onclick:()=>{rmTodayDone=!rmTodayDone;render();}},L.done.length+" done"));
+    if(rmTodayDone)L.done.forEach(t=>tree.append(rmTaskRow(t,{branch:1})));}
+  if(!L.due.length&&!L.early.length)tree.append(el("li",{class:"rm-empty hint"},"Nothing due today. Give a task today's due date and it shows here."));
+  const add=el("li",{class:"rm-addt"},el("span",{class:"rm-plus",text:"+"}),"Add task");tree.append(add);
+  const be=el("div",{class:"rm-node rm-tbranch rm-static","data-node":"tb"},el("span",{class:"rm-bname",text:"Today"}),el("span",{class:"rm-cnt",text:String(L.due.length)}));
+  world.append(be);world.append(tree);
+  if(typeof rmTodayInput==="function"){add.onclick=()=>{rmTodayAdd=true;rmTodayInput(add,d);};
+    if(rmTodayAdd){rmTodayInput(add,d,!!tIn.had);const n=tree.querySelector(".rm-in");if(n&&tIn.v)n.value=tIn.v;}}
+  const ph=be.offsetHeight,th=tree.offsetHeight,h=RM_LH+ph+14+th;
+  const dt=el("span",{class:"rm-brange",text:fmt(d,{weekday:"short",day:"numeric",month:"short"})});
+  return {be,h,place(x,top){rmPut(be,x,top+RM_LH);[[dt,0,-RM_LH],[tree,24,ph+14]].forEach(([e,dx,dy])=>rmSat(world,e,"tb",dx,dy));rmFollow(be);}};}
+function rmHabitsBand(world){if(!rmHOn()||typeof rmHGrid!=="function")return null;
+  v3loadHabits();const today=iso(new Date()),list=hbList(),mk=rmHCur(),per=rmHPerRow();
+  const tod=list.filter(h=>rmHTicked(today,h.id)).length;
+  const pe=el("div",{class:"rm-node rm-hparent","data-node":"hp"},el("span",{class:"rm-pname",text:"Habits"}),el("span",{class:"rm-cnt",text:tod+"/"+list.length}));
+  world.append(pe);
+  const nav=el("div",{class:"rm-hnav"},el("button",{type:"button",class:"rm-hprev","aria-label":"Earlier month",text:"‹"}),el("span",{class:"rm-hmon",text:rmHMonthName(mk)}),el("button",{type:"button",class:"rm-hnext","aria-label":"Later month",text:"›"}));
+  const ab=el("button",{type:"button",class:"rm-hadd"},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Add Branch"}));
+  world.append(nav);world.append(ab);
+  const blocks=list.map(h=>{const be=el("div",{class:"rm-node rm-hb","data-hid":h.id},el("span",{class:"rm-bname",text:h.name}));world.append(be);
+    const bh=be.offsetHeight,bw=be.offsetWidth,gw=per*30+(per-1)*6,pc=el("span",{class:"rm-hpct","data-hid":h.id,text:rmHPct(h.id,mk,today)+"%"}),g=rmHGrid(h.id,mk,today,per);
+    world.append(pc);world.append(g);
+    return {be,h:bh+14+g.offsetHeight,lh:0,place(x,top){rmPut(be,x,top);rmPut(g,x,top+bh+14);rmPut(pc,x+Math.max(gw-52,bw+12),top+bh/2-9);},link:true};});
+  return {pe,blocks,below:[[nav,16],[ab,16]],cols:1,hab:true,extra:{nav,ab}};}
 function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag)return;rmLoadView();
   const pos=rmCfg().pos||{},bc=rmBc();
   const svg=document.createElementNS(RM_NS,"svg");svg.setAttribute("class","rm-wires");svg.id="rmWires";
   const world=el("div",{class:"rm-world",id:"rmWorld"});world.append(svg);
   const canvas=el("div",{class:"rm-canvas",id:"rmCanvas"},world);
   if(!rmLS("rm-hint"))canvas.append(el("p",{class:"rm-hint",text:"Drag to look around. Pinch or Ctrl and scroll to zoom. Double tap to fit. Hold a box to move it."}));
-  body.replaceChildren(canvas);rmLinks=[];let y=40;
-  rmParents().forEach(p=>{const subs=rmBranches(p.id);
+  const oi=document.querySelector("#rmBody .rm-ttree .rm-in");const tIn={had:!!oi&&document.activeElement===oi,v:oi?oi.value:""};
+  body.replaceChildren(canvas);rmLinks=[];
+  const bands=[];
+  // Today lane first
+  {const tp=el("div",{class:"rm-node rm-tparent rm-static","data-node":"tp"},el("span",{class:"rm-pname",text:"Today"}));world.append(tp);
+    bands.push({pe:tp,blocks:[rmTodayLane(world,tIn)],below:[],cols:1,today:true});}
+  rmParents().forEach(p=>{const subs=p.collapsed?[]:rmBranches(p.id);let d=0,t=0;
+    rmBranches(p.id).forEach(b=>{const k=rmTasks(b.id);t+=k.length;d+=k.filter(x=>x.done).length;});
     const pe=el("div",{class:"rm-node rm-parent","data-node":"p:"+p.id,"data-pid":p.id},el("span",{class:"rm-pname",dir:"auto",text:p.name}),
-      p.collapsed?el("span",{class:"rm-sub",text:subs.length+(subs.length===1?" branch":" branches")}):null);
-    world.append(pe);const ph=pe.offsetHeight,pp=pos["p:"+p.id]||{x:40,y};rmPut(pe,pp.x,pp.y);let tall=0;
-    if(!p.collapsed){
-      const ab=el("button",{type:"button",class:"rm-addb","data-pid":p.id},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Add Branch"}));
-      world.append(ab);rmPut(ab,pp.x+16,pp.y+ph+40);rmLinks.push({a:pe,b:ab,t:"v"});
-      subs.forEach((b,i)=>{const t=state.tasks[b.id]||{};
-        const be=el("div",{class:"rm-node rm-branch","data-node":"b:"+b.id,"data-bid":b.id},el("span",{class:"rm-bname",dir:"auto",text:b.title||"Branch"}),t.bState==="paused"?el("span",{class:"rm-sub",text:"Paused"}):null);
-        world.append(be);const bh=be.offsetHeight,bp=pos["b:"+b.id]||{x:340+i*320,y};rmPut(be,bp.x,bp.y);rmLinks.push({a:pe,b:be,t:"h"});
-        let th=0;if(!bc.has(b.id)){const ul=rmTree(b.id);world.append(ul);rmPut(ul,bp.x+24,bp.y+bh+12);th=ul.offsetHeight;}
-        tall=Math.max(tall,th+bh+24);});}
-    y+=Math.max(ph+96,tall)+80;});
-  let mb=0;world.querySelectorAll(".rm-node,.rm-tree,.rm-addb").forEach(n=>{mb=Math.max(mb,n.offsetTop+n.offsetHeight);});
-  const np=el("button",{type:"button",class:"rm-newp"},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Create new Parent"}));world.append(np);rmPut(np,40,mb+80);
+      el("span",{class:"rm-cnt",text:d+"/"+t}),p.collapsed?el("span",{class:"rm-sub",text:rmBranches(p.id).length+(rmBranches(p.id).length===1?" branch":" branches")}):null);
+    world.append(pe);const below=[];
+    if(!p.collapsed){const ab=el("button",{type:"button",class:"rm-addb","data-pid":p.id},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Add Branch"}));world.append(ab);below.push([ab,16,"addb"]);}
+    bands.push({pe,pid:p.id,blocks:subs.map(b=>rmBranchBlock(world,b,bc,pos)),below,cols:3});});
+  const hb=rmHabitsBand(world);if(hb)bands.push(hb);
+  const np=el("button",{type:"button",class:"rm-newp"},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Create new Parent"}));world.append(np);
+  // parent column width
+  let PW=200;bands.forEach(b=>{PW=Math.max(PW,b.pe.offsetWidth);});PW=Math.min(PW,260);bands.forEach(b=>{b.pe.style.width=PW+"px";});
+  const x0=40+PW+RM_GX,cw=canvas.clientWidth||1300;
+  let cols=3;while(cols>1&&(x0+cols*RM_CP)*.8>cw)cols--;
+  let y=40;
+  bands.forEach(bd=>{const ph=bd.pe.offsetHeight,nc=bd.cols===1?1:cols;
+    const rows=[];bd.blocks.forEach((b,i)=>{if(i%nc===0)rows.push([]);rows[rows.length-1].push(b);});
+    const rowH=rows.map(r=>Math.max(...r.map(b=>b.h)));
+    const content=rowH.reduce((a,b)=>a+b,0)+RM_RG*Math.max(0,rows.length-1);
+    const belowH=bd.below.reduce((a,[e,g])=>a+g+e.offsetHeight,0);
+    const bandH=Math.max(content,ph+2*belowH);
+    const pp=pos[bd.pe.dataset.node]||{x:40,y:bd.today?y+RM_LH+Math.round((bd.blocks[0].be.offsetHeight-ph)/2):y+Math.round((bandH-ph)/2)};
+    rmPut(bd.pe,pp.x,pp.y);let by=pp.y+ph;
+    bd.below.forEach(([e,g,k])=>{by+=g;rmPut(e,pp.x+16,by);by+=e.offsetHeight;if(k==="addb")rmLinks.push({a:bd.pe,b:e,t:"v"});});
+    let rt=y;
+    rows.forEach((r,ri)=>{r.forEach((b,ci)=>{const bx=x0+ci*RM_CP;b.place(bx,rt);
+      if(bd.today||b.link||b.be.classList.contains("rm-branch")){const lk={a:bd.pe,b:b.be,t:"h",lane:ci>0?rt-RM_RG/2:null};
+        lk.ax=bd.pe.offsetLeft+bd.pe.offsetWidth;lk.ay=bd.pe.offsetTop+bd.pe.offsetHeight/2;lk.bx=b.be.offsetLeft;lk.by=b.be.offsetTop+b.be.offsetHeight/2;rmLinks.push(lk);}});
+      rt+=rowH[ri]+RM_RG;});
+    y+=bandH+RM_BG;});
+  // below-parent elements follow their parent when dragged
+  bands.forEach(bd=>{if(!bd.pid)return;bd.below.forEach(([e,g,k])=>{if(k==="addb"){e.dataset.for="p:"+bd.pid;e.dataset.dx=e.offsetLeft-bd.pe.offsetLeft;e.dataset.dy=e.offsetTop-bd.pe.offsetTop;}});});
+  rmPut(np,40,y);
   rmSize();rmWires();if(rmView)rmApply();else rmFit();
   requestAnimationFrame(()=>{rmWires();if(!rmView)rmFit();});
   rmBind(canvas);}

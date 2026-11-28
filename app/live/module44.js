@@ -8,8 +8,12 @@ function rmCfg(){const r=rmRaw()||{};
 const rmParents=()=>rmCfg().parents.filter(p=>!p.deleted).sort((a,b)=>(a.ord??1e9)-(b.ord??1e9));
 function rmParentOf(bid){const c=rmCfg(),alive=id=>c.parents.some(p=>p.id===id&&!p.deleted);
   const m=c.map[bid];if(m&&alive(m))return m;
-  let g=null;try{g=tgFor(state.tasks[bid],bid);}catch(e){}
-  const id=g&&g.id;return id&&(id==="work"||id==="brand"||id==="learning")&&alive(id)?id:"others";}
+  const t=state.tasks[bid]||{},ti=String(t.title||"");let id=null;
+  if(/brand|linkedin/i.test(ti))id="brand";
+  else if(/\b(learning|study|course|book)/i.test(ti))id="learning";
+  else if(/hasm|javelin|real estate|mugassam|review|portfolio|client|studio/i.test(ti))id="work";
+  else{let g=null;try{g=tgFor(t,bid);}catch(e){}id=g&&g.id;}
+  return id&&(id==="work"||id==="brand"||id==="learning")&&alive(id)?id:"others";}
 const rmBranches=pid=>bkList().filter(b=>!b.archived&&!b.cut&&rmParentOf(b.id)===pid).sort(bkSort);
 const rmTasks=bid=>bkKids(bid).sort(bkSort);
 function rmSave(next,msg){const c0=rmCfg(),now=Date.now(),old=(state.plans||{})[RM_DOC]?mxClone(state.plans[RM_DOC]):null;
