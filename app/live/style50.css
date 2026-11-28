@@ -1,0 +1,17 @@
+.oh-rail{min-width:0}
+body:not(.oh-on) .oh-rail{display:none}
+.oh-stats{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px}
+.oh-seg{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;flex:none}
+.oh-seg button{all:unset;cursor:pointer;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:300;color:var(--muted)}
+.oh-seg button[aria-pressed="true"]{color:var(--ink);background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--rm-gold,#c9a978)}
+.oh-stat{all:unset;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;cursor:pointer}
+div.oh-stat{cursor:default}
+.oh-num{font-size:20px;font-weight:300;font-variant-numeric:tabular-nums;color:var(--ink)}
+.oh-lbl{font-size:15px;font-weight:300}
+.oh-sub{display:block;font-size:11px;color:var(--muted)}
+.oh-log{list-style:none;margin:0;padding:0;max-height:70vh;overflow-y:auto}
+.oh-lrow{display:grid;grid-template-columns:18px minmax(0,1fr) auto auto;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.oh-lck{width:16px;height:16px;border-radius:50%;background:var(--bc);margin-top:2px}
+.oh-lt{display:block;font-size:15px;font-weight:300;color:var(--muted);text-decoration:line-through;overflow-wrap:anywhere}
+.oh-lb{display:block;font-size:11px;color:var(--bc);margin-top:4px}
+.oh-chip{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 8px;white-space:nowrap}
