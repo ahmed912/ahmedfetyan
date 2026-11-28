@@ -106,7 +106,7 @@ function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag
   const bands=[];
   // Today lane first
   {const tp=el("div",{class:"rm-node rm-tparent rm-static","data-node":"tp"},el("span",{class:"rm-pname",text:"Today"}));rmTint(tp,"#C9A978");world.append(tp);
-    bands.push({pe:tp,blocks:[rmTodayLane(world,tIn)],below:[],cols:1,today:true});}
+    const tb=typeof rmTodayBlocks==="function"?rmTodayBlocks(world,tIn):[rmTodayLane(world,tIn)],tbelow=[];if(typeof rmTodayAddBtn==="function"){const ab=rmTodayAddBtn();world.append(ab);tbelow.push([ab,16]);}bands.push({pe:tp,blocks:tb,below:tbelow,cols:1,today:true});}
   rmParents().forEach(p=>{const subs=p.collapsed?[]:rmBranches(p.id);let d=0,t=0;
     rmBranches(p.id).forEach(b=>{const k=rmTasks(b.id);t+=k.length;d+=k.filter(x=>x.done).length;});
     const pe=el("div",{class:"rm-node rm-parent","data-node":"p:"+p.id,"data-pid":p.id},el("span",{class:"rm-pname",dir:"auto",text:p.name}),
@@ -127,7 +127,7 @@ function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag
     const content=rowH.reduce((a,b)=>a+b,0)+RM_RG*Math.max(0,rows.length-1);
     const belowH=bd.below.reduce((a,[e,g])=>a+g+e.offsetHeight,0);
     const bandH=Math.max(content,ph+2*belowH);
-    const pp=pos[bd.pe.dataset.node]||{x:40,y:bd.today?y+RM_LH+Math.round((bd.blocks[0].be.offsetHeight-ph)/2):y+Math.round((bandH-ph)/2)};
+    const pp=pos[bd.pe.dataset.node]||{x:40,y:bd.today&&bd.blocks.length===1?y+RM_LH+Math.round((bd.blocks[0].be.offsetHeight-ph)/2):y+Math.round((bandH-ph)/2)};
     rmPut(bd.pe,pp.x,pp.y);let by=pp.y+ph;
     bd.below.forEach(([e,g,k])=>{by+=g;rmPut(e,pp.x+16,by);by+=e.offsetHeight;if(k==="addb")rmLinks.push({a:bd.pe,b:e,t:"v"});});
     let rt=y;
