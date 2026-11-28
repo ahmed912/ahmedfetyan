@@ -24,6 +24,11 @@ run(async b=>{for(const w of [1300,1024]){console.log('== width',w);
   ok('has boxes '+out.length,out.length>30);
   let bad=[];for(let i=0;i<out.length;i++)for(let j=i+1;j<out.length;j++){const a=out[i],c=out[j];
     if(a.x<c.x+c.w-2&&c.x<a.x+a.w-2&&a.y<c.y+c.h-2&&c.y<a.y+a.h-2)bad.push(a.n+JSON.stringify([a.x,a.y,a.w,a.h])+' X '+c.n+JSON.stringify([c.x,c.y,c.w,c.h]));}
+  {const pn=await pg.evaluate("[...document.querySelectorAll('#rmWorld .rm-panel')].map(e=>({x:e.offsetLeft,y:e.offsetTop,w:e.offsetWidth,h:e.offsetHeight}))");let pb=0;
+   for(let i=0;i<pn.length;i++)for(let j=i+1;j<pn.length;j++){const a=pn[i],b=pn[j];if(a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h)pb++;}
+   ok('no panel overlaps '+pn.length,pn.length>3&&pb===0,pb);
+   const tx=await pg.evaluate("(()=>{const r=[...document.querySelectorAll('#rmWorld .rm-node,#rmWorld .rm-tree')].map(e=>e.getBoundingClientRect()).filter(q=>q.width>0);let n=0;for(let i=0;i<r.length;i++)for(let j=i+1;j<r.length;j++){const a=r[i],b=r[j];if(a.left<b.right-1&&b.left<a.right-1&&a.top<b.bottom-1&&b.top<a.bottom-1)n++;}return n;})()");
+   ok('no node or task column overlaps',tx===0,tx);}
   ok('no overlaps',bad.length===0,bad.slice(0,4).join(' ; '));
   ok('none negative',out.every(o=>o.x>=0&&o.y>=0));
   const tops=await pg.evaluate("[...document.querySelectorAll('#rmWorld .rm-parent,#rmWorld .rm-tparent,#rmWorld .rm-hparent')].map(e=>[e.className.split(' ')[1],e.offsetTop])");
