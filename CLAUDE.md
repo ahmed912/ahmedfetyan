@@ -15,5 +15,7 @@
 ## Edit queue policy
 - New edits go in app/EDIT_QUEUE.md, run in the window Tue 18:00 to Wed 18:00 Egypt time.
 - Only the word "vital" overrides the queue. Vital = loses or hides data or billable time, breaks sync, blocks work, security.
+## Design principle (his words, 28 Nov)
+- The optimum app is not the complete app: it lowers cognitive load with the fewest features. Every new feature must replace or remove something. Retire unused features (hide, never delete data).
 ## Where things are
 - Read hub/INDEX.md first.
