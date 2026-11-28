@@ -13,3 +13,4 @@
 - 20 Nov: Gym routine 6 to 5 days. Reason: one leg day is right as a coach.
 - 20 Nov: Today page: keep the theme exactly, only unify spacing. Reason: he likes the current look.
 - 28 Nov: Planning model (his words): the mind can plan a monthly direction, a weekly plan and a pre-set Today, but cannot memorise or decide every day. Daily load comes from accidental and new tasks, so they need fast, easy capture with the lowest effort. Mapping: month = Roadmap board (parents and branches), week = matrix, Today = pre-set list, accidents = Capture (no decisions at capture, triage later).
+- 28 Nov (binding): the mind-map Roadmap board from his sketch must stay. The one page offers two views of the same data with one switch: Board (mind map) and Page (cards like his reference app).
