@@ -1,0 +1,5 @@
+/* style48 next-prayer chip: calm glass pill, top right, no icon */
+.pc-chip{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:27;font:inherit;font-size:12px;line-height:1;padding:6px 10px;border-radius:999px;border:1px solid color-mix(in oklab,var(--line) 70%,transparent);background:color-mix(in oklab,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--muted);font-variant-numeric:tabular-nums;cursor:pointer;max-width:46vw;white-space:nowrap}
+.pc-chip[hidden]{display:none!important}
+body.has-run .pc-chip{display:none}
+@media (max-width:720px){.pc-chip{right:auto;left:max(24px,env(safe-area-inset-left,0px));top:calc(4px + env(safe-area-inset-top,0px));padding:4px 9px;font-size:11px}}
