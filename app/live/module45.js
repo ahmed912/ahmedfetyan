@@ -8,14 +8,14 @@ const rmPtr=new Map();
 function rmLS(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function rmBc(){if(!rmBcSet){try{rmBcSet=new Set(JSON.parse(rmLS("rm-bc")||"[]"));}catch(e){rmBcSet=new Set();}}return rmBcSet;}
 function rmBcToggle(id){const s=rmBc();if(s.has(id))s.delete(id);else s.add(id);try{localStorage.setItem("rm-bc",JSON.stringify([...s]));}catch(e){}}
-function rmLoadView(){if(rmView)return;try{const v=JSON.parse(rmLS("rm-view2")||"null");if(v&&isFinite(v.x)&&isFinite(v.y)&&isFinite(v.k))rmView={x:v.x,y:v.y,k:v.k};}catch(e){}}
-function rmApply(){const w=document.getElementById("rmWorld");if(!w||!rmView)return;w.style.transform="translate("+rmView.x+"px,"+rmView.y+"px) scale("+rmView.k+")";clearTimeout(rmVT);rmVT=setTimeout(()=>{try{localStorage.setItem("rm-view2",JSON.stringify(rmView));}catch(e){}},300);}
+function rmLoadView(){if(rmView)return;try{const v=JSON.parse(rmLS("rm-view3")||"null");if(v&&isFinite(v.x)&&isFinite(v.y)&&isFinite(v.k))rmView={x:v.x,y:v.y,k:v.k};}catch(e){}}
+function rmApply(){const w=document.getElementById("rmWorld");if(!w||!rmView)return;w.style.transform="translate("+rmView.x+"px,"+rmView.y+"px) scale("+rmView.k+")";clearTimeout(rmVT);rmVT=setTimeout(()=>{try{localStorage.setItem("rm-view3",JSON.stringify(rmView));}catch(e){}},300);}
 function rmZoomAt(px,py,k2){if(!rmView)rmView={x:0,y:0,k:1};k2=rmClampK(k2);const v=rmView,k=v.k;v.x=px-(px-v.x)*(k2/k);v.y=py-(py-v.y)*(k2/k);v.k=k2;rmApply();}
 function rmSize(){const c=document.getElementById("rmCanvas");if(!c)return;c.style.height=Math.max(420,innerHeight-c.getBoundingClientRect().top-16)+"px";}
 const rmClampK=k=>Math.max(.1,Math.min(4,k));
 function rmFit(){const c=document.getElementById("rmCanvas"),w=document.getElementById("rmWorld");if(!c||!w||!c.clientWidth)return;
   let a=1e9,b=1e9,r=-1e9;[...w.children].forEach(n=>{if(n.tagName==="svg"||n.classList.contains("rm-wires"))return;a=Math.min(a,n.offsetLeft);b=Math.min(b,n.offsetTop);r=Math.max(r,n.offsetLeft+n.offsetWidth);});
-  if(r<a)return;const k=1;
+  if(r<a)return;const k=Math.max(1,Math.min(1.7,c.clientWidth/(r-a+80)));
   rmView={x:32-a*k,y:24-b*k,k};rmApply();}
 function rmTaskRow(t,opt){opt=opt||{};const id=t.id,bits=[];if(t.due)bits.push(plDue(t.due));if(opt.branch)bits.push(bkName(id));
   return el("li",{class:"rm-task"+(t.done?" done":""),"data-id":id},
@@ -98,7 +98,7 @@ function rmHabitsBand(world){if(!rmHOn()||typeof rmHGrid!=="function")return nul
     return {be,h:bh+14+g.offsetHeight,lh:0,place(x,top){rmPut(be,x,top);rmPut(g,x,top+bh+14);rmPut(pc,x+Math.max(gw-52,bw+12),top+bh/2-9);},link:true};});
   return {pe,blocks,below:[[nav,16],[ab,16]],cols:1,hab:true,extra:{nav,ab}};}
 function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag)return;rmLoadView();
-  const pos=rmCfg().pos||{},bc=rmBc();
+  const pos={},bc=rmBc();
   const svg=document.createElementNS(RM_NS,"svg");svg.setAttribute("class","rm-wires");svg.id="rmWires";
   const world=el("div",{class:"rm-world",id:"rmWorld"});world.append(svg);
   const canvas=el("div",{class:"rm-canvas",id:"rmCanvas"},world);

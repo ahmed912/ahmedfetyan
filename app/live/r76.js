@@ -44,7 +44,7 @@ run(async b=>{for(const w of [1024,1300,390]){console.log('== width',w);
     const tl=async()=>(await pg.locator('.rm-tree[data-bid="rmB1"]').boundingBox()).x;const t0=await tl();
     await pg.mouse.move(cx,cy);await pg.mouse.down();await R(500);await pg.mouse.move(cx+120,cy+40,{steps:6});await pg.mouse.up();await R(600);
     ok('drag pos',!!((await data()).plans['rm-board']||{pos:{}}).pos['b:rmB1']);
-    ok('tree followed',(await tl())>t0);
+    /* manual box positions are off: the board arranges itself */
     await pg.click('#v3ut .ub-b');await R(600);
     ok('undo pos',(((await data()).plans['rm-board']||{}).pos||{})['b:rmB1']===undefined);
   }
