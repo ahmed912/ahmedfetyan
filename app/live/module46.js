@@ -5,9 +5,9 @@ function rmTodayAddRow(d,tree){
   const li=el("li",{class:"rm-addt"},el("span",{class:"rm-plus",text:"+"}),"Add task");
   li.onclick=()=>{rmTodayAdd=true;rmTodayInput(li,d);};
   return li;}
-function rmTodayInput(li,d){
-  const inp=el("input",{class:"rm-in",type:"text",placeholder:"Task due today","aria-label":"Task due today"});
-  li.replaceChildren(inp);li.onclick=null;inp.focus();let busy=false;
+function rmTodayInput(li,d,focus){
+  const inp=el("input",{class:"rm-in",dir:"auto",type:"text",placeholder:"Task due today","aria-label":"Task due today"});
+  li.replaceChildren(inp);li.onclick=null;if(focus!==false)inp.focus();let busy=false;
   inp.addEventListener("keydown",async e=>{
     if(e.key==="Escape"){rmTodayAdd=false;render();}
     else if(e.key==="Enter"){const title=inp.value.trim();if(!title||busy)return;busy=true;
@@ -23,7 +23,7 @@ function rmToday(){
   if(!sec){sec=el("section",{class:"panel rm-today-sec",id:"rmToday","aria-label":"Today"});}
   const q=document.getElementById("brQuick");
   if(q&&q.parentNode===pg){if(q.nextSibling!==sec)q.after(sec);}else if(sec.parentNode!==pg)pg.prepend(sec);
-  const keep=sec.querySelector(".rm-in"),kv=keep?keep.value:"";
+  const keep=sec.querySelector(".rm-in"),kv=keep?keep.value:"";const had=!!keep&&document.activeElement===keep;
   const d=iso(new Date()),L=rmTodayTasks(d);
   const tree=el("ul",{class:"rm-tree rm-static",id:"rmTodayTree"});
   L.due.forEach(t=>tree.append(rmTaskRow(t,{branch:1})));
@@ -41,7 +41,7 @@ function rmToday(){
       el("span",{class:"rm-today-line"}),
       el("div",{class:"rm-node rm-branch rm-static"},"Today",el("span",{class:"rm-sub"},fmt(d,{weekday:"short",day:"numeric",month:"short"})))),
     tree);
-  if(rmTodayAdd){rmTodayInput(add,d);const n=sec.querySelector(".rm-in");if(n&&kv)n.value=kv;}}
+  if(rmTodayAdd){rmTodayInput(add,d,had);const n=sec.querySelector(".rm-in");if(n&&kv)n.value=kv;}}
 function rmTodayRow(){
   if(document.body.classList.contains("m33"))return;
   const rows=document.querySelector('.page[data-page="settings"] .set-rows');if(!rows||document.getElementById("rmTodayRow"))return;

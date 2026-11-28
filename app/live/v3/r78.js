@@ -11,7 +11,7 @@ function fx(){const d=load();d.plans=d.plans||{};delete d.plans['rm-board'];
   rmT3:{title:"rm t3",parent:"rmB2",date:null,done:false,order:3},
   rmS1:{title:"rm sprint",sprint:1,date:"2026-11-19",done:false,order:4}});return d;}
 run(async b=>{for(const w of [1300,820]){console.log('== width',w);
-  const pg=await openp(b,w,{when:'2026-11-19T11:00:00',real:JSON.stringify(fx()),rm44:1});
+  const pg=await openp(b,w,{when:'2026-11-19T11:00:00',real:JSON.stringify(fx()),rm44:1,h:1400});
   const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
   const data=()=>pg.evaluate("JSON.stringify(window.__data)").then(JSON.parse);
   const ev=s=>pg.evaluate(s);
@@ -22,6 +22,8 @@ run(async b=>{for(const w of [1300,820]){console.log('== width',w);
   let d=await data();const t=byTitle(d,'rm added');
   ok('task added',!!t&&t[1].parent==='rmB1');
   ok('input ready again',await pg.locator('.rm-in').count()===1);
+  await pg.fill('.rm-in','keep me');await ev("__rm.render()");await R(300);
+  ok('typed text kept',await pg.locator('.rm-in').inputValue()==='keep me');
   await pg.keyboard.press('Escape');await R(400);
   await pg.click('.rm-addb[data-pid="brand"]');await R(300);
   await pg.fill('.rm-in','rm new branch');await pg.keyboard.press('Enter');await R(1000);
@@ -55,5 +57,8 @@ run(async b=>{for(const w of [1300,820]){console.log('== width',w);
   await pg.mouse.move(r2.x+10,r1.y-4,{steps:8});await R(200);await pg.mouse.up();await R(600);
   d=await data();
   ok('reorder',d.tasks.rmT2.pos!=null&&d.tasks.rmT2.pos<d.tasks.rmT1.pos,JSON.stringify([d.tasks.rmT2.pos,d.tasks.rmT1.pos]));
+  ok('page stays roadmap',await ev("document.body.dataset.page")==='roadmap');
+  if(w>=1300)ok('no today header',!(await pg.locator('#workView .top').first().isVisible()));
+  ok('rtl auto',await pg.locator('.rm-tt').first().getAttribute('dir')==='auto');
   await pg.screenshot({path:'v3/shots/r78-'+w+'.png'});
 }});

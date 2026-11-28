@@ -2,23 +2,26 @@
 let rmAddOpen=null,rmInBusy=false;
 function rmInline(host,ph,onEnter,sel){
   if(!host)return;
-  const inp=el("input",{class:"rm-in",type:"text",placeholder:ph,"aria-label":ph,autocomplete:"off"});
-  rmAddOpen={sel:sel,ph:ph,fn:onEnter};
+  const prev=rmAddOpen&&rmAddOpen.sel===sel?rmAddOpen:null;
+  const inp=el("input",{class:"rm-in",dir:"auto",type:"text",placeholder:ph,"aria-label":ph,autocomplete:"off"});
+  inp.value=(prev&&prev.v)||"";
+  rmAddOpen={sel:sel,ph:ph,fn:onEnter,v:inp.value,f:prev?prev.f!==false:true};
+  inp.addEventListener("input",()=>{if(rmAddOpen)rmAddOpen.v=inp.value;});inp.addEventListener("focus",()=>{if(rmAddOpen)rmAddOpen.f=true;});
   host.replaceChildren(inp);
   ["keyup","keypress","pointerdown","click"].forEach(n=>inp.addEventListener(n,e=>e.stopPropagation()));
   inp.addEventListener("keydown",async e=>{
     e.stopPropagation();
-    if(e.key==="Enter"){e.preventDefault();const v=inp.value.trim();if(!v)return;rmInBusy=true;try{await onEnter(v);}catch(x){console.warn(x);}rmInBusy=false;
+    if(e.key==="Enter"){e.preventDefault();const v=inp.value.trim();if(!v)return;if(rmAddOpen)rmAddOpen.v="";inp.value="";rmInBusy=true;try{await onEnter(v);}catch(x){console.warn(x);}rmInBusy=false;
       const h=sel&&document.querySelector("#rmBody "+sel);if(h&&!h.querySelector(".rm-in")&&rmAddOpen)rmInline(h,ph,onEnter,sel);}
     else if(e.key==="Escape"){e.preventDefault();rmAddOpen=null;render();}
   });
-  inp.addEventListener("blur",()=>{if(rmInBusy||!inp.isConnected)return;if(!inp.value.trim()){rmAddOpen=null;render();}});
-  setTimeout(()=>{try{inp.focus();}catch(e){}},0);
+  inp.addEventListener("blur",()=>setTimeout(()=>{if(rmInBusy||!inp.isConnected)return;if(!inp.value.trim()){rmAddOpen=null;render();}else if(rmAddOpen)rmAddOpen.f=false;},0));
+  if(rmAddOpen&&rmAddOpen.f)setTimeout(()=>{try{inp.focus();}catch(e){}},0);
 }
 function rmOpenAdd(host,ph,fn,sel){if(host.querySelector&&host.querySelector(".rm-in"))return;rmInline(host,ph,fn,sel);}
 function rmBranchMenu(bid){const b=state.tasks[bid];if(!b)return;
   psOpen(b.title,()=>{
-    const ren=el("input",{class:"v3-in rm-ren",type:"text",value:b.title,"aria-label":"Branch name"});
+    const ren=el("input",{class:"v3-in rm-ren",dir:"auto",type:"text",value:b.title,"aria-label":"Branch name"});
     ren.onchange=()=>{const v=ren.value.trim().slice(0,60),old=b.title;if(!v||v===old){ren.value=old;return;}patchTask(bid,{title:v});v3undoToast("Renamed",()=>patchTask(bid,{title:old}));};
     const cur=rmParentOf(bid);
     return [ren,el("p",{class:"hint",text:"Parent"}),
@@ -28,7 +31,7 @@ function rmBranchMenu(bid){const b=state.tasks[bid];if(!b)return;
   });}
 function rmParentMenu(pid){const p=rmParents().find(x=>x.id===pid);if(!p)return;
   psOpen(p.name,()=>{
-    const ren=el("input",{class:"v3-in rm-ren",type:"text",value:p.name,"aria-label":"Parent name"});
+    const ren=el("input",{class:"v3-in rm-ren",dir:"auto",type:"text",value:p.name,"aria-label":"Parent name"});
     ren.onchange=()=>{if(rmRenameParent(pid,ren.value)===null)ren.value=p.name;};
     const n=rmBranches(pid).length;
     const out=[ren,el("p",{class:"hint",text:n+(n===1?" branch":" branches")})];

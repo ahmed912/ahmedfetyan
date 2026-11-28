@@ -1,0 +1,36 @@
+// Round 79: retire switch. Retired features render nothing, timers skip, subscriptions skip; switch On brings them back.
+const {openp,run}=require('./h.js');const {load}=require('./dmlib.js');
+const ok=(n,c,x)=>{console.log((c?'PASS ':'FAIL ')+n+(x!==undefined&&!c?' '+x:''));if(!c)process.exitCode=1;};
+function fx(){return load();}
+run(async b=>{for(const w of [390,1300]){console.log('== width',w);
+  const pg=await openp(b,w,{when:'2026-11-28T11:00:00',real:JSON.stringify(fx()),retire:1,rm44:1});
+  const R=ms=>pg.clock.runFor(ms).then(()=>pg.waitForTimeout(250));
+  const ev=s=>pg.evaluate(s);
+  ok('default off',await ev("localStorage.getItem('ret-show')")===null);
+  ok('body class',await ev("document.body.classList.contains('ret-sleep')&&document.body.classList.contains('ret-fellow')"));
+  ok('kept keys inert',await ev("!__ret.is('habits')&&!__ret.is('media')&&!__ret.is('prayer')"));
+  ok('rollover and review retired',await ev("__ret.is('rollover')&&__ret.is('review')"));
+  await R(20000);
+  ok('reminders timer skipped',await ev("(window.__retSkip||{})['t:reminders']>=1"));
+  ok('sleep timer skipped',await ev("(window.__retSkip||{})['t:sleep']>=1"));
+  for(const c of ['learning','inquiries','reminders','sleep','design','guard','resources'])ok('sub skipped '+c,await ev("(window.__retSkip||{})['c:"+c+"']===1"));
+  ok('liposts skipped',await ev("(window.__retSkip||{})['c:liposts']===1"));
+  ok('prayer timer not skipped (kept)',await ev("!(window.__retSkip||{})['t:prayer']"));
+  ok('roadmap tab kept',await ev("document.body.innerHTML.includes('Roadmap')"));
+  await ev("__r2.setPage('settings')");await R(800);
+  ok('row shown',await pg.locator('#retRow').count()===1);
+  ok('button Off',(await pg.locator('#retBtn').textContent()).trim()==='Off');
+  await ev("window.__retNoReload=1");await pg.click('#retBtn');await R(800);
+  ok('saved on',await ev("localStorage.getItem('ret-show')")==='on');
+  ok('reload asked',await ev("window.__retReloaded")===1);
+  ok('button On',(await pg.locator('#retBtn').textContent()).trim()==='On');
+  await pg.click('#retBtn');await R(800);
+  ok('saved off',await ev("localStorage.getItem('ret-show')")===null);
+  ok('reload asked twice',await ev("window.__retReloaded")===2);
+  ok('no errors',pg.errs.filter(e=>!/Failed to load resource/.test(e)).length===0,pg.errs.join(' | '));
+  await pg.screenshot({path:'v3/shots/r79-'+w+'.png'});
+  const pg2=await openp(b,w,{when:'2026-11-28T11:00:00',real:JSON.stringify(fx())});await pg2.clock.runFor(20000);
+  ok('shown: nothing skipped',await pg2.evaluate("window.__retSkip===undefined"));
+  ok('shown: no class',await pg2.evaluate("!document.body.classList.contains('ret-sleep')"));
+  ok('shown: no errors',pg2.errs.filter(e=>!/Failed to load resource/.test(e)).length===0,pg2.errs.join(' | '));
+}});

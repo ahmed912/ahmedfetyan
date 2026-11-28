@@ -1,0 +1,21 @@
+/* style47 habits on the roadmap board */
+.rm-canvas{--rm-gold:#c9a978}
+.rm-cnt{display:inline-block;margin-left:10px;font-size:11px;color:var(--muted);font-weight:300;white-space:nowrap;vertical-align:middle}
+.rm-hparent{position:absolute;min-width:160px;padding:16px 24px;border:1px solid var(--rm-gold);border-radius:4px;font-size:20px;cursor:default}
+.rm-hb{padding:8px 24px;border:1px solid var(--rm-gold);border-radius:999px;font-size:15px;white-space:nowrap;max-width:290px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.rm-hadd{position:absolute;white-space:nowrap;background:none;border:0;color:var(--muted);font:inherit;font-weight:300;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.rm-hnav{position:absolute;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:300;white-space:nowrap}
+.rm-hnav button{background:none;border:1px solid var(--line);border-radius:50%;width:24px;height:24px;padding:0;color:var(--ink);font:inherit;font-size:16px;line-height:1;cursor:pointer}
+.rm-hgrid{position:absolute;display:grid;gap:6px}
+.rm-hday{width:30px;height:30px;padding:0;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:11px;font-weight:300;cursor:pointer;position:relative}
+.rm-hday.on{background:var(--rm-gold,#c9a978);border-color:var(--rm-gold,#c9a978);color:#1a1a1a}
+.rm-hday.today{border-color:var(--rm-gold,#c9a978);box-shadow:0 0 0 2px rgba(201,169,120,.35);color:var(--ink)}
+.rm-hday.on.today{color:#1a1a1a}
+.rm-hday.miss::after{content:"\00d7";position:absolute;right:3px;bottom:0;font-size:10px;line-height:12px;color:var(--muted)}
+.rm-hday.fut{opacity:.35;cursor:default}
+.rm-hpct{position:absolute;width:52px;text-align:right;font-size:13px;color:var(--muted);font-weight:300}
+.rm-prog{position:absolute;height:2px;background:var(--line);border-radius:2px;overflow:hidden;pointer-events:none}
+.rm-prog span{display:block;height:100%;background:var(--rm-gold,#c9a978)}
+.rm-brange{position:absolute;font-size:10px;color:var(--muted);font-weight:300;white-space:nowrap;pointer-events:none}
+.rm-task.done .rm-check{background:var(--rm-gold,#c9a978)}
+.rm-hgrid,.rm-hday,.rm-hnav,.rm-hpct,.rm-brange{user-select:none;-webkit-user-select:none}

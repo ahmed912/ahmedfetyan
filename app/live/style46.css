@@ -1,0 +1,7 @@
+.pop-card[hidden]{display:none!important}
+body.ret-guard section[aria-labelledby="gdH"]{display:none!important}
+body.ret-reminders #remBanners{display:none!important}
+body.ret-game #gameMini,body.ret-game .panel:has(#gameBody){display:none!important}
+body.ret-habits section[aria-labelledby="habH"]{display:none!important}
+body.ret-media #qFab{display:none!important}
+body.ret-rollover #rlRow,body.ret-rollover #rlRev{display:none!important}

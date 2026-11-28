@@ -35,7 +35,7 @@ run(async b=>{for(const w of [1024,1300,390]){console.log('== width',w);
     const view=()=>pg.evaluate("__rm.view()");
     let v0=await view();await pg.mouse.move(600,400);await pg.keyboard.down('Control');await pg.mouse.wheel(0,-200);await pg.keyboard.up('Control');await R(300);
     let v1=await view();ok('zoom',v1.k>v0.k,v0.k+' '+v1.k);
-    const bx=await pg.locator('#rmCanvas').boundingBox();const px=bx.x+bx.width-30,py=bx.y+bx.height-30;
+    const bx=await pg.locator('#rmCanvas').boundingBox();const px=bx.x+bx.width-30,py=bx.y+bx.height-90;
     v0=await view();await pg.mouse.move(px,py);await pg.mouse.down();await pg.mouse.move(px+100,py+50,{steps:5});await pg.mouse.up();
     v1=await view();ok('pan',v1.x-v0.x>=95&&v1.x-v0.x<=105,v1.x-v0.x);
     await pg.mouse.dblclick(px,py);await R(300);

@@ -22,7 +22,7 @@ function rmFit(){const c=document.getElementById("rmCanvas"),w=document.getEleme
 function rmTaskRow(t,opt){opt=opt||{};const id=t.id,bits=[];if(t.due)bits.push(plDue(t.due));if(opt.branch)bits.push(bkName(id));
   return el("li",{class:"rm-task"+(t.done?" done":""),"data-id":id},
     el("button",{type:"button",class:"rm-check","aria-label":"Mark done: "+(t.title||""),"aria-pressed":String(!!t.done),onclick:e=>{e.stopPropagation();rmCheck(id);}}),
-    el("div",{},el("span",{class:"rm-tt",text:t.title||"",onclick:()=>v3taskMenu(id)}),bits.length?el("span",{class:"rm-tag",text:bits.join(" · ")}):null));}
+    el("div",{},el("span",{class:"rm-tt",dir:"auto",text:t.title||"",onclick:()=>v3taskMenu(id)}),bits.length?el("span",{class:"rm-tag",text:bits.join(" · ")}):null));}
 function rmTree(bid){const all=rmTasks(bid),open=all.filter(t=>!t.done),done=all.filter(t=>t.done);
   const ul=el("ul",{class:"rm-tree","data-bid":bid});
   open.slice(0,rmExp[bid]?open.length:4).forEach(t=>ul.append(rmTaskRow(t)));
@@ -47,14 +47,14 @@ function rmBoard(){const body=document.getElementById("rmBody");if(!body||rmDrag
   if(!rmLS("rm-hint"))canvas.append(el("p",{class:"rm-hint",text:"Drag to look around. Pinch or Ctrl and scroll to zoom. Double tap to fit. Hold a box to move it."}));
   body.replaceChildren(canvas);rmLinks=[];let y=40;
   rmParents().forEach(p=>{const subs=rmBranches(p.id);
-    const pe=el("div",{class:"rm-node rm-parent","data-node":"p:"+p.id,"data-pid":p.id},el("span",{class:"rm-pname",text:p.name}),
+    const pe=el("div",{class:"rm-node rm-parent","data-node":"p:"+p.id,"data-pid":p.id},el("span",{class:"rm-pname",dir:"auto",text:p.name}),
       p.collapsed?el("span",{class:"rm-sub",text:subs.length+(subs.length===1?" branch":" branches")}):null);
     world.append(pe);const ph=pe.offsetHeight,pp=pos["p:"+p.id]||{x:40,y};rmPut(pe,pp.x,pp.y);let tall=0;
     if(!p.collapsed){
       const ab=el("button",{type:"button",class:"rm-addb","data-pid":p.id},el("span",{class:"rm-plus",text:"+"}),el("span",{text:"Add Branch"}));
       world.append(ab);rmPut(ab,pp.x+16,pp.y+ph+40);rmLinks.push({a:pe,b:ab,t:"v"});
       subs.forEach((b,i)=>{const t=state.tasks[b.id]||{};
-        const be=el("div",{class:"rm-node rm-branch","data-node":"b:"+b.id,"data-bid":b.id},el("span",{class:"rm-bname",text:b.title||"Branch"}),t.bState==="paused"?el("span",{class:"rm-sub",text:"Paused"}):null);
+        const be=el("div",{class:"rm-node rm-branch","data-node":"b:"+b.id,"data-bid":b.id},el("span",{class:"rm-bname",dir:"auto",text:b.title||"Branch"}),t.bState==="paused"?el("span",{class:"rm-sub",text:"Paused"}):null);
         world.append(be);const bh=be.offsetHeight,bp=pos["b:"+b.id]||{x:340+i*320,y};rmPut(be,bp.x,bp.y);rmLinks.push({a:pe,b:be,t:"h"});
         let th=0;if(!bc.has(b.id)){const ul=rmTree(b.id);world.append(ul);rmPut(ul,bp.x+24,bp.y+bh+12);th=ul.offsetHeight;}
         tall=Math.max(tall,th+bh+24);});}
@@ -111,6 +111,6 @@ if(!window.__rmBound){window.__rmBound=1;addEventListener("resize",()=>{if(page=
   const r=_s("progress",...a);page="roadmap";try{history.replaceState(null,"","#roadmap");}catch(e){}
   document.querySelectorAll("#workView .page").forEach(pg=>{pg.hidden=pg.dataset.page!=="roadmap";});document.body.dataset.page="roadmap";
   try{buildNav();}catch(e){}render();return r;};}
-{const _r=render;render=function(){_r();try{if(page==="roadmap"&&!document.body.classList.contains("m33"))rmBoard();}catch(e){console.warn(e);}};}
-window.__rm=window.__rm||{};window.__rm.view=()=>({...(rmView||{x:0,y:0,k:1})});window.__rm.fit=rmFit;
+{const _r=render;render=function(){_r();try{if(page==="roadmap"&&!document.body.classList.contains("m33")){if(document.body.dataset.page!=="roadmap"){document.body.dataset.page="roadmap";try{buildNav();}catch(e){}}rmBoard();}}catch(e){console.warn(e);}};}
+window.__rm=window.__rm||{};window.__rm.view=()=>({...(rmView||{x:0,y:0,k:1})});window.__rm.fit=rmFit;window.__rm.render=()=>render();
 if(location.hash==="#roadmap")setTimeout(()=>{if(!document.body.classList.contains("m33")&&page!=="roadmap")setPage("roadmap");},60);

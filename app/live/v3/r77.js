@@ -38,6 +38,10 @@ run(async(b)=>{
   const d=await data();const nt=Object.entries(d.tasks).find(([k,t])=>t.title==='rm new today');
   ok(T('new task'),!!nt&&nt[1].due==='2026-11-19'&&nt[1].date==='2026-11-19');
   ok(T('new row'),!!nt&&await cnt('.rm-task[data-id="'+nt[0]+'"]')===1);
+  if(await cnt('#rmToday .rm-in')===0)await pg.locator('#rmToday .rm-addt').click();
+  await pg.locator('#rmToday .rm-in').fill('x');await pg.evaluate("document.querySelector('#rmToday .rm-in').blur()");await pg.evaluate('__rm.render()');await R(300);
+  ok(T('no focus steal'),!(await pg.evaluate("!!(document.activeElement&&document.activeElement.classList.contains('rm-in'))")));
+  ok(T('text kept'),await pg.locator('#rmToday .rm-in').inputValue()==='x');
   await pg.keyboard.press('Escape');await R(300);
   await pg.locator('.rm-task[data-id="rmT1"] .rm-check').click();await R(400);
   ok(T('check'),(await data()).tasks.rmT1.done===true);
