@@ -17,5 +17,7 @@
 - Only the word "vital" overrides the queue. Vital = loses or hides data or billable time, breaks sync, blocks work, security.
 ## Design principle (his words, 28 Nov)
 - The optimum app is not the complete app: it lowers cognitive load with the fewest features. Every new feature must replace or remove something. Retire unused features (hide, never delete data).
+## Primary check (his words, 28 Nov)
+- At first glance the app must answer three things: what I need to do today, what my plan is, and what my progress is. Every screen change is judged against these three.
 ## Where things are
 - Read hub/INDEX.md first.
