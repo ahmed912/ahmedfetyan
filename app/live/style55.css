@@ -107,3 +107,7 @@ body.oh-on #hubSub .hsub{display:none}
 .x26-start{font-size:14px!important;line-height:22px!important;padding:3px 14px!important}
 .x26-x{font-size:20px!important}
 .x27-col .rm-tt{font:400 16px/22px var(--f-body,system-ui)!important}
+/* no container: the board uses the full screen width */
+body.oh-on[data-page="roadmap"] .wrap{max-width:none!important;padding-left:24px!important;padding-right:24px!important}
+body.oh-on .rm-canvas{border:0!important;border-radius:0!important;background:transparent!important;background-image:none!important}
+body.oh-on #rmBody,body.oh-on .oh-shell,body.oh-on .oh-rail,body.oh-on .page[data-page="roadmap"]{max-width:none!important;width:100%}

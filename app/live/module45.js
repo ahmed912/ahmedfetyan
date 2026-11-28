@@ -15,7 +15,7 @@ function rmSize(){const c=document.getElementById("rmCanvas");if(!c)return;c.sty
 const rmClampK=k=>Math.max(.1,Math.min(4,k));
 function rmFit(){const c=document.getElementById("rmCanvas"),w=document.getElementById("rmWorld");if(!c||!w||!c.clientWidth)return;
   let a=1e9,b=1e9,r=-1e9;[...w.children].forEach(n=>{if(n.tagName==="svg"||n.classList.contains("rm-wires"))return;a=Math.min(a,n.offsetLeft);b=Math.min(b,n.offsetTop);r=Math.max(r,n.offsetLeft+n.offsetWidth);});
-  if(r<a)return;const k=Math.max(1,Math.min(1.7,c.clientWidth/(r-a+80)));
+  if(r<a)return;const k=Math.max(1,Math.min(2.2,c.clientWidth/(r-a+80)));
   rmView={x:32-a*k,y:24-b*k,k};rmApply();}
 function rmTaskRow(t,opt){opt=opt||{};const id=t.id,bits=[];if(t.due)bits.push(plDue(t.due));if(opt.branch)bits.push(bkName(id));
   return el("li",{class:"rm-task"+(t.done?" done":""),"data-id":id},

@@ -53,6 +53,7 @@ try{ohShellBuild();}catch(e){console.warn(e);}
 
 // nav
 let OH_NAV0=null,ohLastOn=null;
+function ohNavStale(){try{return HUBS.some(h=>h.pages.some(x=>["roadmap","progress","projects","today"].includes(x[0])&&!(h.id==="today"&&x[0]==="roadmap")));}catch(e){return false;}}
 function ohNav(){
   if(!OH_NAV0)OH_NAV0={tn:(HUBS.find(h=>h.id==="today")||{}).name,all:HUBS.map(h=>({h,name:h.name,pages:h.pages.slice()}))};
   const gone=["roadmap","progress","projects","today"];
@@ -73,7 +74,7 @@ function ohNav(){
 let ohRed=false;
 {const _r=render;render=function(){_r();try{
   const on=ohOn();document.body.classList.toggle("oh-on",on);
-  if(on!==ohLastOn){ohLastOn=on;ohNav();}
+  if(on!==ohLastOn||(on&&ohNavStale())){ohLastOn=on;ohNav();}
   if(!document.getElementById("ohShell"))ohShellBuild();
   if(on&&!ohRed&&["today","progress","projects"].includes(page)){ohRed=true;try{setPage("roadmap");}finally{ohRed=false;}return;}
   if(on&&page==="roadmap"){
