@@ -1,0 +1,13 @@
+/* Round 58: simplified task hold menu */
+.tm-list{display:flex;flex-direction:column;margin:6px 0 0}
+.tm-row{all:unset;box-sizing:border-box;display:flex;align-items:center;width:100%;min-height:44px;padding:0 4px;font-size:16px;line-height:20px;text-align:left;color:var(--ink);cursor:pointer;border-radius:10px}
+.tm-row:hover,.tm-row:focus-visible{background:var(--sunk)}
+.tm-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tm-more{margin-top:6px;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;padding:0}
+.tm-more>summary{list-style:none;display:flex;align-items:center;min-height:44px;padding:0 4px;font-size:16px;color:var(--mute,var(--ink));opacity:.7;cursor:pointer}
+.tm-more>summary::-webkit-details-marker{display:none}
+.tm-more[open]>summary{opacity:.5}
+.tm-del{color:var(--bad,var(--ink))}
+.tg-pick .tg-chip::before{background:color-mix(in srgb,var(--ink) 35%,transparent)}
+.tg-pick .tg-chip[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 14%,transparent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tg-pick .tg-chip[aria-pressed="true"]::before{background:var(--accent)}
