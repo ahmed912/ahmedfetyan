@@ -1,0 +1,13 @@
+/* style45 simple Today */
+body.rm-today #workView .page[data-page="today"]>:not(#brQuick):not(#rmToday):not(.grid){display:none!important}
+body.rm-today #workView .page[data-page="today"] .grid>:not(#popCards){display:none!important}
+body.rm-today #popCards>:not(#warCard):not(.rm-keep){display:none!important}
+body.rm-today #workView .page[data-page="today"] [data-lay]{position:static!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important}
+.rm-today-sec{--rm-gold:#c9a978;--rm-wire:rgba(201,169,120,.55);padding:24px}
+.rm-today-sec .rm-static{position:relative;cursor:default}
+.rm-today-row{display:flex;align-items:center}
+.rm-today-line{width:64px;border-top:1px solid var(--rm-wire)}
+.rm-today-sec .rm-tree{position:relative;margin:12px 0 0 216px}
+.rm-empty{padding:8px 0 8px 20px;font-size:13px}
+.rm-chip{border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:none;color:var(--ink);font:inherit;font-size:13px;margin:0 8px 8px 0}.rm-chip[aria-pressed="true"]{border-color:#c9a978}
+@media(max-width:700px){.rm-today-sec{padding:16px}.rm-today-sec .rm-tree{margin-left:24px;min-width:0}.rm-today-sec .rm-parent{min-width:0;padding:12px 16px}.rm-today-line{width:24px}.rm-today-sec .rm-branch{padding:8px 16px}}

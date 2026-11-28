@@ -1,0 +1,28 @@
+/* style44 roadmap */
+.rm-canvas{--rm-gold:#c9a978;--rm-wire:rgba(201,169,120,.55);position:relative;height:calc(100dvh - 140px);min-height:420px;overflow:hidden;touch-action:none;cursor:grab;border-top:1px solid var(--line)}
+.rm-canvas.rm-panning{cursor:grabbing}
+.rm-world{position:absolute;left:0;top:0;transform-origin:0 0}
+.rm-wires{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none}
+.rm-wires path{fill:none;stroke:var(--rm-wire);stroke-width:1}
+.rm-node{position:absolute;color:var(--ink);font-weight:300;user-select:none;-webkit-user-select:none;cursor:pointer}
+.rm-parent{min-width:160px;padding:16px 24px;border:1px solid var(--rm-gold);border-radius:4px;font-size:20px}
+.rm-branch{padding:8px 24px;border:1px solid var(--rm-gold);border-radius:999px;font-size:15px;white-space:nowrap;max-width:290px;overflow:hidden;text-overflow:ellipsis}
+.rm-sub,.rm-tag{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.rm-tree{position:absolute;list-style:none;margin:0;padding:4px 0 0;border-left:1px solid var(--rm-wire);min-width:240px;max-width:290px}
+.rm-task,.rm-more,.rm-addt{position:relative;display:flex;align-items:flex-start;gap:12px;min-height:36px;padding:8px 0 8px 20px;color:var(--ink);font-weight:300}
+.rm-task::before,.rm-addt::before{content:"";position:absolute;left:0;top:17px;width:12px;border-top:1px solid var(--rm-wire)}
+.rm-check{flex:none;width:18px;height:18px;padding:0;border-radius:50%;border:1px solid var(--ink);background:transparent;cursor:pointer}
+.rm-task.done .rm-check{background:var(--rm-gold);border-color:var(--rm-gold)}
+.rm-task.done .rm-tt{color:var(--muted);text-decoration:line-through}
+.rm-tt{font-size:15px;line-height:20px;cursor:pointer}
+.rm-more{font-size:12px;color:var(--muted);cursor:pointer;min-height:28px}
+.rm-addt,.rm-addb,.rm-newp{background:none;border:0;color:var(--muted);font:inherit;font-weight:300;font-size:13px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.rm-addb{position:absolute;white-space:nowrap}
+.rm-plus{display:inline-grid;place-items:center;flex:none;width:18px;height:18px;border:1px solid var(--rm-gold);border-radius:50%;font-size:13px;line-height:1;color:var(--rm-gold)}
+.rm-newp{position:absolute;width:420px;height:72px;justify-content:center;border:1px solid var(--rm-gold);border-radius:8px;color:var(--ink);font-size:20px}
+.rm-newp .rm-plus{width:24px;height:24px;font-size:16px}
+.rm-lift{box-shadow:0 8px 24px rgba(0,0,0,.45);z-index:2}
+.rm-in{background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;font-weight:300;font-size:15px;outline:none;width:220px;padding:2px 0}
+.rm-hint{position:absolute;left:16px;bottom:12px;margin:0;font-size:12px;color:var(--muted);pointer-events:none}
+body.cut1 #hubSub .hsub[data-p="progress"],body.cut1 #hubSub .hsub[data-p="roadmap"]{display:inline-block!important}
+@media (min-width:821px){body[data-page="roadmap"] #workView .top{display:none}}

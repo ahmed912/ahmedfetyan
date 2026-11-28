@@ -15,7 +15,7 @@ async function openp(b,w,o={}){const ctx=await b.newContext({viewport:{width:w,h
   if(!o.roll)M=M.replace("window.__data=data;","data.settings=data.settings||{};if(!data.settings.roll)data.settings.roll={auto:false};window.__data=data;");
   M=M.replace("window.__data=data;","if(window.__restore)for(const k in window.__restore)data[k]=window.__restore[k];window.__data=data;");
   await pg.addInitScript("try{const s=sessionStorage.getItem('__mockdata');if(s)window.__restore=JSON.parse(s);}catch(e){}");
-  await pg.addInitScript(M);if(!o.m33)await pg.addInitScript("try{localStorage.setItem('sb-m33','off')}catch(e){}");if(o.sb)await pg.addInitScript(SBMOCK);await pg.route('**/*',r=>/^https?:/.test(r.request().url())?r.abort():r.continue());
+  await pg.addInitScript(M);if(!o.m33)await pg.addInitScript("try{localStorage.setItem('sb-m33','off')}catch(e){}");if(!o.rm44)await pg.addInitScript("try{localStorage.setItem('rm-today','off')}catch(e){}");if(o.sb)await pg.addInitScript(SBMOCK);await pg.route('**/*',r=>/^https?:/.test(r.request().url())?r.abort():r.continue());
   await pg.goto('file://'+A+'/'+(o.html||'test.html'));await pg.clock.runFor(2500);return pg;}
 const shot=(pg,n,full)=>pg.screenshot({path:OUT+'/'+n+'.png',fullPage:!!full});
 async function run(fn){const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});try{await fn(b);}finally{await b.close();}}
